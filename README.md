@@ -18,5 +18,9 @@ Core Algorithms
 
 - ***Sub-voxel range versions***
 
-Compound Algorithms
--------------------
+Transform Algorithms
+--------------------
+
+### Flip
+
+### Rotate

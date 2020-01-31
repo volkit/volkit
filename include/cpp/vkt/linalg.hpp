@@ -105,4 +105,11 @@ namespace vkt
         return (a + b - 1) / b;
     }
 
+    enum class Axis
+    {
+        X,
+        Y,
+        Z,
+    };
+
 } // vkt

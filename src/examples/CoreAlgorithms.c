@@ -2,6 +2,7 @@
 
 #include <vkt/Copy.h>
 #include <vkt/Fill.h>
+#include <vkt/Flip.h>
 #include <vkt/ExecutionPolicy.h>
 #include <vkt/Render.h>
 #include <vkt/StructuredVolume.h>
@@ -15,12 +16,19 @@ static void TransformOp1(int32_t x, int32_t y, int32_t z, uint8_t* voxel)
         voxel[0] = 0xFF;
 }
 
+static void TransformOp2(int32_t x, int32_t y, int32_t z, uint8_t* voxel1, uint8_t* voxel2)
+{
+    voxel1[0] |= voxel2[0];
+    voxel2[0]  = voxel1[0];
+}
+
 int main()
 {
     //--- Declarations ------------------------------------
     vktExecutionPolicy_t ep;
     vktStructuredVolume volume1;
     vktStructuredVolume volume2;
+    vktStructuredVolume volume3;
 
     // Bytes per voxel
     int bpv;
@@ -76,15 +84,30 @@ int main()
                                        22, 22, 22,
                                        TransformOp1));
 
+    // Create a copy; copy construction can be used to
+    // copy volumes if all parameters (bpv, dims, etc.)
+    // of the two volumes match exactly
+    VKT_SAFE_CALL(vktStructuredVolumeCreateCopy(&volume3,
+                                                volume2));
+
+    // Flip volume3 (not a core algorithm)
+    VKT_SAFE_CALL(vktFlipSV(volume3, vktAxisX));
+
+    // Transform w/ binary operation
+    VKT_SAFE_CALL(vktTransformSV2(volume2,
+                                  volume3,
+                                  TransformOp2));
+
     //--- Render (not core) -------------------------------
 
     // Render volume2
     vktRenderState_t renderState;
     memset(&renderState, 0, sizeof(renderState));
-    VKT_SAFE_CALL(vktRenderSV(volume2, renderState, NULL));
+    VKT_SAFE_CALL(vktRenderSV(volume3, renderState, NULL));
 
     //--- Destroy volumes ---------------------------------
 
     VKT_SAFE_CALL(vktStructuredVolumeDestroy(volume1));
     VKT_SAFE_CALL(vktStructuredVolumeDestroy(volume2));
+    VKT_SAFE_CALL(vktStructuredVolumeDestroy(volume3));
 }

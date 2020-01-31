@@ -72,6 +72,7 @@ set(SOURCES
     Decompose.cpp
     ExecutionPolicy.cpp
     Fill.cpp
+    Flip.cpp
     ManagedBuffer.cpp
     Memory.cpp
     Render.cpp

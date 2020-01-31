@@ -20,6 +20,13 @@ typedef struct
     int z;
 } vktVec3i_t;
 
+typedef enum
+{
+    vktAxisX,
+    vktAxisY,
+    vktAxisZ,
+} vktAxis;
+
 #ifdef __cplusplus
 }
 #endif
