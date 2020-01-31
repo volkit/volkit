@@ -10,17 +10,25 @@ extern "C"
 {
 #endif
 
-typedef float (*vktTransformUnaryOp)(float);
-typedef float (*vktTransformBinaryOp)(float, float);
+typedef void (*vktTransformUnaryOp)(int32_t x,
+                                    int32_t y,
+                                    int32_t z,
+                                    uint8_t* voxel);
 
-VKTAPI vktError vktTransformSV1(vktStructuredVolume volume1,
+typedef void (*vktTransformBinaryOp)(int32_t x1,
+                                     int32_t y1,
+                                     int32_t z1,
+                                     uint8_t* voxel1,
+                                     uint8_t* voxel2);
+
+VKTAPI vktError vktTransformSV1(vktStructuredVolume volume,
                                 vktTransformUnaryOp unaryOp);
 
 VKTAPI vktError vktTransformSV2(vktStructuredVolume volume1,
                                 vktStructuredVolume volume2,
                                 vktTransformBinaryOp binaryOp);
 
-VKTAPI vktError vktTransformRangeSV1(vktStructuredVolume volume1,
+VKTAPI vktError vktTransformRangeSV1(vktStructuredVolume volume,
                                      int32_t firstX,
                                      int32_t firstY,
                                      int32_t firstZ,
@@ -42,7 +50,7 @@ VKTAPI vktError vktTransformRangeSV2(vktStructuredVolume volume1,
                                      int32_t volume2OffsetZ,
                                      vktTransformBinaryOp binaryOp);
 
-VKTAPI vktError vktTransformSubVoxelRangeSV1(vktStructuredVolume volume1,
+VKTAPI vktError vktTransformSubVoxelRangeSV1(vktStructuredVolume volume,
                                              float firstX,
                                              float firstY,
                                              float firstZ,

@@ -5,8 +5,15 @@
 #include <vkt/ExecutionPolicy.h>
 #include <vkt/Render.h>
 #include <vkt/StructuredVolume.h>
+#include <vkt/Transform.h>
 
 #include "common.h"
+
+static void TransformOp1(int32_t x, int32_t y, int32_t z, uint8_t* voxel)
+{
+    if (x == y && y == z)
+        voxel[0] = 0xFF;
+}
 
 int main()
 {
@@ -60,6 +67,16 @@ int main()
                                  10, 10, 10,
                                  34, 34, 34, 
                                  0, 0, 0));
+
+    //--- TransformRange ----------------------------------
+
+    // Iterate over a range and apply a unary operation
+    VKT_SAFE_CALL(vktTransformRangeSV1(volume2,
+                                       2, 2, 2,
+                                       22, 22, 22,
+                                       TransformOp1));
+
+    //--- Render (not core) -------------------------------
 
     // Render volume2
     vktRenderState_t renderState;

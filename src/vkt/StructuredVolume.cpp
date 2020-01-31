@@ -259,7 +259,7 @@ namespace vkt
 
     std::size_t StructuredVolume::linearIndex(int32_t x, int32_t y, int32_t z) const
     {
-        size_t index = z * dims_.y * std::size_t(dims_.x)
+        size_t index = z * dims_.x * std::size_t(dims_.y)
                      + y * dims_.x
                      + x;
         return index * bytesPerVoxel_;
