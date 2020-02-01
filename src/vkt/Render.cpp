@@ -102,38 +102,65 @@ void ViewerCPU::clearFrame()
 
 void ViewerCPU::on_display()
 {
-    if (volume.getBytesPerVoxel() == 1)
+    // Prepare a kernel with the volume set up appropriately
+    // according to the provided texel type
+    auto prepareKernel = [&](auto texel)
     {
-        texture_ref<uint8_t, 3> volume_ref(
+        using TexelType = decltype(texel);
+        using VolumeRef = texture_ref<TexelType, 3>;
+
+        VolumeRef volume_ref(
                 volume.getDims().x,
                 volume.getDims().y,
                 volume.getDims().z
                 );
-        volume_ref.reset(volume.getData());
+        volume_ref.reset((TexelType*)volume.getData());
         volume_ref.set_filter_mode(Nearest);
         volume_ref.set_address_mode(Clamp);
-        RenderKernel<decltype(volume_ref)> kernel{bbox, volume_ref, 1.f};
+        return RenderKernel<VolumeRef>{bbox, volume_ref, 1.f};
+    };
 
-        float alpha = 1.f / ++frame_num;
-        pixel_sampler::jittered_blend_type blend_params;
-        blend_params.sfactor = alpha;
-        blend_params.dfactor = 1.f - alpha;
-        auto sparams = make_sched_params(
-                blend_params,
-                cam,
-                host_rt
-                );
+    float alpha = 1.f / ++frame_num;
+    pixel_sampler::jittered_blend_type blend_params;
+    blend_params.sfactor = alpha;
+    blend_params.dfactor = 1.f - alpha;
+    auto sparams = make_sched_params(
+            blend_params,
+            cam,
+            host_rt
+            );
 
-        host_sched.frame(kernel, sparams);
+    switch (volume.getBytesPerVoxel())
+    {
+        case 1:
+        {
+            auto kernel = prepareKernel(uint8_t{});
+            host_sched.frame(kernel, sparams);
+            break;
+        }
 
-        // display the rendered image
+        case 2:
+        {
+            auto kernel = prepareKernel(uint16_t{});
+            host_sched.frame(kernel, sparams);
+            break;
+        }
 
-        auto bgcolor = background_color();
-        glClearColor(bgcolor.x, bgcolor.y, bgcolor.z, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        host_rt.display_color_buffer();
+        case 4:
+        {
+            auto kernel = prepareKernel(uint32_t{});
+            host_sched.frame(kernel, sparams);
+            break;
+        }
     }
+
+    // display the rendered image
+
+    auto bgcolor = background_color();
+    glClearColor(bgcolor.x, bgcolor.y, bgcolor.z, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    host_rt.display_color_buffer();
 }
 
 void ViewerCPU::on_mouse_move(visionaray::mouse_event const& event)

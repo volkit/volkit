@@ -5,6 +5,7 @@
 
 #include <visionaray/math/aabb.h>
 #include <visionaray/math/intersect.h>
+#include <visionaray/math/limits.h>
 #include <visionaray/math/vector.h>
 
 template <typename Volume>
