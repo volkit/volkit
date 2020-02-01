@@ -23,6 +23,9 @@ if(VISIONARAY_FOUND AND VISIONARAY_COMMON_LIBRARY)
     vkt_use_package(GLUT)
     vkt_use_package(OpenGL)
 
+    # Private visionaray_common headers
+    include_directories(${VISIONARAY_INCLUDE_DIR}/visionaray/private)
+
     # TODO
     set(3DCONNEXIONCLIENT_FOUND NOTFOUND)
 
@@ -94,8 +97,7 @@ vkt_cuda_compile(CUDA_SOURCES
 vkt_add_library(volkit ${HEADERS} ${SOURCES} ${CUDA_SOURCES})
 
 
-# Explicitly link with visionaray_common which includes
+# Explicitly link with visionaray_common
 if(VISIONARAY_COMMON_LIBRARY)
     target_link_libraries(volkit ${VISIONARAY_COMMON_LIBRARY})
-    include_directories(${VISIONARAY_INCLUDE_DIR}/visionaray/private)
 endif()
