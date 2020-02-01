@@ -5,8 +5,10 @@
 
 #include <cstdio>
 #include <cstddef>
+#include <cstdint>
 
 #include "common.hpp"
+#include "linalg.hpp"
 
 namespace vkt
 {
@@ -20,13 +22,25 @@ namespace vkt
         virtual std::size_t read(char* buf, std::size_t len);
         virtual bool good() const;
 
-        // TODO: access function getDims(), guess those from fileName,
-        //       return -1 if unsuccessful
+        /*!
+         * @brief  Structured volume dimensions parsed from file name,
+         *         0 if not successful
+         */
+        Vec3i getDims() const;
+
+        /*!
+         * @brief  Structured volume bytes per voxel parsed from file name,
+         *         0 if not successful
+         */
+        uint16_t getBytesPerVoxel() const;
 
     public:
         char const* fileName_ = 0;
         char const* mode_ = 0;
         FILE* file_ = 0;
+
+        Vec3i dims_ = Vec3i(0);
+        uint16_t bytesPerVoxel_ = 0;
 
     };
 
