@@ -17,10 +17,13 @@ namespace vkt
     public:
         StructuredVolume();
         StructuredVolume(
-                int32_t dimx,
-                int32_t dimy,
-                int32_t dimz,
+                int32_t dimX,
+                int32_t dimY,
+                int32_t dimZ,
                 uint16_t bytesPerVoxel,
+                float distX = 1.f,
+                float distY = 1.f,
+                float distZ = 1.f,
                 float mappingLo = 0.f,
                 float mappingHi = 1.f
                 );
@@ -31,14 +34,20 @@ namespace vkt
         StructuredVolume& operator=(StructuredVolume& rhs);
         StructuredVolume& operator=(StructuredVolume&& rhs) = default;
 
-        void setDims(int32_t dimx, int32_t dimy, int32_t dimz);
-        void getDims(int32_t& dimx, int32_t& dimy, int32_t& dimz);
+        void setDims(int32_t dimX, int32_t dimY, int32_t dimZ);
+        void getDims(int32_t& dimX, int32_t& dimY, int32_t& dimZ);
 
         void setDims(vec3i dims);
         vec3i getDims() const;
 
         void setBytesPerVoxel(uint16_t bpv);
         uint16_t getBytesPerVoxel() const;
+
+        void setDist(float distX, float distY, float distZ);
+        void getDist(float& distX, float& distY, float& distZ);
+
+        void setDist(vec3f dist);
+        vec3f getDist() const;
 
         void setVoxelMapping(float lo, float hi);
         void getVoxelMapping(float& lo, float& hi);
@@ -75,6 +84,7 @@ namespace vkt
     private:
         vec3i dims_;
         uint16_t bytesPerVoxel_;
+        vec3f dist_;
         vec2f voxelMapping_;
 
         std::size_t linearIndex(int32_t x, int32_t y, int32_t z) const;

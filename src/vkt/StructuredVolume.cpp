@@ -18,20 +18,25 @@ namespace vkt
     StructuredVolume::StructuredVolume()
         : dims_(0, 0 , 0)
         , bytesPerVoxel_(1)
+        , dist_(1.f, 1.f, 1.f)
         , voxelMapping_(0.f, 1.f)
     {
     }
 
     StructuredVolume::StructuredVolume(
-            int32_t dimx,
-            int32_t dimy,
-            int32_t dimz,
+            int32_t dimX,
+            int32_t dimY,
+            int32_t dimZ,
             uint16_t bytesPerVoxel,
+            float distX,
+            float distY,
+            float distZ,
             float mappingLo,
             float mappingHi
             )
-        : dims_(dimx, dimy, dimz)
+        : dims_(dimX, dimY, dimZ)
         , bytesPerVoxel_(bytesPerVoxel)
+        , dist_(distX, distY, distZ)
         , voxelMapping_(mappingLo, mappingHi)
     {
         ManagedBuffer::allocate(getSizeInBytes());
@@ -40,6 +45,7 @@ namespace vkt
     StructuredVolume::StructuredVolume(StructuredVolume& rhs)
         : dims_(rhs.dims_)
         , bytesPerVoxel_(rhs.bytesPerVoxel_)
+        , dist_(rhs.dist_)
         , voxelMapping_(rhs.voxelMapping_)
     {
         ManagedBuffer::allocate(getSizeInBytes());
@@ -58,6 +64,7 @@ namespace vkt
         {
             dims_ = rhs.dims_;
             bytesPerVoxel_ = rhs.bytesPerVoxel_;
+            dist_ = rhs.dist_;
             voxelMapping_ = rhs.voxelMapping_;
 
             ManagedBuffer::deallocate();
@@ -70,9 +77,16 @@ namespace vkt
         return *this;
     }
 
-    void StructuredVolume::setDims(int32_t dimx, int32_t dimy, int32_t dimz)
+    void StructuredVolume::setDims(int32_t dimX, int32_t dimY, int32_t dimZ)
     {
-        setDims(vec3i(dimx, dimy, dimz));
+        setDims(vec3i(dimX, dimY, dimZ));
+    }
+
+    void StructuredVolume::getDims(int32_t& dimX, int32_t& dimY, int32_t& dimZ)
+    {
+        dimX = dims_.x;
+        dimY = dims_.y;
+        dimZ = dims_.z;
     }
 
     void StructuredVolume::setDims(vec3i dims)
@@ -101,9 +115,37 @@ namespace vkt
         return bytesPerVoxel_;
     }
 
+    void StructuredVolume::setDist(float distX, float distY, float distZ)
+    {
+        dist_ = vec3f(distX, distY, distZ);
+    }
+
+    void StructuredVolume::getDist(float& distX, float& distY, float& distZ)
+    {
+        distX = dist_.x;
+        distY = dist_.y;
+        distZ = dist_.z;
+    }
+
+    void StructuredVolume::setDist(vec3f dist)
+    {
+        dist_ = dist;
+    }
+
+    vec3f StructuredVolume::getDist() const
+    {
+        return dist_;
+    }
+
     void StructuredVolume::setVoxelMapping(float lo, float hi)
     {
         voxelMapping_ = vec2f(lo, hi);
+    }
+
+    void StructuredVolume::getVoxelMapping(float& lo, float& hi)
+    {
+        lo = voxelMapping_.x;
+        hi = voxelMapping_.y;
     }
 
     void StructuredVolume::setVoxelMapping(vec2f mapping)
@@ -322,17 +364,30 @@ uint16_t vktStructuredVolumeGetMaxBytesPerVoxel()
 
 void vktStructuredVolumeCreate(
         vktStructuredVolume* volume,
-        int32_t dimx,
-        int32_t dimy,
-        int32_t dimz,
+        int32_t dimX,
+        int32_t dimY,
+        int32_t dimZ,
         uint16_t bytesPerVoxel,
+        float distX,
+        float distY,
+        float distZ,
         float mappingLo,
         float mappingHi
         )
 {
     assert(volume != nullptr);
 
-    *volume = new vktStructuredVolume_impl(dimx, dimy, dimz, bytesPerVoxel, mappingLo, mappingHi);
+    *volume = new vktStructuredVolume_impl(
+            dimX,
+            dimY,
+            dimZ,
+            bytesPerVoxel,
+            distX,
+            distY,
+            distZ,
+            mappingLo,
+            mappingHi
+            );
 }
 
 void vktStructuredVolumeCreateCopy(vktStructuredVolume* volume, vktStructuredVolume rhs)

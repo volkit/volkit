@@ -38,16 +38,27 @@ int main()
     float mappingLo;
     float mappingHi;
 
+    // Voxel distance
+    float distX;
+    float distY;
+    float distZ;
+
 
     //--- Create a volume ---------------------------------
 
     bpv = 1;
     mappingLo = 0.f;
     mappingHi = 1.f;
+    distX = 1.f;
+    distY = 1.f;
+    distZ = 1.f;
 
     VKT_SAFE_CALL(vktStructuredVolumeCreate(&volume1,
                                             64, 64, 64,
                                             bpv,
+                                            distX,
+                                            distY,
+                                            distZ,
                                             mappingLo,
                                             mappingHi));
 
@@ -67,6 +78,9 @@ int main()
     VKT_SAFE_CALL(vktStructuredVolumeCreate(&volume2,
                                             24, 24, 24,
                                             bpv,
+                                            distX,
+                                            distY,
+                                            distZ,
                                             mappingLo,
                                             mappingHi));
 

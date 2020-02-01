@@ -21,11 +21,18 @@ int main()
     float mappingLo = 0.f;
     float mappingHi = 1.f;
 
+    float distX = 1.f;
+    float distY = 1.f;
+    float distZ = 1.f;
+
     vkt::StructuredVolume volume(
             dims.x,
             dims.y,
             dims.z,
             bpv,
+            distX,
+            distY,
+            distZ,
             mappingLo,
             mappingHi
             );
@@ -56,6 +63,9 @@ int main()
             haloSizeNeg.y + brickSize.y + haloSizePos.y,
             haloSizeNeg.z + brickSize.z + haloSizePos.z,
             bpv,
+            distX,
+            distY,
+            distZ,
             mappingLo,
             mappingHi
             );

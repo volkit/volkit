@@ -20,6 +20,21 @@ namespace vkt
         return a.x == b.x && a.y == b.y;
     }
 
+    struct vec3f
+    {
+        vec3f() {}
+        vec3f(float x, float y, float z)
+            : x(x)
+            , y(y)
+            , z(z)
+        {
+        }
+
+        float x;
+        float y;
+        float z;
+    };
+
 
     struct vec3i
     {

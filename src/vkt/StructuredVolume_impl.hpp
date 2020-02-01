@@ -11,9 +11,12 @@ struct vktStructuredVolume_impl
             int32_t dimy,
             int32_t dimz,
             uint16_t bytesPerVoxel,
+            float distX,
+            float distY,
+            float distZ,
             float mappingLo,
             float mappingHi)
-        : volume(dimx, dimy, dimz, bytesPerVoxel, mappingLo, mappingHi)
+        : volume(dimx, dimy, dimz, bytesPerVoxel, distX, distY, distZ, mappingLo, mappingHi)
     {
     }
 

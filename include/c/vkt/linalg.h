@@ -15,6 +15,13 @@ typedef struct
 
 typedef struct
 {
+    float x;
+    float y;
+    float z;
+} vktVec3f_t;
+
+typedef struct
+{
     int x;
     int y;
     int z;
