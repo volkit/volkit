@@ -80,8 +80,10 @@ set(SOURCES
     ExecutionPolicy.cpp
     Fill.cpp
     Flip.cpp
+    InputStream.cpp
     ManagedBuffer.cpp
     Memory.cpp
+    RawFile.cpp
     Render.cpp
     Scan.cpp
     StructuredVolume.cpp

@@ -251,7 +251,7 @@ static void Render_impl(
             .001f,
             1000.f
             );
-    viewer.cam.set_lens_radius(0.1f);
+    viewer.cam.set_lens_radius(0.01f);
     viewer.cam.set_focal_distance(10.0f);
     viewer.cam.view_all(viewer.bbox);
 
@@ -281,7 +281,7 @@ namespace vkt
     {
         Render_impl(volume, renderState, newRenderState);
 
-        return NO_ERROR;
+        return NoError;
     }
 
 } // vkt

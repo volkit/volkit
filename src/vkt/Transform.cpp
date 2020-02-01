@@ -37,7 +37,7 @@ namespace vkt
             unaryOp
             );
 
-        return NO_ERROR;
+        return NoError;
     }
 
     Error TransformRange(
@@ -49,7 +49,7 @@ namespace vkt
     {
         VKT_CALL__(TransformRange, volume, first, last, unaryOp);
 
-        return NO_ERROR;
+        return NoError;
     }
 
 } // vkt

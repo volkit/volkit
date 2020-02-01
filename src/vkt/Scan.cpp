@@ -29,7 +29,7 @@ namespace vkt
             Vec3i(0, 0, 0)
             );
 
-        return NO_ERROR;
+        return NoError;
     }
 
     Error ScanRange(
@@ -55,7 +55,7 @@ namespace vkt
             Vec3i(dstOffsetX, dstOffsetY, dstOffsetZ)
             );
 
-        return NO_ERROR;
+        return NoError;
     }
 
 } // vkt

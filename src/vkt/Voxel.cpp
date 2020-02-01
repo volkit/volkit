@@ -62,7 +62,7 @@ namespace vkt
             }
         }
 
-        return NO_ERROR;
+        return NoError;
     }
 
     Error UnmapVoxel(
@@ -114,7 +114,7 @@ namespace vkt
             }
         }
 
-        return NO_ERROR;
+        return NoError;
     }
 
 } // vkt

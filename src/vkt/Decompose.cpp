@@ -41,7 +41,7 @@ namespace vkt
                 Vec3i(haloSizePosX, haloSizePosY, haloSizePosZ)
                 );
 
-        return NO_ERROR;
+        return NoError;
     }
 
     Error BrickDecompose(
@@ -54,7 +54,7 @@ namespace vkt
     {
         VKT_CALL__(BrickDecompose, decomp, source, brickSize, haloSizeNeg, haloSizePos);
 
-        return NO_ERROR;
+        return NoError;
     }
 
     Error BrickDecomposeGetNumBricks(
@@ -86,7 +86,7 @@ namespace vkt
         numBricksY = div_up(dimY, brickSizeY);
         numBricksZ = div_up(dimZ, brickSizeZ);
 
-        return NO_ERROR;
+        return NoError;
     }
 
     Error BrickDecomposeGetNumBricks(
@@ -115,7 +115,7 @@ namespace vkt
                 haloSizePos.z
                 );
 
-        return NO_ERROR;
+        return NoError;
     }
 
 } // vkt

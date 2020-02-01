@@ -28,7 +28,7 @@ namespace vkt
             axis
             );
 
-        return NO_ERROR;
+        return NoError;
     }
 
     Error FlipRange(
@@ -50,14 +50,14 @@ namespace vkt
             axis
             );
 
-        return NO_ERROR;
+        return NoError;
     }
 
     Error FlipRange(StructuredVolume& volume, Vec3i first, Vec3i last, Axis axis)
     {
         VKT_CALL__(FlipRange, volume, first, last, axis);
 
-        return NO_ERROR;
+        return NoError;
     }
 
 } // vkt

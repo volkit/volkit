@@ -5,5 +5,7 @@
 
 namespace vkt
 {
+    class DataSource;
+    class RawFile;
     class StructuredVolume;
 } // vkt

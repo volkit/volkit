@@ -27,7 +27,7 @@ namespace vkt
             volume.getDims(),
             value);
 
-        return NO_ERROR;
+        return NoError;
     }
 
     Error FillRange(
@@ -49,14 +49,14 @@ namespace vkt
             value
             );
 
-        return NO_ERROR;
+        return NoError;
     }
 
     Error FillRange(StructuredVolume& volume, Vec3i first, Vec3i last, float value)
     {
         VKT_CALL__(FillRange, volume, first, last, value);
 
-        return NO_ERROR;
+        return NoError;
     }
 
 } // vkt
