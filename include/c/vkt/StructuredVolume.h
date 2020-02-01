@@ -95,25 +95,17 @@ VKTAPI void vktStructuredVolumeGetValue(vktStructuredVolume volume,
                                         int32_t z,
                                         float* value);
 
-VKTAPI void vktStructuredVolumeSetVoxel(vktStructuredVolume volume,
+VKTAPI void vktStructuredVolumeSetBytes(vktStructuredVolume volume,
                                         int32_t x,
                                         int32_t y,
                                         int32_t z,
                                         uint8_t const* data);
 
-VKTAPI void vktStructuredVolumeGetVoxel(vktStructuredVolume volume,
+VKTAPI void vktStructuredVolumeGetBytes(vktStructuredVolume volume,
                                         int32_t x,
                                         int32_t y,
                                         int32_t z,
                                         uint8_t* data);
-
-VKTAPI void vktStructuredVolumeMapVoxel(vktStructuredVolume volume,
-                                        uint8_t* dst,
-                                        float src);
-
-VKTAPI void vktStructuredVolumeUnmapVoxel(vktStructuredVolume volume,
-                                          float* dst,
-                                          uint8_t const* src);
 
 VKTAPI size_t vktStructuredVolumeGetSizeInBytes(vktStructuredVolume volume);
 

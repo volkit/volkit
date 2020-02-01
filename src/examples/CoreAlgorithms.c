@@ -7,19 +7,20 @@
 #include <vkt/Render.h>
 #include <vkt/StructuredVolume.h>
 #include <vkt/Transform.h>
+#include <vkt/Voxel.h>
 
 #include "common.h"
 
-static void TransformOp1(int32_t x, int32_t y, int32_t z, uint8_t* voxel)
+static void TransformOp1(int32_t x, int32_t y, int32_t z, vktVoxelView_t voxel)
 {
     if (x == y && y == z)
-        voxel[0] = 0xFF;
+        voxel.bytes[0] = 0xFF;
 }
 
-static void TransformOp2(int32_t x, int32_t y, int32_t z, uint8_t* voxel1, uint8_t* voxel2)
+static void TransformOp2(int32_t x, int32_t y, int32_t z, vktVoxelView_t voxel1, vktVoxelView_t voxel2)
 {
-    voxel1[0] |= voxel2[0];
-    voxel2[0]  = voxel1[0];
+    voxel1.bytes[0] |= voxel2.bytes[0];
+    voxel2.bytes[0]  = voxel1.bytes[0];
 }
 
 int main()

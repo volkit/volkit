@@ -5,6 +5,8 @@
 
 #include <stdint.h>
 
+#include <vkt/Voxel.h>
+
 #include "common.h"
 #include "forward.h"
 
@@ -16,13 +18,13 @@ extern "C"
 typedef void (*vktTransformUnaryOp)(int32_t x,
                                     int32_t y,
                                     int32_t z,
-                                    uint8_t* voxel);
+                                    vktVoxelView_t voxel);
 
 typedef void (*vktTransformBinaryOp)(int32_t x1,
                                      int32_t y1,
                                      int32_t z1,
-                                     uint8_t* voxel1,
-                                     uint8_t* voxel2);
+                                     vktVoxelView_t voxel1,
+                                     vktVoxelView_t voxel2);
 
 VKTAPI vktError vktTransformSV1(vktStructuredVolume volume,
                                 vktTransformUnaryOp unaryOp);

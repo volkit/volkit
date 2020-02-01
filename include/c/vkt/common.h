@@ -6,11 +6,9 @@
 #include <stdint.h>
 
 /*! VKTAPI */
-
 #define VKTAPI
 
 /*! Error constants */
-
 typedef int32_t vktError;
 
 #define VKT_INVALID_VALUE  -1

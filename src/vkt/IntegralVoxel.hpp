@@ -10,13 +10,13 @@
 namespace vkt
 {
     template <typename UI>
-    class Voxel
+    class IntegralVoxel
     {
         static_assert(std::is_integral<UI>::value, "Type mismatch");
         static_assert(std::is_unsigned<UI>::value, "Type mismatch");
 
     public:
-        Voxel(uint8_t const* vx)
+        IntegralVoxel(uint8_t const* vx)
         {
             std::memcpy(&uintRep_, vx, sizeof(UI));
         }
@@ -41,17 +41,17 @@ namespace vkt
     };
 
     template <typename UI>
-    inline Voxel<UI> operator+(Voxel<UI> const& a, Voxel<UI> const& b)
+    inline IntegralVoxel<UI> operator+(IntegralVoxel<UI> const& a, IntegralVoxel<UI> const& b)
     {
         UI tmp = a.template as<UI>() + b.template as<UI>();
-        return Voxel<UI>((uint8_t const*)&tmp);
+        return IntegralVoxel<UI>((uint8_t const*)&tmp);
     }
 
     template <typename UI>
-    inline Voxel<UI> operator-(Voxel<UI> const& a, Voxel<UI> const& b)
+    inline IntegralVoxel<UI> operator-(IntegralVoxel<UI> const& a, IntegralVoxel<UI> const& b)
     {
         UI tmp = a.template as<UI>() - b.template as<UI>();
-        return Voxel<UI>((uint8_t const*)&tmp);
+        return IntegralVoxel<UI>((uint8_t const*)&tmp);
     }
 
 } // vkt

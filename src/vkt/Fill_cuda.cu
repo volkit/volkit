@@ -4,6 +4,8 @@
 #include <cstddef>
 #include <cstdint>
 
+#include <vkt/Voxel.hpp>
+
 #include "Fill_cuda.hpp"
 #include "macros.hpp"
 
@@ -42,7 +44,13 @@ namespace vkt
     void FillRange_cuda(StructuredVolume& volume, Vec3i first, Vec3i last, float value)
     {
         uint8_t mappedVoxel[StructuredVolume::GetMaxBytesPerVoxel()];
-        volume.mapVoxel(mappedVoxel, value);
+        MapVoxel(
+            mappedVoxel,
+            value,
+            volume.getBytesPerVoxel(),
+            volume.getVoxelMapping().x,
+            volume.getVoxelMapping().y
+            );
 
         VKT_CUDA_SAFE_CALL__(cudaMemcpyToSymbol(
                 deviceMappedVoxel,

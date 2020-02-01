@@ -66,21 +66,11 @@ namespace vkt
         void setValue(Vec3i index, float value);
         void getValue(Vec3i index, float& value);
 
-        void setVoxel(int32_t x, int32_t y, int32_t z, uint8_t const* data);
-        void getVoxel(int32_t x, int32_t y, int32_t z, uint8_t* data);
+        void setBytes(int32_t x, int32_t y, int32_t z, uint8_t const* data);
+        void getBytes(int32_t x, int32_t y, int32_t z, uint8_t* data);
 
-        void setVoxel(Vec3i index, uint8_t const* data);
-        void getVoxel(Vec3i index, uint8_t* data);
-
-        /*!
-         * @brief  provide in-memory representation of mapped voxel
-         */
-        void mapVoxel(uint8_t* dst, float src) const;
-
-        /*!
-         * @brief  convert from mapped in-memory representation to voxel value
-         */
-        void unmapVoxel(float& dst, uint8_t const* src) const;
+        void setBytes(Vec3i index, uint8_t const* data);
+        void getBytes(Vec3i index, uint8_t* data);
 
         std::size_t getSizeInBytes() const;
 

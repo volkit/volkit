@@ -7,6 +7,7 @@
 
 #include <vkt/linalg.hpp>
 #include <vkt/StructuredVolume.hpp>
+#include <vkt/Voxel.hpp>
 
 namespace vkt
 {
@@ -18,23 +19,31 @@ namespace vkt
             TransformUnaryOp unaryOp
             )
     {
-        uint8_t voxel[StructuredVolume::GetMaxBytesPerVoxel()];
-
         for (int32_t z = first.z; z != last.z; ++z)
         {
             for (int32_t y = first.y; y != last.y; ++y)
             {
                 for (int32_t x = first.x; x != last.x; ++x)
                 {
+                    uint8_t bytes[StructuredVolume::GetMaxBytesPerVoxel()];
+
                     std::memset(
-                        &voxel,
+                        &bytes,
                         0,
                         sizeof(uint8_t) * StructuredVolume::GetMaxBytesPerVoxel()
                         );
 
-                    volume.getVoxel(x, y, z, voxel);
+                    volume.getBytes(x, y, z, bytes);
+
+                    VoxelView voxel;
+                    voxel.bytes = bytes;
+                    voxel.bytesPerVoxel = volume.getBytesPerVoxel();
+                    voxel.mappingLo = volume.getVoxelMapping().x;
+                    voxel.mappingHi = volume.getVoxelMapping().y;
+
                     unaryOp(x, y, z, voxel);
-                    volume.setVoxel(x, y, z, voxel);
+
+                    volume.setBytes(x, y, z, bytes);
                 }
             }
         }
@@ -55,25 +64,39 @@ namespace vkt
             {
                 for (int32_t x = first.x; x != last.x; ++x)
                 {
-                    uint8_t voxel1[StructuredVolume::GetMaxBytesPerVoxel()];
+                    uint8_t bytes1[StructuredVolume::GetMaxBytesPerVoxel()];
                     std::memset(
-                        &voxel1,
+                        &bytes1,
                         0,
                         sizeof(uint8_t) * StructuredVolume::GetMaxBytesPerVoxel()
                         );
 
-                    uint8_t voxel2[StructuredVolume::GetMaxBytesPerVoxel()];
+                    uint8_t bytes2[StructuredVolume::GetMaxBytesPerVoxel()];
                     std::memset(
-                        &voxel2,
+                        &bytes2,
                         0,
                         sizeof(uint8_t) * StructuredVolume::GetMaxBytesPerVoxel()
                         );
 
-                    volume1.getVoxel(x, y, z, voxel1);
-                    volume2.getVoxel(x, y, z, voxel2);
+                    volume1.getBytes(x, y, z, bytes1);
+                    volume2.getBytes(x, y, z, bytes2);
+
+                    VoxelView voxel1;
+                    voxel1.bytes = bytes1;
+                    voxel1.bytesPerVoxel = volume1.getBytesPerVoxel();
+                    voxel1.mappingLo = volume1.getVoxelMapping().x;
+                    voxel1.mappingHi = volume1.getVoxelMapping().y;
+
+                    VoxelView voxel2;
+                    voxel2.bytes = bytes2;
+                    voxel2.bytesPerVoxel = volume2.getBytesPerVoxel();
+                    voxel2.mappingLo = volume2.getVoxelMapping().x;
+                    voxel2.mappingHi = volume2.getVoxelMapping().y;
+
                     binaryOp(x, y, z, voxel1, voxel2);
-                    volume1.setVoxel(x, y, z, voxel1);
-                    volume2.setVoxel(x, y, z, voxel2);
+
+                    volume1.setBytes(x, y, z, bytes1);
+                    volume2.setBytes(x, y, z, bytes2);
                 }
             }
         }

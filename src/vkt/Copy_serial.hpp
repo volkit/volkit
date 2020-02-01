@@ -39,8 +39,8 @@ namespace vkt
                             int32_t dstY = y - first.y + dstOffset.y;
                             int32_t dstZ = z - first.z + dstOffset.z;
 
-                            src.getVoxel(srcX, srcY, srcZ, voxel);
-                            dst.setVoxel(dstX, dstY, dstZ, voxel);
+                            src.getBytes(srcX, srcY, srcZ, voxel);
+                            dst.setBytes(dstX, dstY, dstZ, voxel);
                         }
                     }
                 }

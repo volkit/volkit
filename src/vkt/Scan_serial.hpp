@@ -9,7 +9,7 @@
 #include <vkt/linalg.hpp>
 #include <vkt/StructuredVolume.hpp>
 
-#include "Voxel.hpp"
+#include "IntegralVoxel.hpp"
 
 namespace vkt
 {
@@ -27,20 +27,20 @@ namespace vkt
                 );
 
         using accum_t = uint32_t;
-        using voxel_t = Voxel<accum_t>;
+        using voxel_t = IntegralVoxel<accum_t>;
 
         auto get = [&](int32_t x, int32_t y, int32_t z)
         {
             uint8_t data[StructuredVolume::GetMaxBytesPerVoxel()];
-            dst.getVoxel(x, y, z, data);
-            return Voxel<accum_t>(data);
+            dst.getBytes(x, y, z, data);
+            return IntegralVoxel<accum_t>(data);
         };
 
         auto set = [&](int32_t x, int32_t y, int32_t z, accum_t ac)
         {
             uint8_t data[StructuredVolume::GetMaxBytesPerVoxel()];
             std::memcpy(data, &ac, dst.getBytesPerVoxel());
-            dst.setVoxel(x, y, z, data);
+            dst.setBytes(x, y, z, data);
         };
 
 

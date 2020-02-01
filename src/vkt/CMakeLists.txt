@@ -83,6 +83,7 @@ set(SOURCES
     Scan.cpp
     StructuredVolume.cpp
     Transform.cpp
+    Voxel.cpp
 )
 
 vkt_cuda_compile(CUDA_SOURCES

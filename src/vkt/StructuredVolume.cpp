@@ -7,6 +7,7 @@
 
 #include <vkt/linalg.hpp>
 #include <vkt/StructuredVolume.hpp>
+#include <vkt/Voxel.hpp>
 
 #include <vkt/StructuredVolume.h>
 #include <vkt/System.h>
@@ -175,7 +176,13 @@ namespace vkt
 
         size_t index = linearIndex(x, y, z);
 
-        mapVoxel(ManagedBuffer::data_ + index, value);
+        MapVoxel(
+            ManagedBuffer::data_ + index,
+            value,
+            bytesPerVoxel_,
+            voxelMapping_.x,
+            voxelMapping_.y
+            );
     }
 
     void StructuredVolume::getValue(int32_t x, int32_t y, int32_t z, float& value)
@@ -184,7 +191,13 @@ namespace vkt
 
         size_t index = linearIndex(x, y, z);
 
-        unmapVoxel(value, ManagedBuffer::data_ + index);
+        UnmapVoxel(
+            value,
+            ManagedBuffer::data_ + index,
+            bytesPerVoxel_,
+            voxelMapping_.x,
+            voxelMapping_.y
+            );
     }
 
     void StructuredVolume::setValue(Vec3i index, float value)
@@ -193,7 +206,13 @@ namespace vkt
 
         size_t lindex = linearIndex(index);
 
-        mapVoxel(ManagedBuffer::data_ + lindex, value);
+        MapVoxel(
+            ManagedBuffer::data_ + lindex,
+            value,
+            bytesPerVoxel_,
+            voxelMapping_.x,
+            voxelMapping_.y
+            );
     }
 
     void StructuredVolume::getValue(Vec3i index, float& value)
@@ -202,10 +221,16 @@ namespace vkt
 
         size_t lindex = linearIndex(index);
 
-        unmapVoxel(value, ManagedBuffer::data_ + lindex);
+        UnmapVoxel(
+            value,
+            ManagedBuffer::data_ + lindex,
+            bytesPerVoxel_,
+            voxelMapping_.x,
+            voxelMapping_.y
+            );
     }
 
-    void StructuredVolume::setVoxel(int32_t x, int32_t y, int32_t z, uint8_t const* data)
+    void StructuredVolume::setBytes(int32_t x, int32_t y, int32_t z, uint8_t const* data)
     {
         migrate();
 
@@ -215,7 +240,7 @@ namespace vkt
             ManagedBuffer::data_[index + i] = data[i];
     }
 
-    void StructuredVolume::getVoxel(int32_t x, int32_t y, int32_t z, uint8_t* data)
+    void StructuredVolume::getBytes(int32_t x, int32_t y, int32_t z, uint8_t* data)
     {
         migrate();
 
@@ -225,7 +250,7 @@ namespace vkt
             data[i] = ManagedBuffer::data_[index + i];
     }
 
-    void StructuredVolume::setVoxel(Vec3i index, uint8_t const* data)
+    void StructuredVolume::setBytes(Vec3i index, uint8_t const* data)
     {
         migrate();
 
@@ -235,7 +260,7 @@ namespace vkt
             ManagedBuffer::data_[lindex + i] = data[i];
     }
 
-    void StructuredVolume::getVoxel(Vec3i index, uint8_t* data)
+    void StructuredVolume::getBytes(Vec3i index, uint8_t* data)
     {
         migrate();
 
@@ -243,94 +268,6 @@ namespace vkt
 
         for (uint16_t i = 0; i < bytesPerVoxel_; ++i)
             data[i] = ManagedBuffer::data_[lindex + i];
-    }
-
-    void StructuredVolume::mapVoxel(uint8_t* dst, float src) const
-    {
-        src -= voxelMapping_.x;
-        src /= voxelMapping_.y - voxelMapping_.x;
-
-        switch (bytesPerVoxel_)
-        {
-            case 1:
-            {
-                uint8_t ival = src * 255.999f;
-                dst[0] = ival;
-                break;
-            }
-
-            case 2:
-            {
-                uint16_t ival = src * 65535.999f;
-#ifdef VKT_LITTLE_ENDIAN
-                dst[0] = static_cast<uint8_t>(ival);
-                dst[1] = static_cast<uint8_t>(ival >> 8);
-#else
-                dst[0] = static_cast<uint8_t>(ival >> 8);
-                dst[1] = static_cast<uint8_t>(ival);
-#endif
-            }
-
-            case 4:
-            {
-                uint32_t ival = src * 4294967295.999f;
-#ifdef VKT_LITTLE_ENDIAN
-                dst[0] = static_cast<uint8_t>(ival);
-                dst[1] = static_cast<uint8_t>(ival >> 8);
-                dst[2] = static_cast<uint8_t>(ival >> 16);
-                dst[3] = static_cast<uint8_t>(ival >> 24);
-#else
-                dst[0] = static_cast<uint8_t>(ival >> 24);
-                dst[1] = static_cast<uint8_t>(ival >> 16);
-                dst[1] = static_cast<uint8_t>(ival >> 8);
-                dst[3] = static_cast<uint8_t>(ival);
-#endif
-            }
-        }
-    }
-
-    void StructuredVolume::unmapVoxel(float& dst, uint8_t const* src) const
-    {
-        switch (bytesPerVoxel_)
-        {
-            case 1:
-            {
-                uint8_t ival = src[0];
-                float fval = static_cast<float>(ival);
-                dst = lerp(voxelMapping_.x, voxelMapping_.y, fval / 255.999f);
-                break;
-            }
-
-            case 2:
-            {
-#ifdef VKT_LITTLE_ENDIAN
-                uint16_t ival = static_cast<uint16_t>(src[0])
-                              | static_cast<uint16_t>(src[1] << 8);
-#else
-                uint16_t ival = static_cast<uint16_t>(src[0] << 8)
-                              | static_cast<uint16_t>(src[1]);
-#endif
-                float fval = static_cast<float>(ival);
-                dst = lerp(voxelMapping_.x, voxelMapping_.y, fval / 65535.999f);
-            }
-
-            case 4:
-            {
-#ifdef VKT_LITTLE_ENDIAN
-                uint32_t ival = static_cast<uint32_t>(src[0])
-                              | static_cast<uint32_t>(src[1] << 8)
-                              | static_cast<uint32_t>(src[2] << 16)
-                              | static_cast<uint32_t>(src[3] << 24);
-#else
-                uint32_t ival = static_cast<uint32_t>(src[0] << 24)
-                              | static_cast<uint32_t>(src[1] << 16)
-                              | static_cast<uint32_t>(src[2] << 8)
-                              | static_cast<uint32_t>(src[3]);
-#endif
-                float fval = static_cast<float>(ival);
-                dst = lerp(voxelMapping_.x, voxelMapping_.y, fval / 4294967295.999f);
-            }
-        }
     }
 
     std::size_t StructuredVolume::getSizeInBytes() const

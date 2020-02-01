@@ -4,13 +4,11 @@
 #pragma once
 
 /*! VKTAPI */
-
 #define VKTAPI
-
-/*! Error constants */
 
 namespace vkt
 {
+    /*! Error constants */
     enum Error
     {
         INVALID_VALUE = -1,

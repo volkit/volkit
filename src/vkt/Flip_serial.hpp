@@ -44,11 +44,11 @@ namespace vkt
                     uint8_t voxel1[StructuredVolume::GetMaxBytesPerVoxel()];
                     uint8_t voxel2[StructuredVolume::GetMaxBytesPerVoxel()];
 
-                    volume.getVoxel(x, y, z, voxel1);
-                    volume.getVoxel(xx, yy, zz, voxel2);
+                    volume.getBytes(x, y, z, voxel1);
+                    volume.getBytes(xx, yy, zz, voxel2);
 
-                    volume.setVoxel(x, y, z, voxel2);
-                    volume.setVoxel(xx, yy, zz, voxel1);
+                    volume.setBytes(x, y, z, voxel2);
+                    volume.setBytes(xx, yy, zz, voxel1);
                 }
             }
         }

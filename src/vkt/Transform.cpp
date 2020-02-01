@@ -65,7 +65,7 @@ vktError vktTransformSV1(vktStructuredVolume volume, vktTransformUnaryOp unaryOp
         volume->volume,
         vkt::Vec3i(0, 0, 0),
         volume->volume.getDims(),
-        unaryOp
+        (vkt::TransformUnaryOp)unaryOp
         );
 
     return VKT_NO_ERROR;
@@ -82,7 +82,7 @@ vktError vktTransformSV2(
         volume2->volume,
         vkt::Vec3i(0, 0, 0),
         volume1->volume.getDims(),
-        binaryOp
+        (vkt::TransformBinaryOp)binaryOp
         );
 
     return VKT_NO_ERROR;
@@ -128,7 +128,7 @@ vktError vktTransformRangeSV2(
         volume2->volume,
         vkt::Vec3i(firstX, firstY, firstZ),
         vkt::Vec3i(lastX, lastY, lastZ),
-        (vktTransformBinaryOp)binaryOp
+        (vkt::TransformBinaryOp)binaryOp
         );
 
     return VKT_NO_ERROR;

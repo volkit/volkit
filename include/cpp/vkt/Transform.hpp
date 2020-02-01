@@ -5,6 +5,8 @@
 
 #include <cstdint>
 
+#include <vkt/Voxel.hpp>
+
 #include "common.hpp"
 #include "forward.hpp"
 #include "linalg.hpp"
@@ -14,13 +16,13 @@ namespace vkt
     typedef void (*TransformUnaryOp)(int32_t x,
                                      int32_t y,
                                      int32_t z,
-                                     uint8_t* voxel);
+                                     VoxelView voxel);
 
     typedef void (*TransformBinaryOp)(int32_t x1,
                                       int32_t y1,
                                       int32_t z1,
-                                      uint8_t* voxel1,
-                                      uint8_t* voxel2);
+                                      VoxelView voxel1,
+                                      VoxelView voxel2);
 
     VKTAPI Error Transform(StructuredVolume& volume,
                            TransformUnaryOp unaryOp);
