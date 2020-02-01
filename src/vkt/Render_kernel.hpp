@@ -80,6 +80,11 @@ struct RayMarchingKernel
 };
 
 
+//-------------------------------------------------------------------------------------------------
+// Simple multi-scattering
+// Loosely based on M. Raab: Ray Tracing Inhomogeneous Volumes, RTGems I (2019)
+//
+
 template <typename Volume>
 struct MultiScatteringKernel
 {
