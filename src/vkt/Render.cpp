@@ -180,9 +180,10 @@ static void Render_impl(
     viewer.init(argc, (char**)&argv);
 
     vkt::Vec3i dims = volume.getDims();
+    vkt::Vec3f dist = volume.getDist();
     viewer.bbox = aabb(
             { 0.f, 0.f, 0.f },
-            { (float)dims.x, (float)dims.y, (float)dims.z }
+            { dims.x * dist.x, dims.y * dist.y, dims.z * dist.z }
             );
 
     float aspect = viewer.width() / static_cast<float>(viewer.height());
