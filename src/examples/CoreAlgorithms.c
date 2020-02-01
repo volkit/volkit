@@ -29,6 +29,7 @@ int main()
     vktStructuredVolume volume1;
     vktStructuredVolume volume2;
     vktStructuredVolume volume3;
+    vktRenderState_t renderState;
 
     // Bytes per voxel
     int bpv;
@@ -101,7 +102,6 @@ int main()
     //--- Render (not core) -------------------------------
 
     // Render volume2
-    vktRenderState_t renderState;
     memset(&renderState, 0, sizeof(renderState));
     VKT_SAFE_CALL(vktRenderSV(volume3, renderState, NULL));
 

@@ -88,7 +88,7 @@ int main()
                                  3, 3, 3,
                                  0, 0, 0));
 
-    //--- Render (not core) -------------------------------
+    //--- Render ------------------------------------------
 
     // Render volume
     memset(&renderState, 0, sizeof(renderState));
