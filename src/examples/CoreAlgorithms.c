@@ -117,7 +117,8 @@ int main()
     //--- Render (not core) -------------------------------
 
     // Render volume2
-    memset(&renderState, 0, sizeof(renderState));
+    vktRenderStateDefaultInit(&renderState);
+    renderState.renderAlgo = vktRenderAlgoMultiScattering;
     VKT_SAFE_CALL(vktRenderSV(volume3, renderState, NULL));
 
     //--- Destroy volumes ---------------------------------

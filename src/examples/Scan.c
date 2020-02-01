@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <string.h>
 
 #include <vkt/Fill.h>
 #include <vkt/Render.h>
@@ -102,7 +101,7 @@ int main()
     //--- Render ------------------------------------------
 
     // Render volume
-    memset(&renderState, 0, sizeof(renderState));
+    vktRenderStateDefaultInit(&renderState);
     VKT_SAFE_CALL(vktRenderSV(volume, renderState, NULL));
 
     //--- Destroy volumes ---------------------------------

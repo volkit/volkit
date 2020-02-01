@@ -66,10 +66,8 @@ struct ViewerCPU : ViewerBase
     ViewerCPU(
         vkt::StructuredVolume& volume,
         vkt::RenderState const& renderState,
-        int w = 512,
-        int h = 512,
         char const* windowTitle = "",
-        int numThreads = std::thread::hardware_concurrency()
+        unsigned numThreads = std::thread::hardware_concurrency()
         );
 
     void clearFrame();
@@ -83,12 +81,10 @@ struct ViewerCPU : ViewerBase
 ViewerCPU::ViewerCPU(
         vkt::StructuredVolume& volume,
         vkt::RenderState const& renderState,
-        int w,
-        int h,
         char const* windowTitle,
-        int numThreads
+        unsigned numThreads
         )
-    : ViewerBase(w, h, windowTitle)
+    : ViewerBase(renderState.viewportWidth, renderState.viewportHeight, windowTitle)
     , volume(volume)
     , renderState(renderState)
     , host_sched(numThreads)
@@ -125,17 +121,24 @@ void ViewerCPU::on_display()
     {
         using VolumeRef = decltype(volume_ref);
 
-        float dt = 1.f;
-        return RayMarchingKernel<VolumeRef>{bbox, volume_ref, dt};
+        return RayMarchingKernel<VolumeRef>{
+                bbox,
+                volume_ref,
+                renderState.dt
+                };
     };
 
     auto prepareMultiScatteringKernel = [&](auto volume_ref)
     {
         using VolumeRef = decltype(volume_ref);
 
-        float majorant = 1.f;
         float heightf(this->width());
-        return MultiScatteringKernel<VolumeRef>{bbox, volume_ref, majorant, heightf};
+        return MultiScatteringKernel<VolumeRef>{
+                bbox,
+                volume_ref,
+                renderState.majorant,
+                heightf
+                };
     };
 
     auto callKernel = [&](auto texel)
@@ -152,12 +155,12 @@ void ViewerCPU::on_display()
                 host_rt
                 );
 
-        if (1)
+        if (renderState.renderAlgo == vkt::RenderAlgo::RayMarching)
         {
             auto kernel = prepareRayMarchingKernel(prepareTexture(TexelType{}));
             host_sched.frame(kernel, sparams);
         }
-        else
+        else if (renderState.renderAlgo == vkt::RenderAlgo::MultiScattering)
         {
             auto kernel = prepareMultiScatteringKernel(prepareTexture(TexelType{}));
             host_sched.frame(kernel, sparams);
