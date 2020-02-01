@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <vkt/linalg.hpp>
 #include <vkt/StructuredVolume.hpp>
 

@@ -76,6 +76,7 @@ set(SOURCES
     ManagedBuffer.cpp
     Memory.cpp
     Render.cpp
+    Scan.cpp
     StructuredVolume.cpp
     Transform.cpp
 )
