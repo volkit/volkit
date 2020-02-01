@@ -141,6 +141,24 @@ namespace vkt
         unmapVoxel(value, ManagedBuffer::data_ + index);
     }
 
+    void StructuredVolume::setValue(vec3i index, float value)
+    {
+        migrate();
+
+        size_t lindex = linearIndex(index);
+
+        mapVoxel(ManagedBuffer::data_ + lindex, value);
+    }
+
+    void StructuredVolume::getValue(vec3i index, float& value)
+    {
+        migrate();
+
+        size_t lindex = linearIndex(index);
+
+        unmapVoxel(value, ManagedBuffer::data_ + lindex);
+    }
+
     void StructuredVolume::setVoxel(int32_t x, int32_t y, int32_t z, uint8_t const* data)
     {
         migrate();
@@ -159,6 +177,26 @@ namespace vkt
 
         for (uint16_t i = 0; i < bytesPerVoxel_; ++i)
             data[i] = ManagedBuffer::data_[index + i];
+    }
+
+    void StructuredVolume::setVoxel(vec3i index, uint8_t const* data)
+    {
+        migrate();
+
+        size_t lindex = linearIndex(index);
+
+        for (uint16_t i = 0; i < bytesPerVoxel_; ++i)
+            ManagedBuffer::data_[lindex + i] = data[i];
+    }
+
+    void StructuredVolume::getVoxel(vec3i index, uint8_t* data)
+    {
+        migrate();
+
+        size_t lindex = linearIndex(index);
+
+        for (uint16_t i = 0; i < bytesPerVoxel_; ++i)
+            data[i] = ManagedBuffer::data_[lindex + i];
     }
 
     void StructuredVolume::mapVoxel(uint8_t* dst, float src) const
@@ -263,6 +301,11 @@ namespace vkt
                      + y * dims_.x
                      + x;
         return index * bytesPerVoxel_;
+    }
+
+    std::size_t StructuredVolume::linearIndex(vec3i index) const
+    {
+        return linearIndex(index.x, index.y, index.z);
     }
 
 } // vkt

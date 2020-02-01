@@ -51,8 +51,14 @@ namespace vkt
         void setValue(int32_t x, int32_t y, int32_t z, float value);
         void getValue(int32_t x, int32_t y, int32_t z, float& value);
 
+        void setValue(vec3i index, float value);
+        void getValue(vec3i index, float& value);
+
         void setVoxel(int32_t x, int32_t y, int32_t z, uint8_t const* data);
         void getVoxel(int32_t x, int32_t y, int32_t z, uint8_t* data);
+
+        void setVoxel(vec3i index, uint8_t const* data);
+        void getVoxel(vec3i index, uint8_t* data);
 
         /*!
          * @brief  provide in-memory representation of mapped voxel
@@ -72,5 +78,6 @@ namespace vkt
         vec2f voxelMapping_;
 
         std::size_t linearIndex(int32_t x, int32_t y, int32_t z) const;
+        std::size_t linearIndex(vec3i index) const;
     };
 } // vkt
