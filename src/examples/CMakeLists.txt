@@ -9,6 +9,7 @@ vkt_use_package(Threads)
 
 include_directories(${PROJECT_SOURCE_DIR}/include/c)
 include_directories(${PROJECT_SOURCE_DIR}/include/cpp)
+include_directories(${PROJECT_SOURCE_DIR}/include/shared)
 
 vkt_link_libraries(volkit)
 

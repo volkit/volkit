@@ -9,6 +9,7 @@
 #include <vkt/StructuredVolume.hpp>
 
 #include <vkt/StructuredVolume.h>
+#include <vkt/System.h>
 
 #include "StructuredVolume_impl.hpp"
 

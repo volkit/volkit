@@ -61,6 +61,7 @@ include_directories(${__VKT_CONFIG_DIR})
 
 include_directories(${PROJECT_SOURCE_DIR}/include/c)
 include_directories(${PROJECT_SOURCE_DIR}/include/cpp)
+include_directories(${PROJECT_SOURCE_DIR}/include/shared)
 
 set(C_HEADER_DIR ${PROJECT_SOURCE_DIR}/include/c/vkt)
 set(CPP_HEADER_DIR ${PROJECT_SOURCE_DIR}/include/cpp/vkt)
