@@ -5,7 +5,7 @@
 
 namespace vkt
 {
-    inline void FillRange_serial(StructuredVolume& volume, vec3i first, vec3i last, float value)
+    inline void FillRange_serial(StructuredVolume& volume, Vec3i first, Vec3i last, float value)
     {
         uint8_t mappedVoxel[StructuredVolume::GetMaxBytesPerVoxel()];
         volume.mapVoxel(mappedVoxel, value);

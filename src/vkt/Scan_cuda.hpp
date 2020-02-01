@@ -10,9 +10,9 @@ namespace vkt
     void ScanRange_cuda(
             StructuredVolume& dst,
             StructuredVolume& src,
-            vec3i first,
-            vec3i last,
-            vec3i dstOffset
+            Vec3i first,
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
     }

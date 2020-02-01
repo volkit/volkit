@@ -5,7 +5,7 @@
 
 namespace vkt
 {
-    inline void FlipRange_serial(StructuredVolume& volume, vec3i first, vec3i last, Axis axis)
+    inline void FlipRange_serial(StructuredVolume& volume, Vec3i first, Vec3i last, Axis axis)
     {
         int32_t rangeX = last.x - first.x;
         int32_t rangeY = last.y - first.y;
@@ -26,7 +26,7 @@ namespace vkt
             break;
         }
 
-        vec3i dims = volume.getDims();
+        Vec3i dims = volume.getDims();
 
         for (int32_t z = 0; z < rangeZ; ++z)
         {

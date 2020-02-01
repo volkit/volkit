@@ -7,7 +7,7 @@
 
 namespace vkt
 {
-    void FillRange_cuda(StructuredVolume& volume, vec3i first, vec3i last, float value)
+    void FillRange_cuda(StructuredVolume& volume, Vec3i first, Vec3i last, float value)
 #if VKT_HAVE_CUDA
     ;
 #else

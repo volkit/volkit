@@ -37,8 +37,8 @@ namespace vkt
         void setDims(int32_t dimX, int32_t dimY, int32_t dimZ);
         void getDims(int32_t& dimX, int32_t& dimY, int32_t& dimZ);
 
-        void setDims(vec3i dims);
-        vec3i getDims() const;
+        void setDims(Vec3i dims);
+        Vec3i getDims() const;
 
         void setBytesPerVoxel(uint16_t bpv);
         uint16_t getBytesPerVoxel() const;
@@ -46,28 +46,28 @@ namespace vkt
         void setDist(float distX, float distY, float distZ);
         void getDist(float& distX, float& distY, float& distZ);
 
-        void setDist(vec3f dist);
-        vec3f getDist() const;
+        void setDist(Vec3f dist);
+        Vec3f getDist() const;
 
         void setVoxelMapping(float lo, float hi);
         void getVoxelMapping(float& lo, float& hi);
 
-        void setVoxelMapping(vec2f mapping);
-        vec2f getVoxelMapping() const;
+        void setVoxelMapping(Vec2f mapping);
+        Vec2f getVoxelMapping() const;
 
         uint8_t* getData();
 
         void setValue(int32_t x, int32_t y, int32_t z, float value);
         void getValue(int32_t x, int32_t y, int32_t z, float& value);
 
-        void setValue(vec3i index, float value);
-        void getValue(vec3i index, float& value);
+        void setValue(Vec3i index, float value);
+        void getValue(Vec3i index, float& value);
 
         void setVoxel(int32_t x, int32_t y, int32_t z, uint8_t const* data);
         void getVoxel(int32_t x, int32_t y, int32_t z, uint8_t* data);
 
-        void setVoxel(vec3i index, uint8_t const* data);
-        void getVoxel(vec3i index, uint8_t* data);
+        void setVoxel(Vec3i index, uint8_t const* data);
+        void getVoxel(Vec3i index, uint8_t* data);
 
         /*!
          * @brief  provide in-memory representation of mapped voxel
@@ -82,12 +82,12 @@ namespace vkt
         std::size_t getSizeInBytes() const;
 
     private:
-        vec3i dims_;
+        Vec3i dims_;
         uint16_t bytesPerVoxel_;
-        vec3f dist_;
-        vec2f voxelMapping_;
+        Vec3f dist_;
+        Vec2f voxelMapping_;
 
         std::size_t linearIndex(int32_t x, int32_t y, int32_t z) const;
-        std::size_t linearIndex(vec3i index) const;
+        std::size_t linearIndex(Vec3i index) const;
     };
 } // vkt

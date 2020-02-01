@@ -21,8 +21,8 @@ namespace vkt
                            float value);
 
     VKTAPI Error FillRange(StructuredVolume& volume,
-                           vec3i first,
-                           vec3i last,
+                           Vec3i first,
+                           Vec3i last,
                            float value);
 
 } // vkt

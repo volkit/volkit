@@ -33,9 +33,9 @@ namespace vkt
                 BrickDecompose,
                 decomp,
                 source,
-                vec3i(brickSizeX, brickSizeY, brickSizeZ),
-                vec3i(haloSizeNegX, haloSizeNegY, haloSizeNegZ),
-                vec3i(haloSizePosX, haloSizePosY, haloSizePosZ)
+                Vec3i(brickSizeX, brickSizeY, brickSizeZ),
+                Vec3i(haloSizeNegX, haloSizeNegY, haloSizeNegZ),
+                Vec3i(haloSizePosX, haloSizePosY, haloSizePosZ)
                 );
 
         return NO_ERROR;
@@ -44,9 +44,9 @@ namespace vkt
     Error BrickDecompose(
             Array3D<StructuredVolume>& decomp,
             StructuredVolume& source,
-            vec3i brickSize,
-            vec3i haloSizeNeg,
-            vec3i haloSizePos
+            Vec3i brickSize,
+            Vec3i haloSizeNeg,
+            Vec3i haloSizePos
             )
     {
         VKT_CALL__(BrickDecompose, decomp, source, brickSize, haloSizeNeg, haloSizePos);
@@ -87,11 +87,11 @@ namespace vkt
     }
 
     Error BrickDecomposeGetNumBricks(
-            vec3i& numBricks,
-            vec3i dims,
-            vec3i brickSize,
-            vec3i haloSizeNeg,
-            vec3i haloSizePos
+            Vec3i& numBricks,
+            Vec3i dims,
+            Vec3i brickSize,
+            Vec3i haloSizeNeg,
+            Vec3i haloSizePos
             )
     {
         BrickDecomposeGetNumBricks(

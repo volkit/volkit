@@ -10,8 +10,8 @@ namespace vkt
     // Unary op
     void TransformRange_cuda(
             StructuredVolume& volume,
-            vec3i first,
-            vec3i last,
+            Vec3i first,
+            Vec3i last,
             TransformUnaryOp unaryOp
             )
 #if 0//VKT_HAVE_CUDA
@@ -24,8 +24,8 @@ namespace vkt
     void TransformRange_cuda(
             StructuredVolume& volume1,
             StructuredVolume& volume2,
-            vec3i first,
-            vec3i last,
+            Vec3i first,
+            Vec3i last,
             TransformBinaryOp binaryOp
             )
 #if 0//VKT_HAVE_CUDA

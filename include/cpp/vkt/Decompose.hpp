@@ -24,9 +24,9 @@ namespace vkt
 
     VKTAPI Error BrickDecompose(Array3D<StructuredVolume>& decomp,
                                 StructuredVolume& source,
-                                vec3i brickSize,
-                                vec3i haloSizeNeg,
-                                vec3i haloSizePos);
+                                Vec3i brickSize,
+                                Vec3i haloSizeNeg,
+                                Vec3i haloSizePos);
 
     VKTAPI Error BrickDecomposeGetNumBricks(int32_t& numBricksX,
                                             int32_t& numBricksY,
@@ -44,10 +44,10 @@ namespace vkt
                                             int32_t haloSizePosY,
                                             int32_t haloSizePosZ);
 
-    VKTAPI Error BrickDecomposeGetNumBricks(vec3i& numBricks,
-                                            vec3i dims,
-                                            vec3i brickSize,
-                                            vec3i haloSizeNeg,
-                                            vec3i haloSizePos);
+    VKTAPI Error BrickDecomposeGetNumBricks(Vec3i& numBricks,
+                                            Vec3i dims,
+                                            Vec3i brickSize,
+                                            Vec3i haloSizeNeg,
+                                            Vec3i haloSizePos);
 
 } // vkt

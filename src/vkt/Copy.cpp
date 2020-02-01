@@ -33,9 +33,9 @@ namespace vkt
             CopyRange,
             dst,
             src,
-            vec3i(firstX, firstY, firstZ),
-            vec3i(lastX, lastY, lastZ),
-            vec3i(dstOffsetX, dstOffsetY, dstOffsetZ)
+            Vec3i(firstX, firstY, firstZ),
+            Vec3i(lastX, lastY, lastZ),
+            Vec3i(dstOffsetX, dstOffsetY, dstOffsetZ)
             );
 
         return NO_ERROR;
@@ -44,9 +44,9 @@ namespace vkt
     Error CopyRange(
             StructuredVolume& dst,
             StructuredVolume& src,
-            vec3i first,
-            vec3i last,
-            vec3i dstOffset
+            Vec3i first,
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         VKT_CALL__(CopyRange, dst, src, first, last, dstOffset);
@@ -78,9 +78,9 @@ vktError vktCopyRangeSV(
         CopyRange,
         dst->volume,
         src->volume,
-        vkt::vec3i(firstX, firstY, firstZ),
-        vkt::vec3i(lastX, lastY, lastZ),
-        vkt::vec3i(dstOffsetX, dstOffsetY, dstOffsetZ)
+        vkt::Vec3i(firstX, firstY, firstZ),
+        vkt::Vec3i(lastX, lastY, lastZ),
+        vkt::Vec3i(dstOffsetX, dstOffsetY, dstOffsetZ)
         );
 
     return VKT_NO_ERROR;

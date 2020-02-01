@@ -13,9 +13,9 @@ namespace vkt
     static void ScanRange_serial(
             StructuredVolume& dst,
             StructuredVolume& src,
-            vec3i first,
-            vec3i last,
-            vec3i dstOffset
+            Vec3i first,
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         static_assert(

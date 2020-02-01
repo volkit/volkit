@@ -10,8 +10,8 @@ namespace vkt
     // Unary op
     inline void TransformRange_serial(
             StructuredVolume& volume,
-            vec3i first,
-            vec3i last,
+            Vec3i first,
+            Vec3i last,
             TransformUnaryOp unaryOp
             )
     {
@@ -41,8 +41,8 @@ namespace vkt
     inline void TransformRange_serial(
             StructuredVolume& volume1,
             StructuredVolume& volume2,
-            vec3i first,
-            vec3i last,
+            Vec3i first,
+            Vec3i last,
             TransformBinaryOp binaryOp
             )
     {

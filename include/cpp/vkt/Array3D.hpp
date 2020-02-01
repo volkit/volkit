@@ -19,7 +19,7 @@ namespace vkt
     public:
         Array3D() = default;
 
-        inline Array3D(vec3i const& dims)
+        inline Array3D(Vec3i const& dims)
             : dims_(dims)
         {
             ManagedBuffer::allocate(numElements() * sizeof(T));
@@ -84,7 +84,7 @@ namespace vkt
             return reinterpret_cast<T const*>(ManagedBuffer::data_) + numElements();
         }
 
-        inline T& operator[](vec3i const& index)
+        inline T& operator[](Vec3i const& index)
         {
             size_t linearIndex = index.z * dims_.x * std::size_t(dims_.y)
                                + index.y * dims_.x
@@ -93,7 +93,7 @@ namespace vkt
             return data()[linearIndex];
         }
 
-        inline T const& operator[](vec3i const& index) const
+        inline T const& operator[](Vec3i const& index) const
         {
             size_t linearIndex = index.z * dims_.x * std::size_t(dims_.y)
                                + index.y * dims_.x
@@ -121,7 +121,7 @@ namespace vkt
             return reinterpret_cast<T const*>(ManagedBuffer::data_);
         }
 
-        inline vec3i dims() const
+        inline Vec3i dims() const
         {
             return dims_;
         }
@@ -132,7 +132,7 @@ namespace vkt
         }
 
     private:
-        vec3i dims_ = vec3i(0);
+        Vec3i dims_ = Vec3i(0);
 
     };
 

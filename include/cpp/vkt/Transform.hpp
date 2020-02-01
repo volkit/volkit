@@ -36,8 +36,8 @@ namespace vkt
                                 TransformUnaryOp unaryOp);
 
     VKTAPI Error TransformRange(StructuredVolume& volume,
-                                vec3i first,
-                                vec3i last,
+                                Vec3i first,
+                                Vec3i last,
                                 TransformUnaryOp unaryOp);
 
     VKTAPI Error TransformRange(StructuredVolume& volume1,
@@ -52,7 +52,7 @@ namespace vkt
 
     VKTAPI Error TransformRange(StructuredVolume& volume1,
                                 StructuredVolume& volume2,
-                                vec3i first,
-                                vec3i last,
+                                Vec3i first,
+                                Vec3i last,
                                 TransformBinaryOp binaryOp);
 } // vkt

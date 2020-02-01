@@ -29,8 +29,8 @@ namespace vkt
         VKT_CALL__(
             TransformRange,
             volume,
-            vec3i(firstX, firstY, firstZ),
-            vec3i(lastX, lastY, lastZ),
+            Vec3i(firstX, firstY, firstZ),
+            Vec3i(lastX, lastY, lastZ),
             unaryOp
             );
 
@@ -39,8 +39,8 @@ namespace vkt
 
     Error TransformRange(
             StructuredVolume& volume,
-            vec3i first,
-            vec3i last,
+            Vec3i first,
+            Vec3i last,
             TransformUnaryOp unaryOp
             )
     {
@@ -60,7 +60,7 @@ vktError vktTransformSV1(vktStructuredVolume volume, vktTransformUnaryOp unaryOp
     VKT_CALL__(
         TransformRange,
         volume->volume,
-        vkt::vec3i(0, 0, 0),
+        vkt::Vec3i(0, 0, 0),
         volume->volume.getDims(),
         unaryOp
         );
@@ -77,7 +77,7 @@ vktError vktTransformSV2(
         TransformRange,
         volume1->volume,
         volume2->volume,
-        vkt::vec3i(0, 0, 0),
+        vkt::Vec3i(0, 0, 0),
         volume1->volume.getDims(),
         binaryOp
         );
@@ -99,8 +99,8 @@ vktError vktTransformRangeSV1(
     VKT_CALL__(
         TransformRange,
         volume->volume,
-        vkt::vec3i(firstX, firstY, firstZ),
-        vkt::vec3i(lastX, lastY, lastZ),
+        vkt::Vec3i(firstX, firstY, firstZ),
+        vkt::Vec3i(lastX, lastY, lastZ),
         (vkt::TransformUnaryOp)unaryOp
         );
 
@@ -123,8 +123,8 @@ vktError vktTransformRangeSV2(
         TransformRange,
         volume1->volume,
         volume2->volume,
-        vkt::vec3i(firstX, firstY, firstZ),
-        vkt::vec3i(lastX, lastY, lastZ),
+        vkt::Vec3i(firstX, firstY, firstZ),
+        vkt::Vec3i(lastX, lastY, lastZ),
         (vktTransformBinaryOp)binaryOp
         );
 

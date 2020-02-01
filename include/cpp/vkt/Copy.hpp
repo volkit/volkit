@@ -22,7 +22,7 @@ namespace vkt
 
     VKTAPI Error CopyRange(StructuredVolume& dst,
                            StructuredVolume& src,
-                           vec3i first,
-                           vec3i last,
-                           vec3i dstOffset = vec3i(0));
+                           Vec3i first,
+                           Vec3i last,
+                           Vec3i dstOffset = Vec3i(0));
 } // vkt

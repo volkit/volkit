@@ -10,9 +10,9 @@ namespace vkt
     static void BrickDecompose_serial(
             Array3D<StructuredVolume>& decomp,
             StructuredVolume& volume,
-            vec3i brickSize,
-            vec3i haloSizeNeg,
-            vec3i haloSizePos
+            Vec3i brickSize,
+            Vec3i haloSizeNeg,
+            Vec3i haloSizePos
             )
     {
         for (int z = 0; z < decomp.dims().z; ++z)
@@ -21,9 +21,9 @@ namespace vkt
             {
                 for (int x = 0; x < decomp.dims().x; ++x)
                 {
-                    vec3i index(x, y, z);
-                    vec3i first = index * brickSize;
-                    vec3i last = first + brickSize;
+                    Vec3i index(x, y, z);
+                    Vec3i first = index * brickSize;
+                    Vec3i last = first + brickSize;
                     first -= haloSizeNeg;
                     last += haloSizePos;
 

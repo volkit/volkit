@@ -21,9 +21,9 @@ namespace vkt
             ScanRange,
             dst,
             src,
-            vec3i(0, 0, 0),
+            Vec3i(0, 0, 0),
             dst.getDims(),
-            vec3i(0, 0, 0)
+            Vec3i(0, 0, 0)
             );
 
         return NO_ERROR;
@@ -47,9 +47,9 @@ namespace vkt
             ScanRange,
             dst,
             src,
-            vec3i(firstX, firstY, firstZ),
-            vec3i(lastX, lastY, lastZ),
-            vec3i(dstOffsetX, dstOffsetY, dstOffsetZ)
+            Vec3i(firstX, firstY, firstZ),
+            Vec3i(lastX, lastY, lastZ),
+            Vec3i(dstOffsetX, dstOffsetY, dstOffsetZ)
             );
 
         return NO_ERROR;
@@ -67,9 +67,9 @@ vktError vktScanSV(vktStructuredVolume dst, vktStructuredVolume src)
         ScanRange,
         dst->volume,
         src->volume,
-        vkt::vec3i(0, 0, 0),
+        vkt::Vec3i(0, 0, 0),
         dst->volume.getDims(),
-        vkt::vec3i(0, 0, 0)
+        vkt::Vec3i(0, 0, 0)
         );
 
     return VKT_NO_ERROR;
@@ -93,9 +93,9 @@ vktError vktScanRangeSV(
         ScanRange,
         dst->volume,
         src->volume,
-        vkt::vec3i(firstX, firstY, firstZ),
-        vkt::vec3i(lastX, lastY, lastZ),
-        vkt::vec3i(dstOffsetX, dstOffsetY, dstOffsetZ)
+        vkt::Vec3i(firstX, firstY, firstZ),
+        vkt::Vec3i(lastX, lastY, lastZ),
+        vkt::Vec3i(dstOffsetX, dstOffsetY, dstOffsetZ)
         );
 
     return VKT_NO_ERROR;

@@ -20,7 +20,7 @@ namespace vkt
         VKT_CALL__(
             FillRange,
             volume,
-            vkt::vec3i(0, 0, 0),
+            Vec3i(0, 0, 0),
             volume.getDims(),
             value);
 
@@ -41,15 +41,15 @@ namespace vkt
         VKT_CALL__(
             FillRange,
             volume,
-            vec3i(firstX, firstY, firstZ),
-            vec3i(lastX, lastY, lastZ),
+            Vec3i(firstX, firstY, firstZ),
+            Vec3i(lastX, lastY, lastZ),
             value
             );
 
         return NO_ERROR;
     }
 
-    Error FillRange(StructuredVolume& volume, vec3i first, vec3i last, float value)
+    Error FillRange(StructuredVolume& volume, Vec3i first, Vec3i last, float value)
     {
         VKT_CALL__(FillRange, volume, first, last, value);
 
@@ -67,7 +67,7 @@ vktError vktFillSV(vktStructuredVolume volume, float value)
     VKT_CALL__(
         FillRange,
         volume->volume,
-        vkt::vec3i(0, 0, 0),
+        vkt::Vec3i(0, 0, 0),
         volume->volume.getDims(),
         value);
 
@@ -87,8 +87,8 @@ vktError vktFillRangeSV(
     VKT_CALL__(
         FillRange,
         volume->volume,
-        vkt::vec3i(firstX, firstY, firstZ),
-        vkt::vec3i(lastX, lastY, lastZ),
+        vkt::Vec3i(firstX, firstY, firstZ),
+        vkt::Vec3i(lastX, lastY, lastZ),
         value);
 
     return VKT_NO_ERROR;

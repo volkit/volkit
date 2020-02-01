@@ -2,10 +2,10 @@
 
 namespace vkt
 {
-    struct vec2f
+    struct Vec2f
     {
-        vec2f() {}
-        vec2f(float x, float y)
+        Vec2f() {}
+        Vec2f(float x, float y)
             : x(x)
             , y(y)
         {
@@ -15,15 +15,15 @@ namespace vkt
         float y;
     };
 
-    inline bool operator==(vec2f const& a, vec2f const& b)
+    inline bool operator==(Vec2f const& a, Vec2f const& b)
     {
         return a.x == b.x && a.y == b.y;
     }
 
-    struct vec3f
+    struct Vec3f
     {
-        vec3f() {}
-        vec3f(float x, float y, float z)
+        Vec3f() {}
+        Vec3f(float x, float y, float z)
             : x(x)
             , y(y)
             , z(z)
@@ -36,17 +36,17 @@ namespace vkt
     };
 
 
-    struct vec3i
+    struct Vec3i
     {
-        vec3i() {}
-        vec3i(int a)
+        Vec3i() {}
+        Vec3i(int a)
             : x(a)
             , y(a)
             , z(a)
         {
         }
 
-        vec3i(int x, int y, int z)
+        Vec3i(int x, int y, int z)
             : x(x)
             , y(y)
             , z(z)
@@ -58,33 +58,33 @@ namespace vkt
         int z;
     };
 
-    inline bool operator==(vec3i const& a, vec3i const& b)
+    inline bool operator==(Vec3i const& a, Vec3i const& b)
     {
         return a.x == b.x && a.y == b.y && a.z == b.z;
     }
 
-    inline vec3i operator+(vec3i const& a, vec3i const& b)
+    inline Vec3i operator+(Vec3i const& a, Vec3i const& b)
     {
-        return vec3i(a.x + b.x, a.y + b.y, a.z + b.z);
+        return Vec3i(a.x + b.x, a.y + b.y, a.z + b.z);
     }
 
-    inline vec3i operator-(vec3i const& a, vec3i const& b)
+    inline Vec3i operator-(Vec3i const& a, Vec3i const& b)
     {
-        return vec3i(a.x - b.x, a.y - b.y, a.z - b.z);
+        return Vec3i(a.x - b.x, a.y - b.y, a.z - b.z);
     }
 
-    inline vec3i operator*(vec3i const& a, vec3i const& b)
+    inline Vec3i operator*(Vec3i const& a, Vec3i const& b)
     {
-        return vec3i(a.x * b.x, a.y * b.y, a.z * b.z);
+        return Vec3i(a.x * b.x, a.y * b.y, a.z * b.z);
     }
 
-    inline vec3i& operator+=(vec3i& a, vec3i const& b)
+    inline Vec3i& operator+=(Vec3i& a, Vec3i const& b)
     {
         a = a + b;
         return a;
     }
 
-    inline vec3i& operator-=(vec3i& a, vec3i const& b)
+    inline Vec3i& operator-=(Vec3i& a, Vec3i const& b)
     {
         a = a - b;
         return a;

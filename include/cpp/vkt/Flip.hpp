@@ -21,8 +21,8 @@ namespace vkt
                            Axis axis);
 
     VKTAPI Error FlipRange(StructuredVolume& volume,
-                           vec3i first,
-                           vec3i last,
+                           Vec3i first,
+                           Vec3i last,
                            Axis axis);
 
 } // vkt

@@ -8,9 +8,9 @@ namespace vkt
     static void CopyRange_serial(
             StructuredVolume& dst,
             StructuredVolume& src,
-            vec3i first,
-            vec3i last,
-            vec3i dstOffset
+            Vec3i first,
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         if (dst.getBytesPerVoxel() == src.getBytesPerVoxel()
@@ -26,7 +26,7 @@ namespace vkt
                     {
                         for (uint16_t i = 0; i < dst.getBytesPerVoxel(); ++i)
                         {
-                            vec3i dims = src.getDims();
+                            Vec3i dims = src.getDims();
 
                             int32_t srcX = clamp(x, 0, dims.x - 1);
                             int32_t srcY = clamp(y, 0, dims.y - 1);
@@ -53,7 +53,7 @@ namespace vkt
                     {
                         for (uint16_t i = 0; i < dst.getBytesPerVoxel(); ++i)
                         {
-                            vec3i dims = src.getDims();
+                            Vec3i dims = src.getDims();
 
                             int32_t srcX = clamp(x, 0, dims.x - 1);
                             int32_t srcY = clamp(y, 0, dims.y - 1);

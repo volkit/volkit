@@ -7,14 +7,14 @@
 int main()
 {
     // Volume dimensions
-    vkt::vec3i dims(256,256,256);
+    vkt::Vec3i dims(256,256,256);
 
     // Brick size
-    vkt::vec3i brickSize(16);
+    vkt::Vec3i brickSize(16);
 
     // Halo / ghost cells
-    vkt::vec3i haloSizeNeg(1,1,1);
-    vkt::vec3i haloSizePos(1,1,1);
+    vkt::Vec3i haloSizeNeg(1,1,1);
+    vkt::Vec3i haloSizePos(1,1,1);
 
     int bpv = 1;
 
@@ -39,13 +39,13 @@ int main()
 
     vkt::FillRange(
             volume,
-            vkt::vec3i(0,0,0),
+            vkt::Vec3i(0,0,0),
             dims,
             .02f
             );
 
     // Query the number of bricks the volume will be decomposed into
-    vkt::vec3i numBricks;
+    vkt::Vec3i numBricks;
     vkt::BrickDecomposeGetNumBricks(
             numBricks,
             dims,
@@ -80,7 +80,7 @@ int main()
             );
 
     vkt::Render(
-            decomp[vkt::vec3i(0,0,0)],
+            decomp[vkt::Vec3i(0,0,0)],
             {}
             );
 }

@@ -10,10 +10,10 @@ namespace vkt
 
     __global__ void Fill_kernel(
             uint8_t* data,
-            vec3i dims,
+            Vec3i dims,
             uint16_t bytesPerVoxel,
-            vec3i first,
-            vec3i last
+            Vec3i first,
+            Vec3i last
             )
     {
         int nx = last.x - first.x;
@@ -36,7 +36,7 @@ namespace vkt
         }
     }
 
-    void FillRange_cuda(StructuredVolume& volume, vec3i first, vec3i last, float value)
+    void FillRange_cuda(StructuredVolume& volume, Vec3i first, Vec3i last, float value)
     {
         uint8_t mappedVoxel[StructuredVolume::GetMaxBytesPerVoxel()];
         volume.mapVoxel(mappedVoxel, value);

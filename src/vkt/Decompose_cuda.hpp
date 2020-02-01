@@ -11,9 +11,9 @@ namespace vkt
     void BrickDecompose_cuda(
             Array3D<StructuredVolume>& decomp,
             StructuredVolume& volume,
-            vec3i brickSize,
-            vec3i haloSizeNeg,
-            vec3i haloSizePos
+            Vec3i brickSize,
+            Vec3i haloSizeNeg,
+            Vec3i haloSizePos
             )
 #if VKT_HAVE_CUDA
     ;

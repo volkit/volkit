@@ -179,7 +179,7 @@ static void Render_impl(
     char const* argv = "vktRender";
     viewer.init(argc, (char**)&argv);
 
-    vkt::vec3i dims = volume.getDims();
+    vkt::Vec3i dims = volume.getDims();
     viewer.bbox = aabb(
             { 0.f, 0.f, 0.f },
             { (float)dims.x, (float)dims.y, (float)dims.z }
