@@ -51,7 +51,8 @@ using ViewerBase = viewer_glut;
 
 struct ViewerCPU : ViewerBase
 {
-    using RayType = basic_ray<simd::float4>;
+    //using RayType = basic_ray<simd::float4>;
+    using RayType = basic_ray<float>;
 
     vkt::StructuredVolume&                    volume;
     vkt::RenderState const&                   renderState;
@@ -104,7 +105,7 @@ void ViewerCPU::on_display()
 {
     // Prepare a kernel with the volume set up appropriately
     // according to the provided texel type
-    auto prepareKernel = [&](auto texel)
+    auto prepareTexture = [&](auto texel)
     {
         using TexelType = decltype(texel);
         using VolumeRef = texture_ref<TexelType, 3>;
@@ -117,41 +118,65 @@ void ViewerCPU::on_display()
         volume_ref.reset((TexelType*)volume.getData());
         volume_ref.set_filter_mode(Nearest);
         volume_ref.set_address_mode(Clamp);
-        return RenderKernel<VolumeRef>{bbox, volume_ref, 1.f};
+        return volume_ref;
     };
 
-    float alpha = 1.f / ++frame_num;
-    pixel_sampler::jittered_blend_type blend_params;
-    blend_params.sfactor = alpha;
-    blend_params.dfactor = 1.f - alpha;
-    auto sparams = make_sched_params(
-            blend_params,
-            cam,
-            host_rt
-            );
+    auto prepareRayMarchingKernel = [&](auto volume_ref)
+    {
+        using VolumeRef = decltype(volume_ref);
+
+        float dt = 1.f;
+        return RayMarchingKernel<VolumeRef>{bbox, volume_ref, dt};
+    };
+
+    auto prepareMultiScatteringKernel = [&](auto volume_ref)
+    {
+        using VolumeRef = decltype(volume_ref);
+
+        float majorant = 1.f;
+        float heightf(this->width());
+        return MultiScatteringKernel<VolumeRef>{bbox, volume_ref, majorant, heightf};
+    };
+
+    auto callKernel = [&](auto texel)
+    {
+        using TexelType = decltype(texel);
+
+        float alpha = 1.f / ++frame_num;
+        pixel_sampler::jittered_blend_type blend_params;
+        blend_params.sfactor = alpha;
+        blend_params.dfactor = 1.f - alpha;
+        auto sparams = make_sched_params(
+                blend_params,
+                cam,
+                host_rt
+                );
+
+        if (1)
+        {
+            auto kernel = prepareRayMarchingKernel(prepareTexture(TexelType{}));
+            host_sched.frame(kernel, sparams);
+        }
+        else
+        {
+            auto kernel = prepareMultiScatteringKernel(prepareTexture(TexelType{}));
+            host_sched.frame(kernel, sparams);
+        }
+    };
 
     switch (volume.getBytesPerVoxel())
     {
-        case 1:
-        {
-            auto kernel = prepareKernel(uint8_t{});
-            host_sched.frame(kernel, sparams);
-            break;
-        }
+    case 1:
+        callKernel(uint8_t{});
+        break;
 
-        case 2:
-        {
-            auto kernel = prepareKernel(uint16_t{});
-            host_sched.frame(kernel, sparams);
-            break;
-        }
+    case 2:
+        callKernel(uint16_t{});
+        break;
 
-        case 4:
-        {
-            auto kernel = prepareKernel(uint32_t{});
-            host_sched.frame(kernel, sparams);
-            break;
-        }
+    case 4:
+        callKernel(uint32_t{});
+        break;
     }
 
     // display the rendered image

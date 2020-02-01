@@ -7,9 +7,11 @@
 #include <visionaray/math/intersect.h>
 #include <visionaray/math/limits.h>
 #include <visionaray/math/vector.h>
+#include <visionaray/phase_function.h>
+#include <visionaray/result_record.h>
 
 template <typename Volume>
-struct RenderKernel
+struct RayMarchingKernel
 {
     template <typename Ray>
     auto operator()(Ray ray)
@@ -69,10 +71,120 @@ struct RenderKernel
 
         result.hit = hit_rec.hit;
         return result;
-    };
+    }
 
     visionaray::aabb bbox;
     Volume volume;
     //Transfunc transfunc;
     float dt;
+};
+
+
+template <typename Volume>
+struct MultiScatteringKernel
+{
+    float mu(visionaray::vec3 const& pos)
+    {
+        using namespace visionaray;
+
+        float voxel = convert_to_float(tex3D(volume, pos / bbox.size()));
+        voxel /= 255.f;
+        return voxel;
+    }
+
+    template <typename Ray>
+    bool sample_interaction(Ray& r, float d, visionaray::random_generator<float>& gen)
+    {
+        using namespace visionaray;
+
+        float t = 0.0f;
+        vec3 pos;
+
+        do
+        {
+            t -= log(1.0f - gen.next()) / mu_;
+
+            pos = r.ori + r.dir * t;
+            if (t >= d)
+            {
+                return false;
+            }
+        }
+        while (mu(pos) < gen.next() * mu_);
+
+        r.ori = pos;
+        return true;
+    };
+
+    template <typename Ray>
+    auto operator()(Ray r, visionaray::random_generator<float>& gen, int x, int y)
+    {
+        using namespace visionaray;
+
+        using S = typename Ray::scalar_type;
+        using C = vector<4, S>;
+
+        henyey_greenstein<float> f;
+        f.g = 0.f; // isotropic
+
+        result_record<S> result;
+
+        vec3 throughput(1.f);
+
+        auto hit_rec = intersect(r, bbox);
+
+        if (any(hit_rec.hit))
+        {
+            r.ori += r.dir * hit_rec.tnear;
+            hit_rec.tfar -= hit_rec.tnear;
+
+            unsigned bounce = 0;
+
+            while (sample_interaction(r, hit_rec.tfar, gen))
+            {
+                // Is the path length exceeded?
+                if (bounce++ >= 1024)
+                {
+                    throughput = vec3(0.0f);
+                    break;
+                }
+
+                float albedo = 1.f-mu(r.ori); // TODO: lookup
+                throughput *= albedo;
+                // Russian roulette absorption
+                float prob = max_element(throughput);
+                if (prob < 0.2f)
+                {
+                    if (gen.next() > prob)
+                    {
+                        throughput = vec3(0.0f);
+                        break;
+                    }
+                    throughput /= prob;
+                }
+
+                // Sample phase function
+                vec3 scatter_dir;
+                float pdf;
+                f.sample(-r.dir, scatter_dir, pdf, gen);
+                r.dir = scatter_dir;
+
+                hit_rec = intersect(r, bbox);
+            }
+        }
+
+        // Look up the environment
+        float t = y / heightf_;
+        vec3 Ld = (1.0f - t)*vec3f(1.0f, 1.0f, 1.0f) + t * vec3f(0.5f, 0.7f, 1.0f);
+        vec3 L = Ld * throughput;
+
+        result.color = vec4(L, 1.0f);
+        result.hit = hit_rec.hit;
+        return result;
+    }
+
+    visionaray::aabb bbox;
+    Volume volume;
+    float mu_;
+    float heightf_;
 };
