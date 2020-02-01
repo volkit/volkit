@@ -1,3 +1,6 @@
+// This file is distributed under the MIT license.
+// See the LICENSE file for details.
+
 #pragma once
 
 #include "forward.h"
@@ -9,7 +12,7 @@
 #define ARRAY3D_INIT(Type)                                                      \
     typedef struct                                                              \
     {                                                                           \
-        vkt##Type* data_;                                                            \
+        vkt##Type* data_;                                                       \
         vktVec3i_t dims_;                                                       \
     } vktArray3D_##Type;                                                        \
 

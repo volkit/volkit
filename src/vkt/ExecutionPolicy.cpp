@@ -1,3 +1,6 @@
+// This file is distributed under the MIT license.
+// See the LICENSE file for details.
+
 #include <thread>
 #include <unordered_map>
 

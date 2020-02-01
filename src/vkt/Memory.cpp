@@ -1,3 +1,6 @@
+// This file is distributed under the MIT license.
+// See the LICENSE file for details.
+
 #include "macros.hpp"
 #include "Memory.hpp"
 #include "Memory_cuda.hpp"

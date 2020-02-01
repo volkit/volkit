@@ -1,3 +1,6 @@
+// This file is distributed under the MIT license.
+// See the LICENSE file for details.
+
 #pragma once
 
 #include <cstdint>
@@ -8,6 +11,9 @@
 
 namespace vkt
 {
+    VKTAPI Error Copy(StructuredVolume& dst,
+                      StructuredVolume& src);
+
     VKTAPI Error CopyRange(StructuredVolume& dst,
                            StructuredVolume& src,
                            int32_t firstX,

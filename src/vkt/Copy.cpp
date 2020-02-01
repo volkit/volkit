@@ -1,3 +1,6 @@
+// This file is distributed under the MIT license.
+// See the LICENSE file for details.
+
 #include <vkt/Copy.hpp>
 #include <vkt/StructuredVolume.hpp>
 
@@ -15,6 +18,20 @@
 
 namespace vkt
 {
+    Error Copy(StructuredVolume& dst, StructuredVolume& src)
+    {
+        VKT_CALL__(
+            CopyRange,
+            dst,
+            src,
+            Vec3i(0, 0, 0),
+            dst.getDims(),
+            Vec3i(0, 0, 0)
+            );
+
+        return NO_ERROR;
+    }
+
     Error CopyRange(
             StructuredVolume& dst,
             StructuredVolume& src,
@@ -59,6 +76,20 @@ namespace vkt
 //-------------------------------------------------------------------------------------------------
 // C API
 //
+
+vktError vktCopySV(vktStructuredVolume dst, vktStructuredVolume src)
+{
+    VKT_CALL__(
+        CopyRange,
+        dst->volume,
+        src->volume,
+        vkt::Vec3i(0, 0, 0),
+        dst->volume.getDims(),
+        vkt::Vec3i(0, 0, 0)
+        );
+
+    return VKT_NO_ERROR;
+}
 
 vktError vktCopyRangeSV(
         vktStructuredVolume dst,

@@ -1,3 +1,6 @@
+// This file is distributed under the MIT license.
+// See the LICENSE file for details.
+
 #include <cassert>
 
 #include <vkt/CudaTimer.hpp>

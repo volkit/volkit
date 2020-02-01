@@ -1,3 +1,6 @@
+// This file is distributed under the MIT license.
+// See the LICENSE file for details.
+
 #include <vkt/ExecutionPolicy.hpp>
 
 #define VKT_CUDA_SAFE_CALL__(X) X                                               \
