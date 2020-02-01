@@ -33,9 +33,9 @@ typedef struct
     vktExecutionPolicyDeviceAPI deviceApi;
 } vktExecutionPolicy_t;
 
-VKTAPI vktError vktSetThreadExecutionPolicy(vktExecutionPolicy_t policy);
+VKTAPI void vktSetThreadExecutionPolicy(vktExecutionPolicy_t policy);
 
-VKTAPI vktError vktGetThreadExecutionPolicy(vktExecutionPolicy_t* policy);
+VKTAPI vktExecutionPolicy_t vktGetThreadExecutionPolicy();
 
 #ifdef __cplusplus
 }

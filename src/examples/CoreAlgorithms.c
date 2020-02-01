@@ -55,7 +55,7 @@ int main()
     // Set GPU execution policy
     /*memset(&ep, 0, sizeof(ep));
     ep.device = vktExecutionPolicyDeviceGPU;
-    VKT_SAFE_CALL(vktSetThreadExecutionPolicy(ep));*/
+    vktSetThreadExecutionPolicy(ep);*/
 
     // Fill the whole volume
     VKT_SAFE_CALL(vktFillSV(volume1, .1f));

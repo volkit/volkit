@@ -38,7 +38,7 @@ namespace vkt
 // C API
 //
 
-vktError vktSetThreadExecutionPolicy(vktExecutionPolicy_t policy)
+void vktSetThreadExecutionPolicy(vktExecutionPolicy_t policy)
 {
     vkt::ExecutionPolicy policyCPP;
 
@@ -68,43 +68,38 @@ vktError vktSetThreadExecutionPolicy(vktExecutionPolicy_t policy)
     }
 
     vkt::SetThreadExecutionPolicy(policyCPP);
-
-    return VKT_NO_ERROR;
 }
 
-vktError vktGetThreadExecutionPolicy(vktExecutionPolicy_t* policy)
+vktExecutionPolicy_t vktGetThreadExecutionPolicy()
 {
-    if (policy == 0)
-    {
-        return VKT_INVALID_VALUE;
-    }
+    vktExecutionPolicy_t policy;
 
     vkt::ExecutionPolicy policyCPP = vkt::GetThreadExecutionPolicy();
 
     switch (policyCPP.device)
     {
     case vkt::ExecutionPolicy::Device::CPU:
-        policy->device = vktExecutionPolicyDeviceCPU;
+        policy.device = vktExecutionPolicyDeviceCPU;
         break;
 
     case vkt::ExecutionPolicy::Device::GPU:
-        policy->device = vktExecutionPolicyDeviceGPU;
+        policy.device = vktExecutionPolicyDeviceGPU;
         break;
     }
 
     switch (policyCPP.hostApi)
     {
     case vkt::ExecutionPolicy::HostAPI::Serial:
-        policy->hostApi = vktExecutionPolicyHostAPISerial;
+        policy.hostApi = vktExecutionPolicyHostAPISerial;
         break;
     }
 
     switch (policyCPP.deviceApi)
     {
     case vkt::ExecutionPolicy::DeviceAPI::CUDA:
-        policy->deviceApi = vktExecutionPolicyDeviceAPICUDA;
+        policy.deviceApi = vktExecutionPolicyDeviceAPICUDA;
         break;
     }
 
-    return VKT_NO_ERROR;
+    return policy;
 }

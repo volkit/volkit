@@ -15,7 +15,7 @@
 
 namespace vkt
 {
-    void Fill(StructuredVolume& volume, float value)
+    Error Fill(StructuredVolume& volume, float value)
     {
         VKT_CALL__(
             FillRange,
@@ -23,9 +23,11 @@ namespace vkt
             vkt::vec3i(0, 0, 0),
             volume.getDims(),
             value);
+
+        return NO_ERROR;
     }
 
-    void FillRange(
+    Error FillRange(
             StructuredVolume& volume,
             int32_t firstX,
             int32_t firstY,
@@ -43,11 +45,15 @@ namespace vkt
             vec3i(lastX, lastY, lastZ),
             value
             );
+
+        return NO_ERROR;
     }
 
-    void FillRange(StructuredVolume& volume, vec3i first, vec3i last, float value)
+    Error FillRange(StructuredVolume& volume, vec3i first, vec3i last, float value)
     {
         VKT_CALL__(FillRange, volume, first, last, value);
+
+        return NO_ERROR;
     }
 
 } // vkt

@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include <vkt/CudaTimer.hpp>
 
 #include <vkt/CudaTimer.h>
@@ -50,50 +52,24 @@ struct vktCudaTimer_impl
     vkt::CudaTimer timer;
 };
 
-vktError vktCudaTimerCreate(vktCudaTimer* timer)
+void vktCudaTimerCreate(vktCudaTimer* timer)
 {
-    if (timer == nullptr)
-    {
-        return VKT_INVALID_VALUE;
-    }
+    assert(timer != nullptr);
 
     *timer = new vktCudaTimer_impl;
-
-    return VKT_NO_ERROR;
 }
 
-vktError vktCudaTimerDestroy(vktCudaTimer timer)
+void vktCudaTimerDestroy(vktCudaTimer timer)
 {
-    if (timer == nullptr)
-    {
-        return VKT_INVALID_VALUE;
-    }
-
     delete timer;
-
-    return VKT_NO_ERROR;
 }
 
-vktError vktCudaTimerReset(vktCudaTimer timer)
+void vktCudaTimerReset(vktCudaTimer timer)
 {
-    if (timer == nullptr)
-    {
-        return VKT_INVALID_VALUE;
-    }
-
     timer->timer.reset();
-
-    return VKT_NO_ERROR;
 }
 
-vktError vktCudaTimerGetElapsedSeconds(vktCudaTimer timer, double* seconds)
+double vktCudaTimerGetElapsedSeconds(vktCudaTimer timer)
 {
-    if (timer == nullptr)
-    {
-        return VKT_INVALID_VALUE;
-    }
-
-    *seconds = timer->timer.getElapsedSeconds();
-
-    return VKT_NO_ERROR;
+    return timer->timer.getElapsedSeconds();
 }

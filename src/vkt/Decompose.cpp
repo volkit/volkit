@@ -15,7 +15,7 @@
 
 namespace vkt
 {
-    void BrickDecompose(
+    Error BrickDecompose(
             Array3D<StructuredVolume>& decomp,
             StructuredVolume& source,
             int brickSizeX,
@@ -37,9 +37,11 @@ namespace vkt
                 vec3i(haloSizeNegX, haloSizeNegY, haloSizeNegZ),
                 vec3i(haloSizePosX, haloSizePosY, haloSizePosZ)
                 );
+
+        return NO_ERROR;
     }
 
-    void BrickDecompose(
+    Error BrickDecompose(
             Array3D<StructuredVolume>& decomp,
             StructuredVolume& source,
             vec3i brickSize,
@@ -48,9 +50,11 @@ namespace vkt
             )
     {
         VKT_CALL__(BrickDecompose, decomp, source, brickSize, haloSizeNeg, haloSizePos);
+
+        return NO_ERROR;
     }
 
-    void BrickDecomposeGetNumBricks(
+    Error BrickDecomposeGetNumBricks(
             int32_t& numBricksX,
             int32_t& numBricksY,
             int32_t& numBricksZ,
@@ -78,9 +82,11 @@ namespace vkt
         numBricksX = div_up(dimX, brickSizeX);
         numBricksY = div_up(dimY, brickSizeY);
         numBricksZ = div_up(dimZ, brickSizeZ);
+
+        return NO_ERROR;
     }
 
-    void BrickDecomposeGetNumBricks(
+    Error BrickDecomposeGetNumBricks(
             vec3i& numBricks,
             vec3i dims,
             vec3i brickSize,
@@ -105,6 +111,8 @@ namespace vkt
                 haloSizePos.y,
                 haloSizePos.z
                 );
+
+        return NO_ERROR;
     }
 
 } // vkt

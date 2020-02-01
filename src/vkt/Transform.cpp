@@ -15,7 +15,7 @@
 
 namespace vkt
 {
-    void TransformRange(
+    Error TransformRange(
             StructuredVolume& volume,
             int32_t firstX,
             int32_t firstY,
@@ -33,14 +33,21 @@ namespace vkt
             vec3i(lastX, lastY, lastZ),
             unaryOp
             );
+
+        return NO_ERROR;
     }
 
-    void TransformRange(
+    Error TransformRange(
             StructuredVolume& volume,
             vec3i first,
             vec3i last,
             TransformUnaryOp unaryOp
-            );
+            )
+    {
+        VKT_CALL__(TransformRange, volume, first, last, unaryOp);
+
+        return NO_ERROR;
+    }
 
 } // vkt
 

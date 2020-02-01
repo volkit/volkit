@@ -218,9 +218,11 @@ static void Render_impl(
 namespace vkt
 {
 
-    void Render(StructuredVolume& volume, RenderState const& renderState, RenderState* newRenderState)
+    Error Render(StructuredVolume& volume, RenderState const& renderState, RenderState* newRenderState)
     {
         Render_impl(volume, renderState, newRenderState);
+
+        return NO_ERROR;
     }
 
 } // vkt

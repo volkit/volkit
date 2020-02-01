@@ -52,14 +52,14 @@ void* threadFunc(void* arg)
 
     // Set this as policy for this thread
     // (this will have no effect)
-    VKT_SAFE_CALL(vktSetThreadExecutionPolicy(ep));
+    vktSetThreadExecutionPolicy(ep);
 
     // Change to GPU
     ep.device = vktExecutionPolicyDeviceGPU;
-    VKT_SAFE_CALL(vktSetThreadExecutionPolicy(ep));
+    vktSetThreadExecutionPolicy(ep);
 
     // Changes were applied
-    VKT_SAFE_CALL(vktGetThreadExecutionPolicy(&ep));
+    ep = vktGetThreadExecutionPolicy();
     print(ep);
 
     return NULL;
@@ -71,15 +71,15 @@ int main()
     pthread_t thread;
 
     // Default execution policy (CPU)
-    VKT_SAFE_CALL(vktGetThreadExecutionPolicy(&ep));
+    ep = vktGetThreadExecutionPolicy();
     print(ep);
 
     // Change execution policy in main thread
     ep.device = vktExecutionPolicyDeviceGPU;
-    VKT_SAFE_CALL(vktSetThreadExecutionPolicy(ep));
+    vktSetThreadExecutionPolicy(ep);
 
     // Changes were applied
-    VKT_SAFE_CALL(vktGetThreadExecutionPolicy(&ep));
+    ep = vktGetThreadExecutionPolicy();
     print(ep);
 
     // New thread
@@ -87,6 +87,6 @@ int main()
     pthread_join(thread, NULL);
 
     // Execution policy in main thread remains unchanged
-    VKT_SAFE_CALL(vktGetThreadExecutionPolicy(&ep));
+    ep = vktGetThreadExecutionPolicy();
     print(ep);
 }

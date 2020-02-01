@@ -10,5 +10,5 @@
 
 typedef int32_t vktError;
 
-#define VKT_NO_ERROR        0
 #define VKT_INVALID_VALUE  -1
+#define VKT_NO_ERROR        0

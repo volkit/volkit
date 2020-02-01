@@ -15,7 +15,7 @@
 
 namespace vkt
 {
-    void Flip(StructuredVolume& volume, Axis axis)
+    Error Flip(StructuredVolume& volume, Axis axis)
     {
         VKT_CALL__(
             FlipRange,
@@ -24,9 +24,11 @@ namespace vkt
             volume.getDims(),
             axis
             );
+
+        return NO_ERROR;
     }
 
-    void FlipRange(
+    Error FlipRange(
             StructuredVolume& volume,
             int32_t firstX,
             int32_t firstY,
@@ -44,11 +46,15 @@ namespace vkt
             vec3i(lastX, lastY, lastZ),
             axis
             );
+
+        return NO_ERROR;
     }
 
-    void FlipRange(StructuredVolume& volume, vec3i first, vec3i last, Axis axis)
+    Error FlipRange(StructuredVolume& volume, vec3i first, vec3i last, Axis axis)
     {
         VKT_CALL__(FlipRange, volume, first, last, axis);
+
+        return NO_ERROR;
     }
 
 } // vkt

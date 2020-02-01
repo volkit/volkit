@@ -15,7 +15,7 @@
 
 namespace vkt
 {
-    void CopyRange(
+    Error CopyRange(
             StructuredVolume& dst,
             StructuredVolume& src,
             int32_t firstX,
@@ -37,9 +37,11 @@ namespace vkt
             vec3i(lastX, lastY, lastZ),
             vec3i(dstOffsetX, dstOffsetY, dstOffsetZ)
             );
+
+        return NO_ERROR;
     }
 
-    void CopyRange(
+    Error CopyRange(
             StructuredVolume& dst,
             StructuredVolume& src,
             vec3i first,
@@ -48,6 +50,8 @@ namespace vkt
             )
     {
         VKT_CALL__(CopyRange, dst, src, first, last, dstOffset);
+
+        return NO_ERROR;
     }
 
 } // vkt

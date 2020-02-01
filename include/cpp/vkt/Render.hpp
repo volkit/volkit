@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common.hpp"
 #include "forward.hpp"
 
 namespace vkt
@@ -8,8 +9,8 @@ namespace vkt
     {
     };
 
-    void Render(StructuredVolume& volume,
-                RenderState const& renderState,
-                RenderState* newRenderState = 0);
+    VKTAPI Error Render(StructuredVolume& volume,
+                        RenderState const& renderState,
+                        RenderState* newRenderState = 0);
 
 } // vkt

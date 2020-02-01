@@ -1,5 +1,7 @@
 #pragma once
 
+#include "common.hpp"
+
 namespace vkt
 {
     struct ExecutionPolicy
@@ -32,11 +34,11 @@ namespace vkt
     /*!
      * @brief  set the execution of the current thread
      */
-    void SetThreadExecutionPolicy(ExecutionPolicy policy);
+    VKTAPI void SetThreadExecutionPolicy(ExecutionPolicy policy);
 
     /*!
      * @brief  get the execution of the current thread
      */
-    ExecutionPolicy GetThreadExecutionPolicy();
+    VKTAPI ExecutionPolicy GetThreadExecutionPolicy();
 
 } // vkt
