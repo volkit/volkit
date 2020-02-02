@@ -19,6 +19,31 @@ namespace vkt
         ReadError         =  2,
     };
 
+    enum class ColorFormat
+    {
+        Unspecified,
+
+        R8,
+        RG8,
+        RGB8,
+        RGBA8,
+        R16UI,
+        RG16UI,
+        RGB16UI,
+        RGBA16UI,
+        R32UI,
+        RG32UI,
+        RGB32UI,
+        RGBA32UI,
+        R32F,
+        RG32F,
+        RGB32F,
+        RGBA32F,
+
+        // Keep last!
+        Count,
+    };
+
 
     /*!
      * @brief  Data source base class for file I/O

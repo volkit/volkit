@@ -109,7 +109,7 @@ VKTAPI void vktStructuredVolumeGetBytes(vktStructuredVolume volume,
 
 VKTAPI size_t vktStructuredVolumeGetSizeInBytes(vktStructuredVolume volume);
 
-VKTAPI void vktStructuredVolumeMigrate(vktStructuredVolume);
+VKTAPI void vktStructuredVolumeMigrate(vktStructuredVolume volume);
 
 #ifdef __cplusplus
 }
