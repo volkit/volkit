@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <vkt/ManagedResource.hpp>
+
 #include "common.hpp"
 #include "forward.hpp"
 
@@ -50,6 +52,9 @@ namespace vkt
 
         //! Majorant extinction coefficient
         float majorant = 1.f;
+
+        //! RGBA32F lookup table for scattering albedo
+        ResourceHandle rgbaLookupTableAlbedo = ResourceHandle(-1);
 
         ///@}
 

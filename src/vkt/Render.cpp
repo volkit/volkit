@@ -27,6 +27,7 @@
 #include <common/viewer_glut.h>
 #endif
 
+#include <vkt/LookupTable.hpp>
 #include <vkt/Render.hpp>
 #include <vkt/StructuredVolume.hpp>
 
@@ -117,6 +118,25 @@ void ViewerCPU::on_display()
         return volume_ref;
     };
 
+    auto prepareAlbedoLUT = [&]()
+    {
+        using namespace vkt;
+
+        texture_ref<vec4f, 1> albedo_ref;
+
+        if (renderState.rgbaLookupTableAlbedo != ResourceHandle(-1))
+        {
+            LookupTable* lut = (LookupTable*)GetManagedResource(renderState.rgbaLookupTableAlbedo);
+
+            albedo_ref = texture_ref<vec4f, 1>(lut->getDims().x);
+            albedo_ref.set_filter_mode(Nearest);
+            albedo_ref.set_address_mode(Clamp);
+            albedo_ref.reset((vec4*)lut->getData());
+        }
+
+        return albedo_ref;
+    };
+
     auto prepareRayMarchingKernel = [&](auto volume_ref)
     {
         using VolumeRef = decltype(volume_ref);
@@ -146,14 +166,16 @@ void ViewerCPU::on_display()
         return kernel;
     };
 
-    auto prepareMultiScatteringKernel = [&](auto volume_ref)
+    auto prepareMultiScatteringKernel = [&](auto volume_ref, auto transfunc_ref)
     {
         using VolumeRef = decltype(volume_ref);
+        using TransfuncRef = decltype(transfunc_ref);
 
         float heightf(this->width());
-        return MultiScatteringKernel<VolumeRef>{
+        return MultiScatteringKernel<VolumeRef, TransfuncRef>{
                 bbox,
                 volume_ref,
+                transfunc_ref,
                 renderState.majorant,
                 heightf
                 };
@@ -185,7 +207,7 @@ void ViewerCPU::on_display()
         }
         else if (renderState.renderAlgo == vkt::RenderAlgo::MultiScattering)
         {
-            auto kernel = prepareMultiScatteringKernel(prepareTexture(TexelType{}));
+            auto kernel = prepareMultiScatteringKernel(prepareTexture(TexelType{}), prepareAlbedoLUT());
             host_sched.frame(kernel, sparams);
         }
     };

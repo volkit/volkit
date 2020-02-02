@@ -190,7 +190,7 @@ struct ImplicitIsoKernel
 // Loosely based on M. Raab: Ray Tracing Inhomogeneous Volumes, RTGems I (2019)
 //
 
-template <typename Volume>
+template <typename Volume, typename Transfunc>
 struct MultiScatteringKernel
 {
     float mu(visionaray::vec3 const& pos)
@@ -259,8 +259,17 @@ struct MultiScatteringKernel
                     break;
                 }
 
-                float albedo = 1.f-mu(r.ori); // TODO: lookup
-                throughput *= albedo;
+                vec3 alb(0.f);
+                
+                if (albedo)
+                {
+                    vec4 rgba = tex1D(albedo, mu(r.ori));
+                    alb = rgba.xyz() * rgba.w;
+                }
+                else
+                    alb = vec3(1.f-mu(r.ori));
+
+                throughput *= alb;
                 // Russian roulette absorption
                 float prob = max_element(throughput);
                 if (prob < 0.2f)
@@ -295,6 +304,7 @@ struct MultiScatteringKernel
 
     visionaray::aabb bbox;
     Volume volume;
+    Transfunc albedo;
     float mu_;
     float heightf_;
 };
