@@ -11,6 +11,7 @@ namespace vkt
     enum class RenderAlgo
     {
         RayMarching,
+        ImplicitIso,
         MultiScattering,
     };
 
@@ -23,7 +24,24 @@ namespace vkt
         ///@{
 
         //! Ray marching step size in object coordinates
-        float dt = 1.f;
+        float dtRayMarching = 1.f;
+
+        ///@}
+
+        //! Parameters related to implicit iso algorithm
+        ///@{
+
+        //! The number of activated iso values
+        uint16_t numIsoSurfaces = 1;
+
+        //! The maximum number of iso surfaces
+        enum { MaxIsoSurfaces = 10 };
+
+        //! The iso surfaces
+        float isoSurfaces[MaxIsoSurfaces] = { .5f };
+
+        //! Implicit iso step size in object coordinates
+        float dtImplicitIso = 1.f;
 
         ///@}
 

@@ -14,6 +14,7 @@ extern "C"
 typedef enum
 {
     vktRenderAlgoRayMarching,
+    vktRenderAlgoImplicitIso,
     vktRenderAlgoMultiScattering,
 } vktRenderAlgo;
 
@@ -26,7 +27,24 @@ typedef struct
     ///@{
 
     //! Ray marching step size in object coordinates
-    float dt;
+    float dtRayMarching;
+
+    ///@}
+
+    //! Parameters related to implicit iso algorithm
+    ///@{
+
+    //! The number of activated iso values
+    uint16_t numIsoSurfaces;
+
+    //! The maximum number of iso surfaces
+    enum { MaxIsoSurfaces = 10 };
+
+    //! The iso surfaces
+    float isoSurfaces[MaxIsoSurfaces];
+
+    //! Implicit iso step size in object coordinates
+    float dtImplicitIso;
 
     ///@}
 
@@ -57,6 +75,9 @@ inline void vktRenderStateDefaultInit(vktRenderState_t* renderState)
     *renderState = {
         vktRenderAlgoRayMarching,
         1.f,
+        1,
+        { .5f },
+        1.f,
         1.f,
         512,
         512
@@ -64,7 +85,10 @@ inline void vktRenderStateDefaultInit(vktRenderState_t* renderState)
 #else
     *renderState = (vktRenderState_t) {
         .renderAlgo = vktRenderAlgoRayMarching,
-        .dt = 1.f,
+        .dtRayMarching = 1.f,
+        .numIsoSurfaces = 1,
+        .isoSurfaces = { .5f },
+        .dtImplicitIso = 1.f,
         .majorant = 1.f,
         .viewportWidth = 512,
         .viewportHeight = 512

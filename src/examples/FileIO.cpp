@@ -35,5 +35,6 @@ int main(int argc, char** argv)
     vkt::InputStream is(file);
     is.read(volume);
     vkt::RenderState renderState;
+    renderState.renderAlgo = vkt::RenderAlgo::MultiScattering;
     vkt::Render(volume, renderState);
 }

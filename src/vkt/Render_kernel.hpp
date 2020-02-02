@@ -10,6 +10,13 @@
 #include <visionaray/phase_function.h>
 #include <visionaray/result_record.h>
 
+#include <vkt/Render.hpp>
+
+
+//-------------------------------------------------------------------------------------------------
+// Ray marching with absorption plus emission model
+//
+
 template <typename Volume>
 struct RayMarchingKernel
 {
@@ -76,6 +83,104 @@ struct RayMarchingKernel
     visionaray::aabb bbox;
     Volume volume;
     //Transfunc transfunc;
+    float dt;
+};
+
+
+//-------------------------------------------------------------------------------------------------
+// Implicit iso-surface rendering
+//
+
+template <typename Volume>
+struct ImplicitIsoKernel
+{
+    template <typename T>
+    VSNRAY_FUNC
+    inline visionaray::vector<3, T> gradient(visionaray::vector<3, T> tex_coord)
+    {
+        using namespace visionaray;
+
+        vector<3, T> s1;
+        vector<3, T> s2;
+
+        float DELTA = 0.01f;
+
+        s1.x = tex3D(volume, tex_coord + vector<3, T>(DELTA, 0.0f, 0.0f));
+        s2.x = tex3D(volume, tex_coord - vector<3, T>(DELTA, 0.0f, 0.0f));
+        s1.y = tex3D(volume, tex_coord + vector<3, T>(0.0f, DELTA, 0.0f));
+        s2.y = tex3D(volume, tex_coord - vector<3, T>(0.0f, DELTA, 0.0f));
+        s1.z = tex3D(volume, tex_coord + vector<3, T>(0.0f, 0.0f, DELTA));
+        s2.z = tex3D(volume, tex_coord - vector<3, T>(0.0f, 0.0f, DELTA));
+
+        return s2 - s1;
+    }
+
+    template <typename Ray>
+    auto operator()(Ray ray)
+    {
+        using namespace visionaray;
+
+        using S = typename Ray::scalar_type;
+        using C = vector<4, S>;
+
+        result_record<S> result;
+
+        auto hit_rec = intersect(ray, bbox);
+        auto t = hit_rec.tnear;
+
+        result.color = C(0.0);
+
+        vector<3, S> boxSize(bbox.size());
+        vector<3, S> pos = ray.ori + ray.dir * t;
+        vector<3, S> tex_coord = pos / boxSize;
+
+        vector<3, S> inc = ray.dir * S(dt) / boxSize;
+
+        S last(-1e20f);
+
+        S isoT(-1e20f);
+
+        while (any(t < hit_rec.tfar))
+        {
+            // sample volume
+            S voxel = convert_to_float(tex3D(volume, tex_coord));
+
+            // normalize to [0..1]
+            voxel /= S(numeric_limits<typename Volume::value_type>::max());
+
+            if (any(last >= S(-1e10f)))
+            {
+                for (uint16_t i = 0; i < numIsoSurfaces; ++i)
+                {
+                    if ((last <= isoSurfaces[i] && voxel >= isoSurfaces[i])
+                     || (last >= isoSurfaces[i] && voxel <= isoSurfaces[i]))
+                    {
+                        isoT = t;
+                        vector<3, S> N = normalize(gradient(tex_coord));
+                        vector<3, S> ka(S(.2f));
+                        vector<3, S> kd(dot(N, -ray.dir) * voxel);
+                        result.color = C(ka + kd, S(1.f));
+                    }
+                }
+            }
+
+            if (all(isoT >= S(-1e10f)))
+                break;
+
+            // step on
+            tex_coord += inc;
+            t += dt;
+            last = voxel;
+        }
+
+        result.hit = isoT >= S(-1e10f);
+        return result;
+    }
+
+    visionaray::aabb bbox;
+    Volume volume;
+    uint16_t numIsoSurfaces;
+    float isoSurfaces[vkt::RenderState::MaxIsoSurfaces];
     float dt;
 };
 

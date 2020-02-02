@@ -124,8 +124,26 @@ void ViewerCPU::on_display()
         return RayMarchingKernel<VolumeRef>{
                 bbox,
                 volume_ref,
-                renderState.dt
+                renderState.dtRayMarching
                 };
+    };
+
+    auto prepareImplicitIsoKernel = [&](auto volume_ref)
+    {
+        using VolumeRef = decltype(volume_ref);
+
+        ImplicitIsoKernel<VolumeRef> kernel;
+        kernel.bbox = bbox;
+        kernel.volume = volume_ref;
+        kernel.numIsoSurfaces = renderState.numIsoSurfaces;
+        std::memcpy(
+            &kernel.isoSurfaces,
+            &renderState.isoSurfaces,
+            sizeof(renderState.isoSurfaces)
+            );
+        kernel.dt = renderState.dtImplicitIso;
+
+        return kernel;
     };
 
     auto prepareMultiScatteringKernel = [&](auto volume_ref)
@@ -158,6 +176,11 @@ void ViewerCPU::on_display()
         if (renderState.renderAlgo == vkt::RenderAlgo::RayMarching)
         {
             auto kernel = prepareRayMarchingKernel(prepareTexture(TexelType{}));
+            host_sched.frame(kernel, sparams);
+        }
+        else if (renderState.renderAlgo == vkt::RenderAlgo::ImplicitIso)
+        {
+            auto kernel = prepareImplicitIsoKernel(prepareTexture(TexelType{}));
             host_sched.frame(kernel, sparams);
         }
         else if (renderState.renderAlgo == vkt::RenderAlgo::MultiScattering)
@@ -251,7 +274,7 @@ static void Render_impl(
             .001f,
             1000.f
             );
-    viewer.cam.set_lens_radius(0.1f);
+    viewer.cam.set_lens_radius(0.05f);
     viewer.cam.set_focal_distance(10.0f);
     viewer.cam.view_all(viewer.bbox);
 
