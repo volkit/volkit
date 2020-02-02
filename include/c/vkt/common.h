@@ -12,9 +12,11 @@
 typedef uint8_t vktBool;
 
 /*! Error constants */
-typedef int32_t vktError;
+typedef enum
+{
+    vktInvalidValue      = -1,
+    vktNoError           =  0,
 
-#define VKT_INVALID_VALUE  -1
-#define VKT_NO_ERROR        0
-#define INVALID_DATA_SOURCE 1
-#define READ_ERROR          2
+    vktInvalidDataSource =  1,
+    vktReadError         =  2,
+}  vktError;

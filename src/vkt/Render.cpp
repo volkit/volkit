@@ -331,5 +331,5 @@ vktError vktRenderSV(
     if (newRenderState != nullptr)
         std::memcpy(newRenderState, &newRenderStateCPP, sizeof(newRenderStateCPP));
 
-    return VKT_NO_ERROR;
+    return vktNoError;
 }

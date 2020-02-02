@@ -75,7 +75,7 @@ vktError vktScanSV(vktStructuredVolume dst, vktStructuredVolume src)
         vkt::Vec3i(0, 0, 0)
         );
 
-    return VKT_NO_ERROR;
+    return vktNoError;
 }
 
 vktError vktScanRangeSV(
@@ -101,5 +101,5 @@ vktError vktScanRangeSV(
         vkt::Vec3i(dstOffsetX, dstOffsetY, dstOffsetZ)
         );
 
-    return VKT_NO_ERROR;
+    return vktNoError;
 }

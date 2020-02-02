@@ -76,7 +76,7 @@ vktError vktFlipSV(vktStructuredVolume volume, vktAxis axis)
         (vkt::Axis)axis
         );
 
-    return VKT_NO_ERROR;
+    return vktNoError;
 }
 
 vktError vktFlipRangeSV(
@@ -98,5 +98,5 @@ vktError vktFlipRangeSV(
         (vkt::Axis)axis
         );
 
-    return VKT_NO_ERROR;
+    return vktNoError;
 }

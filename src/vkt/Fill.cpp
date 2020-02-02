@@ -74,7 +74,7 @@ vktError vktFillSV(vktStructuredVolume volume, float value)
         volume->volume.getDims(),
         value);
 
-    return VKT_NO_ERROR;
+    return vktNoError;
 }
 
 vktError vktFillRangeSV(
@@ -94,5 +94,5 @@ vktError vktFillRangeSV(
         vkt::Vec3i(lastX, lastY, lastZ),
         value);
 
-    return VKT_NO_ERROR;
+    return vktNoError;
 }

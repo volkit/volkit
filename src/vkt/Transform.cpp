@@ -68,7 +68,7 @@ vktError vktTransformSV1(vktStructuredVolume volume, vktTransformUnaryOp unaryOp
         (vkt::TransformUnaryOp)unaryOp
         );
 
-    return VKT_NO_ERROR;
+    return vktNoError;
 }
 
 vktError vktTransformSV2(
@@ -85,7 +85,7 @@ vktError vktTransformSV2(
         (vkt::TransformBinaryOp)binaryOp
         );
 
-    return VKT_NO_ERROR;
+    return vktNoError;
 }
 
 vktError vktTransformRangeSV1(
@@ -107,7 +107,7 @@ vktError vktTransformRangeSV1(
         (vkt::TransformUnaryOp)unaryOp
         );
 
-    return VKT_NO_ERROR;
+    return vktNoError;
 }
 
 vktError vktTransformRangeSV2(
@@ -131,5 +131,5 @@ vktError vktTransformRangeSV2(
         (vkt::TransformBinaryOp)binaryOp
         );
 
-    return VKT_NO_ERROR;
+    return vktNoError;
 }
