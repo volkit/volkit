@@ -6,6 +6,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include <vkt/ManagedResource.h>
+
 #include "common.h"
 #include "forward.h"
 #include "linalg.h"
@@ -43,7 +45,11 @@ VKTAPI void vktLookupTableSetColorFormat(vktLookupTable lut,
 
 VKTAPI vktColorFormat vktLookupTableGetColorFormat(vktLookupTable lut);
 
+VKTAPI uint8_t* vktLookupTableGetData(vktLookupTable lut);
+
 VKTAPI size_t vktLookupTableGetSizeInBytes(vktLookupTable lut);
+
+VKTAPI vktResourceHandle vktLookupTableGetResourceHandle(vktLookupTable lut);
 
 VKTAPI void vktLookupTableMigrate(vktLookupTable lut);
 

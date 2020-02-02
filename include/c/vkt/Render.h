@@ -71,7 +71,7 @@ typedef struct
     int viewportHeight;
 
     //! Convert final colors from linear to sRGB
-    vktBool sRGB;
+    vktBool_t sRGB;
 
     ///@}
 

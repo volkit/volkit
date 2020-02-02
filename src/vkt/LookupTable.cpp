@@ -145,9 +145,19 @@ vktColorFormat vktLookupTableGetColorFormat(vktLookupTable lut)
     return (vktColorFormat)lut->lut.getColorFormat();
 }
 
+uint8_t* vktLookupTableGetData(vktLookupTable lut)
+{
+    return lut->lut.getData();
+}
+
 size_t vktLookupTableGetSizeInBytes(vktLookupTable lut)
 {
     return lut->lut.getSizeInBytes();
+}
+
+vktResourceHandle vktLookupTableGetResourceHandle(vktLookupTable lut)
+{
+    return (vktResourceHandle)lut->lut.getResourceHandle();
 }
 
 void vktLookupTableMigrate(vktLookupTable lut)

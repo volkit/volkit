@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 #include "common.h"
 #include "forward.h"
@@ -14,7 +14,9 @@ extern "C"
 #endif
 
 VKTAPI void vktInputStreamCreateF(vktInputStream* stream,
-                                  vktFile file);
+                                  vktRawFile file);
+
+VKTAPI void vktInputStreamDestroy(vktInputStream stream);
 
 VKTAPI vktError vktInputStreamReadSV(vktInputStream stream,
                                      vktStructuredVolume volume);

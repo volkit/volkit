@@ -1,3 +1,7 @@
+// This file is distributed under the MIT license.
+// See the LICENSE file for details.
+
+#include <cassert>
 #include <cstdio>
 #include <sstream>
 #include <string>
@@ -6,6 +10,8 @@
 #include <vkt/RawFile.hpp>
 
 #include <vkt/RawFile.h>
+
+#include "RawFile_impl.hpp"
 
 static std::vector<std::string> string_split(std::string s, char delim)
 {
@@ -20,6 +26,10 @@ static std::vector<std::string> string_split(std::string s, char delim)
 
     return result;
 }
+
+//-------------------------------------------------------------------------------------------------
+// C++ API
+//
 
 namespace vkt
 {
@@ -89,3 +99,48 @@ namespace vkt
     }
 
 } // vkt
+
+//-------------------------------------------------------------------------------------------------
+// C API
+//
+
+void vktRawFileCreateS(vktRawFile* file, char const* fileName, char const* mode)
+{
+    assert(file != nullptr);
+
+    *file = new vktRawFile_impl(fileName, mode);
+}
+
+void vktRawFileCreateFD(vktRawFile* file, FILE* fd)
+{
+    assert(file != nullptr);
+
+    *file = new vktRawFile_impl(fd);
+}
+
+void vktRawFileDestroy(vktRawFile file)
+{
+    delete file;
+}
+
+size_t vktRawFileRead(vktRawFile file, char* buf, size_t len)
+{
+    return file->file.read(buf, len);
+}
+
+vktBool_t vktRawFileGood(vktRawFile file)
+{
+    return file->file.good();
+}
+
+vktVec3i_t vktRawFileGetDims3iv(vktRawFile file)
+{
+    vkt::Vec3i dims = file->file.getDims();
+
+    return { dims.x, dims.y, dims.z };
+}
+
+uint16_t vktRawFileGetBytesPerVoxel(vktRawFile file)
+{
+    return file->file.getBytesPerVoxel();
+}

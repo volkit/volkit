@@ -9,7 +9,7 @@
 #define VKTAPI
 
 /*! Boolean */
-typedef uint8_t vktBool;
+typedef uint8_t vktBool_t;
 
 /*! Error constants */
 typedef enum

@@ -16,6 +16,7 @@ vkt_link_libraries(volkit)
 vkt_add_executable(CoreAlgorithmsC CoreAlgorithms.c)
 vkt_add_executable(DecomposeC Decompose.c)
 vkt_add_executable(ExecutionPolicyC ExecutionPolicy.c)
+vkt_add_executable(FileIOC FileIO.c)
 vkt_add_executable(ScanC Scan.c)
 
 vkt_add_executable(DecomposeCPP Decompose.cpp)

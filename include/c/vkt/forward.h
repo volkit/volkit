@@ -10,5 +10,5 @@ struct vktStructuredVolume_impl;
 
 typedef struct vktLookupTable_impl* vktLookupTable;
 typedef struct vktRawFile_impl* vktRawFile;
-typedef struct vktInputStream_impl* vktInputSteam;
+typedef struct vktInputStream_impl* vktInputStream;
 typedef struct vktStructuredVolume_impl* vktStructuredVolume;

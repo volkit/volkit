@@ -6,6 +6,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include <vkt/ManagedResource.h>
+
 #include "common.h"
 #include "forward.h"
 #include "linalg.h"
@@ -108,6 +110,8 @@ VKTAPI void vktStructuredVolumeGetBytes(vktStructuredVolume volume,
                                         uint8_t* data);
 
 VKTAPI size_t vktStructuredVolumeGetSizeInBytes(vktStructuredVolume volume);
+
+VKTAPI vktResourceHandle vktStructuredVolumeGetResourceHandle(vktStructuredVolume volume);
 
 VKTAPI void vktStructuredVolumeMigrate(vktStructuredVolume volume);
 
