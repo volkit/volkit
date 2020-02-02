@@ -43,6 +43,7 @@ namespace vkt
                 dst[0] = static_cast<uint8_t>(ival >> 8);
                 dst[1] = static_cast<uint8_t>(ival);
 #endif
+                break;
             }
 
             case 4:
@@ -59,6 +60,7 @@ namespace vkt
                 dst[2] = static_cast<uint8_t>(ival >> 8);
                 dst[3] = static_cast<uint8_t>(ival);
 #endif
+                break;
             }
         }
 
@@ -94,6 +96,7 @@ namespace vkt
 #endif
                 float fval = static_cast<float>(ival);
                 value = lerp(mappingLo, mappingHi, fval / 65535.999f);
+                break;
             }
 
             case 4:
@@ -111,6 +114,7 @@ namespace vkt
 #endif
                 float fval = static_cast<float>(ival);
                 value = lerp(mappingLo, mappingHi, fval / 4294967295.999f);
+                break;
             }
         }
 
