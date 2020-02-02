@@ -53,13 +53,13 @@ namespace vkt
         //! Majorant extinction coefficient
         float majorant = 1.f;
 
-        //! RGBA32F lookup table for scattering albedo
-        ResourceHandle rgbaLookupTableAlbedo = ResourceHandle(-1);
-
         ///@}
 
         //! General parameters
         ///@{
+
+        //! RGBA32F lookup table for absorption, emission and scattering albedo
+        ResourceHandle rgbaLookupTable = ResourceHandle(-1);
 
         //! Width of the rendering viewport
         int viewportWidth = 512;

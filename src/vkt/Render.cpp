@@ -124,9 +124,9 @@ void ViewerCPU::on_display()
 
         texture_ref<vec4f, 1> albedo_ref(0);
 
-        if (renderState.rgbaLookupTableAlbedo != ResourceHandle(-1))
+        if (renderState.rgbaLookupTable != ResourceHandle(-1))
         {
-            LookupTable* lut = (LookupTable*)GetManagedResource(renderState.rgbaLookupTableAlbedo);
+            LookupTable* lut = (LookupTable*)GetManagedResource(renderState.rgbaLookupTable);
 
             albedo_ref = texture_ref<vec4f, 1>(lut->getDims().x);
             albedo_ref.set_filter_mode(Nearest);

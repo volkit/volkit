@@ -202,7 +202,13 @@ struct MultiScatteringKernel
         // normalize to [0..1]
         voxel /= float(numeric_limits<typename Volume::value_type>::max());
 
-        return voxel;
+        if (transfunc)
+        {
+            vec4f rgba = tex1D(transfunc, voxel);
+            return rgba.w;
+        }
+        else
+            return voxel;
     }
 
     template <typename Ray>
@@ -262,17 +268,17 @@ struct MultiScatteringKernel
                     break;
                 }
 
-                vec3 alb(0.f);
+                vec3 albedo(0.f);
                 
-                if (albedo)
+                if (transfunc)
                 {
-                    vec4 rgba = tex1D(albedo, mu(r.ori));
-                    alb = rgba.xyz() * rgba.w;
+                    vec4 rgba = tex1D(transfunc, mu(r.ori));
+                    albedo = rgba.xyz() * rgba.w;
                 }
                 else
-                    alb = vec3(1.f-mu(r.ori));
+                    albedo = vec3(1.f-mu(r.ori));
 
-                throughput *= alb;
+                throughput *= albedo;
                 // Russian roulette absorption
                 float prob = max_element(throughput);
                 if (prob < 0.2f)
@@ -307,7 +313,7 @@ struct MultiScatteringKernel
 
     visionaray::aabb bbox;
     Volume volume;
-    Transfunc albedo;
+    Transfunc transfunc;
     float mu_;
     float heightf_;
 };

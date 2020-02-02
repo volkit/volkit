@@ -56,13 +56,13 @@ typedef struct
     //! Majorant extinction coefficient
     float majorant;
 
-    //! RGBA32F lookup table for scattering albedo
-    vktResourceHandle rgbaLookupTableAlbedo;
-
     ///@}
 
     //! General parameters
     ///@{
+
+    //! RGBA32F lookup table for absorption, emission and scattering albedo
+    vktResourceHandle rgbaLookupTable;
 
     //! Width of the rendering viewport
     int viewportWidth;
@@ -100,7 +100,7 @@ static void vktRenderStateDefaultInit(vktRenderState_t* renderState)
         .isoSurfaces = { .5f },
         .dtImplicitIso = 1.f,
         .majorant = 1.f,
-        .rgbaLookupTableAlbedo = -1,
+        .rgbaLookupTable = -1,
         .viewportWidth = 512,
         .viewportHeight = 512,
         .sRGB = 1

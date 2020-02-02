@@ -38,7 +38,7 @@ int main(int argc, char** argv)
     is.read(volume);
 
     float rgba[] = {
-            0.f, 0.f, 0.f, 0.f,
+            0.f, 0.f, 0.f, .01f,
             0.f, 1.f, .5f, .25f,
             1.f, 1.f, 1.f, .5f,
             1.f, 1.f, .4f, .75f,
@@ -49,6 +49,6 @@ int main(int argc, char** argv)
 
     vkt::RenderState renderState;
     renderState.renderAlgo = vkt::RenderAlgo::MultiScattering;
-    renderState.rgbaLookupTableAlbedo = lut.getResourceHandle();
+    renderState.rgbaLookupTable = lut.getResourceHandle();
     vkt::Render(volume, renderState);
 }
