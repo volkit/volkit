@@ -74,6 +74,7 @@ set(HEADERS
 )
 
 set(SOURCES
+    Aggregates.cpp
     Copy.cpp
     CudaTimer.cpp
     Decompose.cpp
