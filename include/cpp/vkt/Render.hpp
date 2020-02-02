@@ -67,6 +67,9 @@ namespace vkt
         //! Height of the rendering viewport
         int viewportHeight = 512;
 
+        //! Convert final colors from linear to sRGB
+        vkt::Bool sRGB = 1;
+
         ///@}
 
     };

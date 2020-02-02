@@ -70,6 +70,9 @@ typedef struct
     //! Height of the rendering viewport
     int viewportHeight;
 
+    //! Convert final colors from linear to sRGB
+    vktBool sRGB;
+
     ///@}
 
 } vktRenderState_t;
@@ -86,7 +89,8 @@ static void vktRenderStateDefaultInit(vktRenderState_t* renderState)
         1.f,
         vktResourceHandle(-1),
         512,
-        512
+        512,
+        1
         };
 #else
     *renderState = (vktRenderState_t) {
@@ -98,7 +102,8 @@ static void vktRenderStateDefaultInit(vktRenderState_t* renderState)
         .majorant = 1.f,
         .rgbaLookupTableAlbedo = -1,
         .viewportWidth = 512,
-        .viewportHeight = 512
+        .viewportHeight = 512,
+        .sRGB = 1
         };
 #endif
 }

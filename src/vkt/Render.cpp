@@ -230,6 +230,10 @@ void ViewerCPU::on_display()
     // display the rendered image
 
     auto bgcolor = background_color();
+    if (renderState.sRGB)
+        glEnable(GL_FRAMEBUFFER_SRGB);
+    else
+        glDisable(GL_FRAMEBUFFER_SRGB);
     glClearColor(bgcolor.x, bgcolor.y, bgcolor.z, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

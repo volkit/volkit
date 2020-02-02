@@ -4,12 +4,16 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 
 /*! VKTAPI */
 #define VKTAPI
 
 namespace vkt
 {
+    /*! Boolean */
+    typedef uint8_t Bool;
+
     /*! Error constants */
     enum Error
     {
