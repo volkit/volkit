@@ -32,7 +32,6 @@ namespace vkt
                 );
         StructuredVolume(StructuredVolume& rhs) = default;
         StructuredVolume(StructuredVolume&& rhs) = default;
-       ~StructuredVolume();
 
         StructuredVolume& operator=(StructuredVolume& rhs) = default;
         StructuredVolume& operator=(StructuredVolume&& rhs) = default;

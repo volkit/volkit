@@ -48,10 +48,6 @@ namespace vkt
     {
     }
 
-    StructuredVolume::~StructuredVolume()
-    {
-    }
-
     void StructuredVolume::setDims(int32_t dimX, int32_t dimY, int32_t dimZ)
     {
         setDims(Vec3i(dimX, dimY, dimZ));
