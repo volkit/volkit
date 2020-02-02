@@ -122,7 +122,7 @@ void ViewerCPU::on_display()
     {
         using namespace vkt;
 
-        texture_ref<vec4f, 1> albedo_ref;
+        texture_ref<vec4f, 1> albedo_ref(0);
 
         if (renderState.rgbaLookupTableAlbedo != ResourceHandle(-1))
         {
