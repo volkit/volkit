@@ -38,16 +38,18 @@ int main(int argc, char** argv)
     is.read(volume);
 
     float rgba[] = {
-            0.f, 0.f, 0.f, .01f,
-            0.f, 1.f, .5f, .25f,
-            1.f, 1.f, 1.f, .5f,
-            1.f, 1.f, .4f, .75f,
+            1.f, 1.f, 1.f, .005f,
+            0.f, .1f, .1f, .25f,
+            .5f, .5f, .7f, .5f,
+            .7f, .7f, .07f, .75f,
             1.f, .3f, .3f, 1.f
             };
     vkt::LookupTable lut(5,1,1,vkt::ColorFormat::RGBA32F);
     std::memcpy(lut.getData(), rgba, sizeof(rgba));
 
     vkt::RenderState renderState;
+    //renderState.renderAlgo = vkt::RenderAlgo::RayMarching;
+    //renderState.renderAlgo = vkt::RenderAlgo::ImplicitIso;
     renderState.renderAlgo = vkt::RenderAlgo::MultiScattering;
     renderState.rgbaLookupTable = lut.getResourceHandle();
     vkt::Render(volume, renderState);

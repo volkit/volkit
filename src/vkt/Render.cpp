@@ -118,43 +118,47 @@ void ViewerCPU::on_display()
         return volume_ref;
     };
 
-    auto prepareAlbedoLUT = [&]()
+    auto prepareTransfunc = [&]()
     {
         using namespace vkt;
 
-        texture_ref<vec4f, 1> albedo_ref(0);
+        texture_ref<vec4f, 1> transfunc_ref(0);
 
         if (renderState.rgbaLookupTable != ResourceHandle(-1))
         {
             LookupTable* lut = (LookupTable*)GetManagedResource(renderState.rgbaLookupTable);
 
-            albedo_ref = texture_ref<vec4f, 1>(lut->getDims().x);
-            albedo_ref.set_filter_mode(Nearest);
-            albedo_ref.set_address_mode(Clamp);
-            albedo_ref.reset((vec4*)lut->getData());
+            transfunc_ref = texture_ref<vec4f, 1>(lut->getDims().x);
+            transfunc_ref.set_filter_mode(Nearest);
+            transfunc_ref.set_address_mode(Clamp);
+            transfunc_ref.reset((vec4*)lut->getData());
         }
 
-        return albedo_ref;
+        return transfunc_ref;
     };
 
-    auto prepareRayMarchingKernel = [&](auto volume_ref)
+    auto prepareRayMarchingKernel = [&](auto volume_ref, auto transfunc_ref)
     {
         using VolumeRef = decltype(volume_ref);
+        using TransfuncRef = decltype(transfunc_ref);
 
-        return RayMarchingKernel<VolumeRef>{
+        return RayMarchingKernel<VolumeRef, TransfuncRef>{
                 bbox,
                 volume_ref,
+                transfunc_ref,
                 renderState.dtRayMarching
                 };
     };
 
-    auto prepareImplicitIsoKernel = [&](auto volume_ref)
+    auto prepareImplicitIsoKernel = [&](auto volume_ref, auto transfunc_ref)
     {
         using VolumeRef = decltype(volume_ref);
+        using TransfuncRef = decltype(transfunc_ref);
 
-        ImplicitIsoKernel<VolumeRef> kernel;
+        ImplicitIsoKernel<VolumeRef, TransfuncRef> kernel;
         kernel.bbox = bbox;
         kernel.volume = volume_ref;
+        kernel.transfunc = transfunc_ref;
         kernel.numIsoSurfaces = renderState.numIsoSurfaces;
         std::memcpy(
             &kernel.isoSurfaces,
@@ -197,17 +201,17 @@ void ViewerCPU::on_display()
 
         if (renderState.renderAlgo == vkt::RenderAlgo::RayMarching)
         {
-            auto kernel = prepareRayMarchingKernel(prepareTexture(TexelType{}));
+            auto kernel = prepareRayMarchingKernel(prepareTexture(TexelType{}), prepareTransfunc());
             host_sched.frame(kernel, sparams);
         }
         else if (renderState.renderAlgo == vkt::RenderAlgo::ImplicitIso)
         {
-            auto kernel = prepareImplicitIsoKernel(prepareTexture(TexelType{}));
+            auto kernel = prepareImplicitIsoKernel(prepareTexture(TexelType{}), prepareTransfunc());
             host_sched.frame(kernel, sparams);
         }
         else if (renderState.renderAlgo == vkt::RenderAlgo::MultiScattering)
         {
-            auto kernel = prepareMultiScatteringKernel(prepareTexture(TexelType{}), prepareAlbedoLUT());
+            auto kernel = prepareMultiScatteringKernel(prepareTexture(TexelType{}), prepareTransfunc());
             host_sched.frame(kernel, sparams);
         }
     };

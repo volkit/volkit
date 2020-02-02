@@ -17,7 +17,7 @@
 // Ray marching with absorption plus emission model
 //
 
-template <typename Volume>
+template <typename Volume, typename Transfunc>
 struct RayMarchingKernel
 {
     template <typename Ray>
@@ -50,7 +50,11 @@ struct RayMarchingKernel
             voxel /= S(numeric_limits<typename Volume::value_type>::max());
 
             // classification
-            C color(voxel, voxel, voxel, voxel);
+            C color;
+            if (transfunc)
+                color = tex1D(transfunc, voxel);
+            else
+                color = C(voxel);
 
             // opacity correction
             color.w = S(1.f) - pow(S(1.f) - color.w, S(dt));
@@ -82,7 +86,7 @@ struct RayMarchingKernel
 
     visionaray::aabb bbox;
     Volume volume;
-    //Transfunc transfunc;
+    Transfunc transfunc;
     float dt;
 };
 
@@ -91,7 +95,7 @@ struct RayMarchingKernel
 // Implicit iso-surface rendering
 //
 
-template <typename Volume>
+template <typename Volume, typename Transfunc>
 struct ImplicitIsoKernel
 {
     template <typename T>
@@ -155,11 +159,18 @@ struct ImplicitIsoKernel
                     if ((last <= isoSurfaces[i] && voxel >= isoSurfaces[i])
                      || (last >= isoSurfaces[i] && voxel <= isoSurfaces[i]))
                     {
+                        C color;
+                        if (transfunc)
+                            color = tex1D(transfunc, voxel);
+                        else
+                            color = C(voxel);
+                        vector<3, S> albedo = color.xyz();
+
                         isoT = t;
                         vector<3, S> N = normalize(gradient(tex_coord));
                         vector<3, S> ka(S(.2f));
-                        vector<3, S> kd(dot(N, -ray.dir) * voxel);
-                        result.color = C(ka + kd, S(1.f));
+                        vector<3, S> kd(max(0.f, dot(N, -ray.dir)) * voxel);
+                        result.color = C(ka + albedo * kd, S(1.f));
                     }
                 }
             }
@@ -179,6 +190,7 @@ struct ImplicitIsoKernel
 
     visionaray::aabb bbox;
     Volume volume;
+    Transfunc transfunc;
     uint16_t numIsoSurfaces;
     float isoSurfaces[vkt::RenderState::MaxIsoSurfaces];
     float dt;
@@ -273,7 +285,7 @@ struct MultiScatteringKernel
                 if (transfunc)
                 {
                     vec4 rgba = tex1D(transfunc, mu(r.ori));
-                    albedo = rgba.xyz() * rgba.w;
+                    albedo = rgba.xyz();
                 }
                 else
                     albedo = vec3(1.f-mu(r.ori));
