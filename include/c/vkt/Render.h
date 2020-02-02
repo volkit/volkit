@@ -69,7 +69,7 @@ typedef struct
 
 } vktRenderState_t;
 
-inline void vktRenderStateDefaultInit(vktRenderState_t* renderState)
+static void vktRenderStateDefaultInit(vktRenderState_t* renderState)
 {
 #ifdef __cplusplus
     *renderState = {

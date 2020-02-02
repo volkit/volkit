@@ -12,9 +12,11 @@
 namespace vkt
 {
     template <typename T>
-    class Array3D : public ManagedBuffer
+    class Array3D : public ManagedBuffer<T>
     {
     public:
+        typedef ManagedBuffer<T> Base;
+
         typedef T value_type;
         typedef T* iterator;
         typedef T const* const_iterator;
@@ -23,68 +25,46 @@ namespace vkt
         Array3D() = default;
 
         inline Array3D(Vec3i const& dims)
-            : dims_(dims)
+            : Base(dims.x * sizeof(dims.y) * dims.z * sizeof(T))
+            , dims_(dims)
         {
-            ManagedBuffer::allocate(numElements() * sizeof(T));
         }
 
-        inline Array3D(Array3D& rhs)
-            : dims_(rhs.dims_)
-        {
-            ManagedBuffer::allocate(numElements() * sizeof(T));
+        Array3D(Array3D& rhs) = default;
+        Array3D(Array3D&& rhs) = default;
+       ~Array3D() = default;
 
-            ManagedBuffer::copy((ManagedBuffer&)rhs);
-        }
-
-        inline ~Array3D()
-        {
-            ManagedBuffer::deallocate();
-        }
-
-        inline Array3D& operator=(Array3D& rhs)
-        {
-            if (&rhs != this)
-            {
-                dims_ = rhs.dims_;
-
-                ManagedBuffer::deallocate();
-
-                ManagedBuffer::allocate(numElements() * sizeof(T));
-
-                ManagedBuffer::copy((ManagedBuffer&)rhs);
-            }
-
-            return *this;
-        }
+        Array3D& operator=(Array3D& rhs) = default;
+        Array3D& operator=(Array3D&& rhs) = default;
 
         inline iterator begin()
         {
-            return reinterpret_cast<T*>(ManagedBuffer::data_);
+            return reinterpret_cast<T*>(Base::data_);
         }
 
         inline const_iterator begin() const
         {
-            return reinterpret_cast<T const*>(ManagedBuffer::data_);
+            return reinterpret_cast<T const*>(Base::data_);
         }
 
         inline const_iterator cbegin()
         {
-            return reinterpret_cast<T const*>(ManagedBuffer::data_);
+            return reinterpret_cast<T const*>(Base::data_);
         }
 
         inline iterator end()
         {
-            return reinterpret_cast<T*>(ManagedBuffer::data_) + numElements();
+            return reinterpret_cast<T*>(Base::data_) + numElements();
         }
 
         inline const_iterator end() const
         {
-            return reinterpret_cast<T const*>(ManagedBuffer::data_) + numElements();
+            return reinterpret_cast<T const*>(Base::data_) + numElements();
         }
 
         inline const_iterator cend()
         {
-            return reinterpret_cast<T const*>(ManagedBuffer::data_) + numElements();
+            return reinterpret_cast<T const*>(Base::data_) + numElements();
         }
 
         inline T& operator[](Vec3i const& index)
@@ -112,16 +92,16 @@ namespace vkt
 
         inline T* data()
         {
-            migrate();
+            Base::migrate();
 
-            return reinterpret_cast<T*>(ManagedBuffer::data_);
+            return reinterpret_cast<T*>(Base::data_);
         }
 
         inline T const* data() const
         {
             const_cast<Array3D<T>*>(this)->migrate();
 
-            return reinterpret_cast<T const*>(ManagedBuffer::data_);
+            return reinterpret_cast<T const*>(Base::data_);
         }
 
         inline Vec3i dims() const

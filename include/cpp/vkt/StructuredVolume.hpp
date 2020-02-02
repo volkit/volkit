@@ -12,7 +12,7 @@
 
 namespace vkt
 {
-    class StructuredVolume : public ManagedBuffer
+    class StructuredVolume : public ManagedBuffer<uint8_t>
     {
     public:
         constexpr static uint16_t GetMaxBytesPerVoxel() { return 4; }
@@ -30,11 +30,11 @@ namespace vkt
                 float mappingLo = 0.f,
                 float mappingHi = 1.f
                 );
-        StructuredVolume(StructuredVolume& rhs);
+        StructuredVolume(StructuredVolume& rhs) = default;
         StructuredVolume(StructuredVolume&& rhs) = default;
        ~StructuredVolume();
 
-        StructuredVolume& operator=(StructuredVolume& rhs);
+        StructuredVolume& operator=(StructuredVolume& rhs) = default;
         StructuredVolume& operator=(StructuredVolume&& rhs) = default;
 
         void setDims(int32_t dimX, int32_t dimY, int32_t dimZ);

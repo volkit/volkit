@@ -7,7 +7,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "Memory.hpp"
+#include <vkt/Memory.hpp>
 
 namespace vkt
 {

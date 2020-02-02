@@ -1,8 +1,9 @@
 // This file is distributed under the MIT license.
 // See the LICENSE file for details.
 
+#include <vkt/Memory.hpp>
+
 #include "macros.hpp"
-#include "Memory.hpp"
 #include "Memory_cuda.hpp"
 #include "Memory_serial.hpp"
 

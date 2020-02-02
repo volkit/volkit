@@ -11,8 +11,9 @@
 #include <cuda_runtime_api.h>
 #endif
 
+#include <vkt/Memory.hpp>
+
 #include "macros.hpp"
-#include "Memory.hpp"
 
 namespace vkt
 {

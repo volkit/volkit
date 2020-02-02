@@ -81,7 +81,7 @@ set(SOURCES
     Fill.cpp
     Flip.cpp
     InputStream.cpp
-    ManagedBuffer.cpp
+    ManagedResource.cpp
     Memory.cpp
     RawFile.cpp
     Render.cpp

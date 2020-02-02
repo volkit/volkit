@@ -21,7 +21,8 @@
 namespace vkt
 {
     StructuredVolume::StructuredVolume()
-        : dims_(0, 0 , 0)
+        : ManagedBuffer(0)
+        , dims_(0, 0 , 0)
         , bytesPerVoxel_(1)
         , dist_(1.f, 1.f, 1.f)
         , voxelMapping_(0.f, 1.f)
@@ -39,47 +40,16 @@ namespace vkt
             float mappingLo,
             float mappingHi
             )
-        : dims_(dimX, dimY, dimZ)
+        : ManagedBuffer(dimX * size_t(dimY) * dimZ * bytesPerVoxel)
+        , dims_(dimX, dimY, dimZ)
         , bytesPerVoxel_(bytesPerVoxel)
         , dist_(distX, distY, distZ)
         , voxelMapping_(mappingLo, mappingHi)
     {
-        ManagedBuffer::allocate(getSizeInBytes());
-    }
-
-    StructuredVolume::StructuredVolume(StructuredVolume& rhs)
-        : dims_(rhs.dims_)
-        , bytesPerVoxel_(rhs.bytesPerVoxel_)
-        , dist_(rhs.dist_)
-        , voxelMapping_(rhs.voxelMapping_)
-    {
-        ManagedBuffer::allocate(getSizeInBytes());
-
-        ManagedBuffer::copy((ManagedBuffer&)rhs);
     }
 
     StructuredVolume::~StructuredVolume()
     {
-        ManagedBuffer::deallocate();
-    }
-
-    StructuredVolume& StructuredVolume::operator=(StructuredVolume& rhs)
-    {
-        if (&rhs != this)
-        {
-            dims_ = rhs.dims_;
-            bytesPerVoxel_ = rhs.bytesPerVoxel_;
-            dist_ = rhs.dist_;
-            voxelMapping_ = rhs.voxelMapping_;
-
-            ManagedBuffer::deallocate();
-
-            ManagedBuffer::allocate(getSizeInBytes());
-
-            ManagedBuffer::copy((ManagedBuffer&)rhs);
-        }
-
-        return *this;
     }
 
     void StructuredVolume::setDims(int32_t dimX, int32_t dimY, int32_t dimZ)
