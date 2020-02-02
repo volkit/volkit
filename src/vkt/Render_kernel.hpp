@@ -198,7 +198,10 @@ struct MultiScatteringKernel
         using namespace visionaray;
 
         float voxel = convert_to_float(tex3D(volume, pos / bbox.size()));
-        voxel /= 255.f;
+
+        // normalize to [0..1]
+        voxel /= float(numeric_limits<typename Volume::value_type>::max());
+
         return voxel;
     }
 
