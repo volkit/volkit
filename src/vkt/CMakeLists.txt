@@ -44,6 +44,43 @@ endif()
 
 
 #---------------------------------------------------------------------------------------------------
+# ImGui submodule
+#
+
+
+if(VKT_ENABLE_IMGUI)
+    # Make visible for config file creation
+
+    # That's a submodule after all, so just set to FOUND
+    set(IMGUI_FOUND FOUND)
+    set(__VKT_USED_PACKAGES ${__VKT_USED_PACKAGES} IMGUI)
+
+
+    # ImGui is compiled directly into the library
+    set(IMGUI_DIR ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui)
+    set(IMGUI_INCLUDE_DIR ${IMGUI_DIR})
+
+    include_directories(${IMGUI_INCLUDE_DIR})
+
+    set(IMGUI_HEADERS
+        ${IMGUI_INCLUDE_DIR}/imconfig.h
+        ${IMGUI_INCLUDE_DIR}/imgui.h
+        ${IMGUI_INCLUDE_DIR}/imgui_internal.h
+        ${IMGUI_INCLUDE_DIR}/imstb_rectpack.h
+        ${IMGUI_INCLUDE_DIR}/imstb_textedit.h
+        ${IMGUI_INCLUDE_DIR}/imstb_truetype.h
+    )
+
+    set(IMGUI_SOURCES
+        ${IMGUI_DIR}/imgui.cpp
+        ${IMGUI_DIR}/imgui_demo.cpp
+        ${IMGUI_DIR}/imgui_draw.cpp
+        ${IMGUI_DIR}/imgui_widgets.cpp
+    )
+endif()
+
+
+#---------------------------------------------------------------------------------------------------
 # Create config file
 #
 
@@ -98,7 +135,13 @@ vkt_cuda_compile(CUDA_SOURCES
     Fill_cuda.cu
 )
 
-vkt_add_library(volkit ${HEADERS} ${SOURCES} ${CUDA_SOURCES})
+vkt_add_library(volkit
+    ${HEADERS}
+    ${SOURCES}
+    ${IMGUI_HEADERS}
+    ${IMGUI_SOURCES}
+    ${CUDA_SOURCES}
+)
 
 
 # Explicitly link with visionaray_common

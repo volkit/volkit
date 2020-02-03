@@ -32,6 +32,7 @@ option(BUILD_SHARED_LIBS "Build all libraries as shared libraries instead of sta
 option(VKT_ENABLE_WARNINGS "Enable all warnings" ON)
 option(VKT_ENABLE_PEDANTIC "Compile with pedantic enabled (Ignored if warnings are disabled)" ON)
 option(VKT_ENABLE_CUDA "Use CUDA, if available" ON)
+option(VKT_ENABLE_IMGUI "Use Dear ImGui (git submodule)" ON)
 option(VKT_MACOSX_BUNDLE "Build executables as application bundles on macOS" ON)
 
 #---------------------------------------------------------------------------------------------------
