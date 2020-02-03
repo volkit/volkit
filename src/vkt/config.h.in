@@ -7,4 +7,5 @@
 // Changes will be lost the next time cmake is run.
 
 #cmakedefine01 VKT_HAVE_CUDA
+#cmakedefine01 VKT_HAVE_GLEW
 #cmakedefine01 VKT_HAVE_IMGUI

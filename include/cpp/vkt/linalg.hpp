@@ -23,6 +23,7 @@ namespace vkt
         return a.x == b.x && a.y == b.y;
     }
 
+
     struct Vec3f
     {
         Vec3f() {}
@@ -36,6 +37,54 @@ namespace vkt
         float x;
         float y;
         float z;
+    };
+
+    inline Vec3f operator+(Vec3f const& a, Vec3f const& b)
+    {
+        return Vec3f(a.x + b.x, a.y + b.y, a.z + b.z);
+    }
+
+    inline Vec3f operator*(float a, Vec3f const& b)
+    {
+        return Vec3f(a * b.x, a * b.y, a * b.z);
+    }
+
+
+    struct Vec4f
+    {
+        Vec4f() {}
+        Vec4f(float x, float y, float z, float w)
+            : x(x)
+            , y(y)
+            , z(z)
+            , w(w)
+        {
+        }
+
+        float x;
+        float y;
+        float z;
+        float w;
+    };
+
+
+    struct Vec2i
+    {
+        Vec2i() {}
+        Vec2i(int a)
+            : x(a)
+            , y(a)
+        {
+        }
+
+        Vec2i(int x, int y)
+            : x(x)
+            , y(y)
+        {
+        }
+
+        int x;
+        int y;
     };
 
 

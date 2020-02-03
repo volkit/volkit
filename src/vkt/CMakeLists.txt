@@ -126,6 +126,7 @@ set(SOURCES
     Render.cpp
     Scan.cpp
     StructuredVolume.cpp
+    TransfuncEditor.cpp
     Transform.cpp
     Voxel.cpp
 )

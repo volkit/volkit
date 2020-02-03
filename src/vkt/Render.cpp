@@ -36,6 +36,7 @@
 
 #include "Render_kernel.hpp"
 #include "StructuredVolume_impl.hpp"
+#include "TransfuncEditor.hpp"
 
 using namespace visionaray;
 
@@ -64,6 +65,8 @@ struct ViewerCPU : ViewerBase
     tiled_sched<RayType>                      host_sched;
     unsigned                                  frame_num;
 
+    vkt::TransfuncEditor                      transfuncEditor;
+
     ViewerCPU(
         vkt::StructuredVolume& volume,
         vkt::RenderState const& renderState,
@@ -90,6 +93,8 @@ ViewerCPU::ViewerCPU(
     , renderState(renderState)
     , host_sched(numThreads)
 {
+    if (renderState.rgbaLookupTable != vkt::ResourceHandle(-1))
+        transfuncEditor.setLookupTableResource(renderState.rgbaLookupTable);
 }
 
 void ViewerCPU::clearFrame()
@@ -100,6 +105,9 @@ void ViewerCPU::clearFrame()
 
 void ViewerCPU::on_display()
 {
+    if (transfuncEditor.updated())
+        clearFrame();
+
     // Prepare a kernel with the volume set up appropriately
     // according to the provided texel type
     auto prepareTexture = [&](auto texel)
@@ -126,7 +134,9 @@ void ViewerCPU::on_display()
 
         if (renderState.rgbaLookupTable != ResourceHandle(-1))
         {
-            LookupTable* lut = (LookupTable*)GetManagedResource(renderState.rgbaLookupTable);
+            LookupTable* lut = transfuncEditor.getUpdatedLookupTable();
+            if (lut == nullptr)
+                lut = (LookupTable*)GetManagedResource(renderState.rgbaLookupTable);
 
             transfunc_ref = texture_ref<vec4f, 1>(lut->getDims().x);
             transfunc_ref.set_filter_mode(Nearest);
@@ -242,6 +252,12 @@ void ViewerCPU::on_display()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     host_rt.display_color_buffer();
+
+    glDisable(GL_FRAMEBUFFER_SRGB);
+    if (have_imgui_support() && renderState.rgbaLookupTable != vkt::ResourceHandle(-1))
+    {
+        transfuncEditor.show();
+    }
 }
 
 void ViewerCPU::on_mouse_move(visionaray::mouse_event const& event)
