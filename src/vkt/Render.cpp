@@ -168,7 +168,7 @@ void ViewerCPU::on_display()
         kernel.dt = renderState.dtRayMarching;
         kernel.width = width();
         kernel.height = height();
-        kernel.frameNum = frame_num + 1;
+        kernel.frameNum = frame_num;
         kernel.accumBuffer = accumBuffer.data();
         kernel.sRGB = (bool)renderState.sRGB;
 
@@ -193,7 +193,7 @@ void ViewerCPU::on_display()
         kernel.dt = renderState.dtImplicitIso;
         kernel.width = width();
         kernel.height = height();
-        kernel.frameNum = frame_num + 1;
+        kernel.frameNum = frame_num;
         kernel.accumBuffer = accumBuffer.data();
         kernel.sRGB = (bool)renderState.sRGB;
 
@@ -214,7 +214,7 @@ void ViewerCPU::on_display()
         kernel.heightf_ = heightf;
         kernel.width = width();
         kernel.height = height();
-        kernel.frameNum = frame_num + 1;
+        kernel.frameNum = frame_num;
         kernel.accumBuffer = accumBuffer.data();
         kernel.sRGB = (bool)renderState.sRGB;
 
@@ -232,6 +232,7 @@ void ViewerCPU::on_display()
                 std::unique_lock<std::mutex> l(displayMutex);
                 // swap render targets
                 frontBufferIndex = !frontBufferIndex;
+                ++frame_num;
             }
 
             renderFuture = std::async(
@@ -267,11 +268,6 @@ void ViewerCPU::on_display()
                                 prepareTransfunc()
                                 );
                         host_sched.frame(kernel, sparams);
-                    }
-
-                    {
-                        std::unique_lock<std::mutex> l(displayMutex);
-                        ++frame_num;
                     }
                 });
         }

@@ -2,7 +2,7 @@
 // See the LICENSE file for details.
 
 #pragma once
-#include <iostream>
+
 #include <visionaray/math/aabb.h>
 #include <visionaray/math/intersect.h>
 #include <visionaray/math/limits.h>
