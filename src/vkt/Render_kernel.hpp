@@ -2,7 +2,7 @@
 // See the LICENSE file for details.
 
 #pragma once
-
+#include <iostream>
 #include <visionaray/math/aabb.h>
 #include <visionaray/math/intersect.h>
 #include <visionaray/math/limits.h>
@@ -13,15 +13,31 @@
 #include <vkt/Render.hpp>
 
 
+struct AccumulationKernel
+{
+    int width;
+    int height;
+    unsigned frameNum;
+    visionaray::vec4f* accumBuffer = nullptr;
+
+    visionaray::vec4f accum(visionaray::vec4f src, int x, int y)
+    {
+        float alpha = 1.f / frameNum;
+        accumBuffer[y * width + x] = (1.f - alpha) * accumBuffer[y * width + x] + alpha * src;
+        return accumBuffer[y * width + x];
+    }
+};
+
+
 //-------------------------------------------------------------------------------------------------
 // Ray marching with absorption plus emission model
 //
 
 template <typename Volume, typename Transfunc>
-struct RayMarchingKernel
+struct RayMarchingKernel : AccumulationKernel
 {
     template <typename Ray>
-    auto operator()(Ray ray)
+    auto operator()(Ray ray, visionaray::random_generator<float>& gen, int x, int y)
     {
         using namespace visionaray;
 
@@ -33,13 +49,13 @@ struct RayMarchingKernel
         auto hit_rec = intersect(ray, bbox);
         auto t = hit_rec.tnear;
 
-        result.color = C(0.0);
-
         vector<3, S> boxSize(bbox.size());
         vector<3, S> pos = ray.ori + ray.dir * t;
         vector<3, S> tex_coord = pos / boxSize;
 
         vector<3, S> inc = ray.dir * S(dt) / boxSize;
+
+        C dst(0.f);
 
         while (any(t < hit_rec.tfar))
         {
@@ -63,9 +79,9 @@ struct RayMarchingKernel
             color.xyz() *= color.w;
 
             // front-to-back alpha compositing
-            result.color += select(
+            dst += select(
                     t < hit_rec.tfar,
-                    color * (1.0f - result.color.w),
+                    color * (1.0f - dst.w),
                     C(0.0)
                     );
 
@@ -80,6 +96,7 @@ struct RayMarchingKernel
             t += dt;
         }
 
+        result.color = accum(dst, x, y);
         result.hit = hit_rec.hit;
         return result;
     }
@@ -96,7 +113,7 @@ struct RayMarchingKernel
 //
 
 template <typename Volume, typename Transfunc>
-struct ImplicitIsoKernel
+struct ImplicitIsoKernel : AccumulationKernel
 {
     template <typename T>
     VSNRAY_FUNC
@@ -120,7 +137,7 @@ struct ImplicitIsoKernel
     }
 
     template <typename Ray>
-    auto operator()(Ray ray)
+    auto operator()(Ray ray, visionaray::random_generator<float>& gen, int x, int y)
     {
         using namespace visionaray;
 
@@ -132,8 +149,6 @@ struct ImplicitIsoKernel
         auto hit_rec = intersect(ray, bbox);
         auto t = hit_rec.tnear;
 
-        result.color = C(0.0);
-
         vector<3, S> boxSize(bbox.size());
         vector<3, S> pos = ray.ori + ray.dir * t;
         vector<3, S> tex_coord = pos / boxSize;
@@ -143,6 +158,8 @@ struct ImplicitIsoKernel
         S last(-1e20f);
 
         S isoT(-1e20f);
+
+        C dst(0.f);
 
         while (any(t < hit_rec.tfar))
         {
@@ -170,7 +187,7 @@ struct ImplicitIsoKernel
                         vector<3, S> N = normalize(gradient(tex_coord));
                         vector<3, S> ka(S(.2f));
                         vector<3, S> kd(max(0.f, dot(N, -ray.dir)) * voxel);
-                        result.color = C(ka + albedo * kd, S(1.f));
+                        dst = C(ka + albedo * kd, S(1.f));
                     }
                 }
             }
@@ -184,6 +201,7 @@ struct ImplicitIsoKernel
             last = voxel;
         }
 
+        result.color = accum(dst, x, y);
         result.hit = isoT >= S(-1e10f);
         return result;
     }
@@ -203,7 +221,7 @@ struct ImplicitIsoKernel
 //
 
 template <typename Volume, typename Transfunc>
-struct MultiScatteringKernel
+struct MultiScatteringKernel : AccumulationKernel
 {
     float mu(visionaray::vec3 const& pos)
     {
@@ -318,7 +336,7 @@ struct MultiScatteringKernel
         vec3 Ld = (1.0f - t)*vec3f(1.0f, 1.0f, 1.0f) + t * vec3f(0.5f, 0.7f, 1.0f);
         vec3 L = Ld * throughput;
 
-        result.color = vec4(L, 1.0f);
+        result.color = accum(vec4(L, 1.f), x, y);
         result.hit = hit_rec.hit;
         return result;
     }

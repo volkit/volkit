@@ -2,6 +2,7 @@
 // See the LICENSE file for details.
 
 #include <cstring>
+#include <future>
 #include <memory>
 
 #include <GL/glew.h>
@@ -61,11 +62,18 @@ struct ViewerCPU : ViewerBase
 
     aabb                                      bbox;
     thin_lens_camera                          cam;
-    cpu_buffer_rt<PF_RGBA32F, PF_UNSPECIFIED> host_rt;
+    // Two render targets for double buffering
+    cpu_buffer_rt<PF_RGBA32F, PF_UNSPECIFIED> host_rt[2];
     tiled_sched<RayType>                      host_sched;
+    std::vector<vec4>                         accumBuffer;
     unsigned                                  frame_num;
 
     vkt::TransfuncEditor                      transfuncEditor;
+
+    std::future<void>                         renderFuture;
+    std::mutex                                displayMutex;
+
+    int frontBufferIndex;
 
     ViewerCPU(
         vkt::StructuredVolume& volume,
@@ -92,6 +100,7 @@ ViewerCPU::ViewerCPU(
     , volume(volume)
     , renderState(renderState)
     , host_sched(numThreads)
+    , frontBufferIndex(0)
 {
     if (renderState.rgbaLookupTable != vkt::ResourceHandle(-1))
         transfuncEditor.setLookupTableResource(renderState.rgbaLookupTable);
@@ -99,8 +108,8 @@ ViewerCPU::ViewerCPU(
 
 void ViewerCPU::clearFrame()
 {
+    std::unique_lock<std::mutex> l(displayMutex);
     frame_num = 0;
-    host_rt.clear_color_buffer();
 }
 
 void ViewerCPU::on_display()
@@ -152,12 +161,17 @@ void ViewerCPU::on_display()
         using VolumeRef = decltype(volume_ref);
         using TransfuncRef = decltype(transfunc_ref);
 
-        return RayMarchingKernel<VolumeRef, TransfuncRef>{
-                bbox,
-                volume_ref,
-                transfunc_ref,
-                renderState.dtRayMarching
-                };
+        RayMarchingKernel<VolumeRef, TransfuncRef> kernel;
+        kernel.bbox = bbox;
+        kernel.volume = volume_ref;
+        kernel.transfunc = transfunc_ref;
+        kernel.dt = renderState.dtRayMarching;
+        kernel.width = width();
+        kernel.height = height();
+        kernel.frameNum = frame_num + 1;
+        kernel.accumBuffer = accumBuffer.data();
+
+        return kernel;
     };
 
     auto prepareImplicitIsoKernel = [&](auto volume_ref, auto transfunc_ref)
@@ -176,6 +190,10 @@ void ViewerCPU::on_display()
             sizeof(renderState.isoSurfaces)
             );
         kernel.dt = renderState.dtImplicitIso;
+        kernel.width = width();
+        kernel.height = height();
+        kernel.frameNum = frame_num + 1;
+        kernel.accumBuffer = accumBuffer.data();
 
         return kernel;
     };
@@ -186,43 +204,73 @@ void ViewerCPU::on_display()
         using TransfuncRef = decltype(transfunc_ref);
 
         float heightf(this->width());
-        return MultiScatteringKernel<VolumeRef, TransfuncRef>{
-                bbox,
-                volume_ref,
-                transfunc_ref,
-                renderState.majorant,
-                heightf
-                };
+        MultiScatteringKernel<VolumeRef, TransfuncRef> kernel;
+        kernel.bbox = bbox;
+        kernel.volume = volume_ref;
+        kernel.transfunc = transfunc_ref;
+        kernel.mu_ = renderState.majorant;
+        kernel.heightf_ = heightf;
+        kernel.width = width();
+        kernel.height = height();
+        kernel.frameNum = frame_num + 1;
+        kernel.accumBuffer = accumBuffer.data();
+
+        return kernel;
     };
 
     auto callKernel = [&](auto texel)
     {
         using TexelType = decltype(texel);
 
-        float alpha = 1.f / ++frame_num;
-        pixel_sampler::jittered_blend_type blend_params;
-        blend_params.sfactor = alpha;
-        blend_params.dfactor = 1.f - alpha;
-        auto sparams = make_sched_params(
-                blend_params,
-                cam,
-                host_rt
-                );
+        if (!renderFuture.valid()
+            || renderFuture.wait_for(std::chrono::seconds(0)) == std::future_status::ready)
+        {
+            {
+                std::unique_lock<std::mutex> l(displayMutex);
+                // swap render targets
+                frontBufferIndex = !frontBufferIndex;
+            }
 
-        if (renderState.renderAlgo == vkt::RenderAlgo::RayMarching)
-        {
-            auto kernel = prepareRayMarchingKernel(prepareTexture(TexelType{}), prepareTransfunc());
-            host_sched.frame(kernel, sparams);
-        }
-        else if (renderState.renderAlgo == vkt::RenderAlgo::ImplicitIso)
-        {
-            auto kernel = prepareImplicitIsoKernel(prepareTexture(TexelType{}), prepareTransfunc());
-            host_sched.frame(kernel, sparams);
-        }
-        else if (renderState.renderAlgo == vkt::RenderAlgo::MultiScattering)
-        {
-            auto kernel = prepareMultiScatteringKernel(prepareTexture(TexelType{}), prepareTransfunc());
-            host_sched.frame(kernel, sparams);
+            renderFuture = std::async(
+                [&,this]()
+                {
+                    pixel_sampler::jittered_type blend_params;
+                    auto sparams = make_sched_params(
+                            blend_params,
+                            cam,
+                            host_rt[!frontBufferIndex]
+                            );
+
+                    if (renderState.renderAlgo == vkt::RenderAlgo::RayMarching)
+                    {
+                        auto kernel = prepareRayMarchingKernel(
+                                prepareTexture(TexelType{}),
+                                prepareTransfunc()
+                                );
+                        host_sched.frame(kernel, sparams);
+                    }
+                    else if (renderState.renderAlgo == vkt::RenderAlgo::ImplicitIso)
+                    {
+                        auto kernel = prepareImplicitIsoKernel(
+                                prepareTexture(TexelType{}),
+                                prepareTransfunc()
+                                );
+                        host_sched.frame(kernel, sparams);
+                    }
+                    else if (renderState.renderAlgo == vkt::RenderAlgo::MultiScattering)
+                    {
+                        auto kernel = prepareMultiScatteringKernel(
+                                prepareTexture(TexelType{}),
+                                prepareTransfunc()
+                                );
+                        host_sched.frame(kernel, sparams);
+                    }
+
+                    {
+                        std::unique_lock<std::mutex> l(displayMutex);
+                        ++frame_num;
+                    }
+                });
         }
     };
 
@@ -251,7 +299,10 @@ void ViewerCPU::on_display()
     glClearColor(bgcolor.x, bgcolor.y, bgcolor.z, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    host_rt.display_color_buffer();
+    {
+        std::unique_lock<std::mutex> l(displayMutex);
+        host_rt[frontBufferIndex].display_color_buffer();
+    }
 
     glDisable(GL_FRAMEBUFFER_SRGB);
     if (have_imgui_support() && renderState.rgbaLookupTable != vkt::ResourceHandle(-1))
@@ -263,9 +314,7 @@ void ViewerCPU::on_display()
 void ViewerCPU::on_mouse_move(visionaray::mouse_event const& event)
 {
     if (event.buttons() != mouse::NoButton)
-    {
         clearFrame();
-    }
 
     ViewerBase::on_mouse_move(event);
 }
@@ -279,10 +328,19 @@ void ViewerCPU::on_space_mouse_move(visionaray::space_mouse_event const& event)
 
 void ViewerCPU::on_resize(int w, int h)
 {
+    if (renderFuture.valid())
+        renderFuture.wait();
+
     cam.set_viewport(0, 0, w, h);
     float aspect = w / static_cast<float>(h);
     cam.perspective(45.0f * constants::degrees_to_radians<float>(), aspect, 0.001f, 1000.0f);
-    host_rt.resize(w, h);
+
+    {
+        std::unique_lock<std::mutex> l(displayMutex);
+        accumBuffer.resize(w * h);
+        host_rt[0].resize(w, h);
+        host_rt[1].resize(w, h);
+    }
 
     clearFrame();
 
