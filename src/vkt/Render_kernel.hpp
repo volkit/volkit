@@ -18,13 +18,21 @@ struct AccumulationKernel
     int width;
     int height;
     unsigned frameNum;
+    bool sRGB;
     visionaray::vec4f* accumBuffer = nullptr;
 
     visionaray::vec4f accum(visionaray::vec4f src, int x, int y)
     {
+        using namespace visionaray;
+
         float alpha = 1.f / frameNum;
         accumBuffer[y * width + x] = (1.f - alpha) * accumBuffer[y * width + x] + alpha * src;
-        return accumBuffer[y * width + x];
+        vec4f result = accumBuffer[y * width + x];
+
+        if (sRGB)
+            result.xyz() = linear_to_srgb(result.xyz());
+
+        return result;
     }
 };
 

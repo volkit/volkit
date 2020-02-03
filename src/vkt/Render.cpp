@@ -170,6 +170,7 @@ void ViewerCPU::on_display()
         kernel.height = height();
         kernel.frameNum = frame_num + 1;
         kernel.accumBuffer = accumBuffer.data();
+        kernel.sRGB = (bool)renderState.sRGB;
 
         return kernel;
     };
@@ -194,6 +195,7 @@ void ViewerCPU::on_display()
         kernel.height = height();
         kernel.frameNum = frame_num + 1;
         kernel.accumBuffer = accumBuffer.data();
+        kernel.sRGB = (bool)renderState.sRGB;
 
         return kernel;
     };
@@ -214,6 +216,7 @@ void ViewerCPU::on_display()
         kernel.height = height();
         kernel.frameNum = frame_num + 1;
         kernel.accumBuffer = accumBuffer.data();
+        kernel.sRGB = (bool)renderState.sRGB;
 
         return kernel;
     };
@@ -292,10 +295,6 @@ void ViewerCPU::on_display()
     // display the rendered image
 
     auto bgcolor = background_color();
-    if (renderState.sRGB)
-        glEnable(GL_FRAMEBUFFER_SRGB);
-    else
-        glDisable(GL_FRAMEBUFFER_SRGB);
     glClearColor(bgcolor.x, bgcolor.y, bgcolor.z, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -304,11 +303,8 @@ void ViewerCPU::on_display()
         host_rt[frontBufferIndex].display_color_buffer();
     }
 
-    glDisable(GL_FRAMEBUFFER_SRGB);
     if (have_imgui_support() && renderState.rgbaLookupTable != vkt::ResourceHandle(-1))
-    {
         transfuncEditor.show();
-    }
 }
 
 void ViewerCPU::on_mouse_move(visionaray::mouse_event const& event)
