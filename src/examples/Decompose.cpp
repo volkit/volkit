@@ -7,7 +7,7 @@
 int main()
 {
     // Volume dimensions
-    vkt::Vec3i dims(256,256,256);
+    vkt::Vec3i dims(120,66,49);
 
     // Brick size
     vkt::Vec3i brickSize(16);
@@ -37,40 +37,22 @@ int main()
             mappingHi
             );
 
-    vkt::FillRange(
-            volume,
-            vkt::Vec3i(0,0,0),
-            dims,
-            .02f
-            );
+    // Put some values in
+    vkt::Fill(volume, .1f);
 
-    // Query the number of bricks the volume will be decomposed into
-    vkt::Vec3i numBricks;
-    vkt::BrickDecomposeGetNumBricks(
-            numBricks,
-            dims,
+    // The destination data structure
+    vkt::Array3D<vkt::StructuredVolume> decomp;
+
+    // Preallocate storage for the decomposition
+    vkt::BrickDecomposeResize(
+            decomp,
+            volume,
             brickSize,
             haloSizeNeg,
             haloSizePos
             );
 
-    // Allocate storage for numBricks bricks with halos
-    vkt::Array3D<vkt::StructuredVolume> decomp(numBricks);
-    for (vkt::StructuredVolume& vol : decomp)
-    {
-        vol = vkt::StructuredVolume(
-            haloSizeNeg.x + brickSize.x + haloSizePos.x,
-            haloSizeNeg.y + brickSize.y + haloSizePos.y,
-            haloSizeNeg.z + brickSize.z + haloSizePos.z,
-            bpv,
-            distX,
-            distY,
-            distZ,
-            mappingLo,
-            mappingHi
-            );
-    }
-
+    // Compute the decomposition
     vkt::BrickDecompose(
             decomp,
             volume,
@@ -80,7 +62,7 @@ int main()
             );
 
     vkt::Render(
-            decomp[vkt::Vec3i(0,0,0)],
+            decomp[decomp.dims()-vkt::Vec3i(1)],
             {}
             );
 }
