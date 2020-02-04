@@ -85,6 +85,8 @@ VKTAPI vktVec2f_t vktStructuredVolumeGetVoxelMapping2fv(vktStructuredVolume volu
 
 VKTAPI uint8_t* vktStructuredVolumeGetData(vktStructuredVolume volume);
 
+VKTAPI float vtkStructuredVolumeSampleLinear(int32_t x, int32_t y, int32_t z);
+
 VKTAPI void vktStructuredVolumeSetValue(vktStructuredVolume volume,
                                         int32_t x,
                                         int32_t y,

@@ -124,6 +124,7 @@ set(SOURCES
     Memory.cpp
     RawFile.cpp
     Render.cpp
+    Rotate.cpp
     Scan.cpp
     StructuredVolume.cpp
     TransfuncEditor.cpp
