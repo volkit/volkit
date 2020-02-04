@@ -18,7 +18,7 @@ struct vktStructuredVolume_impl;
 
 typedef struct vktStructuredVolume_impl* vktStructuredVolume;
 
-VKTAPI vktError vktBrickDecomposeSV(vktArray3D_StructuredVolume decomp,
+VKTAPI vktError vktBrickDecomposeSV(vktArray3D_vktStructuredVolume decomp,
                                     vktStructuredVolume source,
                                     int32_t brickSizeX,
                                     int32_t brickSizeY,

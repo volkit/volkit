@@ -12,7 +12,7 @@
 #define ARRAY3D_INIT(Type)                                                      \
     typedef struct                                                              \
     {                                                                           \
-        vkt##Type* data_;                                                       \
+        Type* data_;                                                            \
         vktVec3i_t dims_;                                                       \
     } vktArray3D_##Type;                                                        \
 
@@ -21,5 +21,5 @@
  * @brief  vktArray3D instantiations for some commonly used types
  */
 ///@{
-ARRAY3D_INIT(StructuredVolume)
+ARRAY3D_INIT(vktStructuredVolume)
 ///@}
