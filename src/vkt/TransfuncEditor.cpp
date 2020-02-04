@@ -243,6 +243,9 @@ namespace vkt
 
                 for (int x = lastEvent_.pos.x + inc; x != event.pos.x; x += inc)
                 {
+                    if (x < 0 || x >= canvasSize_.x)
+                        break;
+
                     float frac = (event.pos.x - x) / (float)std::abs(event.pos.x - lastEvent_.pos.x);
 
                     updated[4 * x + 3] = lerp(alpha1, alpha2, frac);
