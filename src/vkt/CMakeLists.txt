@@ -112,6 +112,7 @@ set(HEADERS
 
 set(SOURCES
     Aggregates.cpp
+    Arithmetic.cpp
     Copy.cpp
     CudaTimer.cpp
     Decompose.cpp
@@ -133,6 +134,7 @@ set(SOURCES
 )
 
 vkt_cuda_compile(CUDA_SOURCES
+    Arithmetic_cuda.cu
     Decompose_cuda.cu
     Fill_cuda.cu
 )
