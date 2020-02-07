@@ -11,8 +11,9 @@
 #include <vkt/config.h>
 
 #include <vkt/Aggregates.hpp>
-#include <vkt/linalg.hpp>
 #include <vkt/StructuredVolume.hpp>
+
+#include "linalg.hpp"
 
 namespace vkt
 {
@@ -41,13 +42,13 @@ namespace vkt
                     if (val < aggregates.min)
                     {
                         aggregates.min = val;
-                        aggregates.argmin = Vec3i(x, y, z);
+                        aggregates.argmin = { x, y, z };
                     }
 
                     if (val > aggregates.max)
                     {
                         aggregates.max = val;
-                        aggregates.argmax = Vec3i(x, y, z);
+                        aggregates.argmax = { x, y, z };
                     }
 
                     aggregates.mean += val;

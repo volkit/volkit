@@ -23,7 +23,7 @@ namespace vkt
         VKT_CALL__(
             FlipRange,
             volume,
-            Vec3i(0, 0, 0),
+            { 0, 0, 0 },
             volume.getDims(),
             axis
             );
@@ -45,8 +45,8 @@ namespace vkt
         VKT_CALL__(
             FlipRange,
             volume,
-            Vec3i(firstX, firstY, firstZ),
-            Vec3i(lastX, lastY, lastZ),
+            { firstX, firstY, firstZ },
+            { lastX, lastY, lastZ },
             axis
             );
 
@@ -71,7 +71,7 @@ vktError vktFlipSV(vktStructuredVolume volume, vktAxis axis)
     VKT_CALL__(
         FlipRange,
         volume->volume,
-        vkt::Vec3i(0, 0, 0),
+        { 0, 0, 0 },
         volume->volume.getDims(),
         (vkt::Axis)axis
         );
@@ -93,8 +93,8 @@ vktError vktFlipRangeSV(
     VKT_CALL__(
         FlipRange,
         volume->volume,
-        vkt::Vec3i(firstX, firstY, firstZ),
-        vkt::Vec3i(lastX, lastY, lastZ),
+        { firstX, firstY, firstZ },
+        { lastX, lastY, lastZ },
         (vkt::Axis)axis
         );
 

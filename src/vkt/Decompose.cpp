@@ -2,7 +2,6 @@
 // See the LICENSE file for details.
 
 #include <vkt/Decompose.hpp>
-#include <vkt/linalg.hpp>
 #include <vkt/StructuredVolume.hpp>
 
 #include <vkt/Decompose.h>
@@ -10,6 +9,7 @@
 
 #include "Decompose_cuda.hpp"
 #include "Decompose_serial.hpp"
+#include "linalg.hpp"
 #include "macros.hpp"
 
 //-------------------------------------------------------------------------------------------------
@@ -36,9 +36,9 @@ namespace vkt
                 BrickDecompose,
                 dest,
                 source,
-                Vec3i(brickSizeX, brickSizeY, brickSizeZ),
-                Vec3i(haloSizeNegX, haloSizeNegY, haloSizeNegZ),
-                Vec3i(haloSizePosX, haloSizePosY, haloSizePosZ)
+                { brickSizeX, brickSizeY, brickSizeZ },
+                { haloSizeNegX, haloSizeNegY, haloSizeNegZ },
+                { haloSizePosX, haloSizePosY, haloSizePosZ }
                 );
 
         return NoError;
@@ -74,9 +74,9 @@ namespace vkt
         return BrickDecomposeResize(
             dest,
             source,
-            Vec3i(brickSizeX, brickSizeY, brickSizeZ),
-            Vec3i(haloSizeNegX, haloSizeNegY, haloSizeNegZ),
-            Vec3i(haloSizePosX, haloSizePosY, haloSizePosZ)
+            { brickSizeX, brickSizeY, brickSizeZ },
+            { haloSizeNegX, haloSizeNegY, haloSizeNegZ },
+            { haloSizePosX, haloSizePosY, haloSizePosZ }
             );
     }
 
@@ -90,22 +90,22 @@ namespace vkt
     {
         Vec3i sourceDims = source.getDims();
 
-        Vec3i numBricks(
+        Vec3i numBricks{
             div_up(sourceDims.x, brickSize.x),
             div_up(sourceDims.y, brickSize.y),
             div_up(sourceDims.z, brickSize.z)
-            );
+            };
 
         // That's the size a minimal extended volume would have
         // that could accommodate numBricks
         Vec3i extendedDims = numBricks * brickSize;
 
         // That's, accordingly, the brick size (w/o halos) at the rightmost borders
-        Vec3i borderSize(
+        Vec3i borderSize{
             sourceDims.x % brickSize.x == 0 ? brickSize.x : brickSize.x - extendedDims.x + sourceDims.x,
             sourceDims.y % brickSize.y == 0 ? brickSize.y : brickSize.y - extendedDims.y + sourceDims.y,
             sourceDims.z % brickSize.z == 0 ? brickSize.z : brickSize.z - extendedDims.z + sourceDims.z
-            );
+            };
 
         // Allocate storage for numBricks bricks with halos
         dest = vkt::Array3D<vkt::StructuredVolume>(numBricks);
@@ -115,15 +115,15 @@ namespace vkt
             {
                 for (int x = 0; x < numBricks.x; ++x)
                 {
-                    Vec3i index(x, y, z);
+                    Vec3i index{x, y, z};
 
                     // Crop brick size according to volume boundaries
 
-                    Vec3i size(
+                    Vec3i size{
                         x < numBricks.x - 1 ? brickSize.x : borderSize.x,
                         y < numBricks.y - 1 ? brickSize.y : borderSize.y,
                         z < numBricks.z - 1 ? brickSize.z : borderSize.z
-                        );
+                        };
 
                     dest[index] = vkt::StructuredVolume(
                         haloSizeNeg.x + size.x + haloSizePos.x,

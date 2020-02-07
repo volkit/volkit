@@ -5,8 +5,9 @@
 
 #include <vkt/Array3D.hpp>
 #include <vkt/Copy.hpp>
-#include <vkt/linalg.hpp>
 #include <vkt/StructuredVolume.hpp>
+
+#include "linalg.hpp"
 
 namespace vkt
 {
@@ -24,13 +25,13 @@ namespace vkt
             {
                 for (int x = 0; x < dest.dims().x; ++x)
                 {
-                    Vec3i index(x, y, z);
+                    Vec3i index{x, y, z};
                     Vec3i first = index * brickSize;
-                    Vec3i last(
+                    Vec3i last{
                         std::min(first.x + brickSize.x, source.getDims().x),
                         std::min(first.y + brickSize.y, source.getDims().y),
                         std::min(first.z + brickSize.z, source.getDims().z)
-                        );
+                        };
                     first -= haloSizeNeg;
                     last += haloSizePos;
 

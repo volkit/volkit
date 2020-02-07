@@ -5,6 +5,10 @@
 
 #define VKT_CUDA_SAFE_CALL__(X) X                                               \
 
+//-------------------------------------------------------------------------------------------------
+// VKT_CALL__
+//
+
 #define VKT_CALL__(FUNC, ...)                                                   \
     vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();                  \
                                                                                 \
@@ -25,3 +29,13 @@
     else                                                                        \
     {                                                                           \
     }                                                                           \
+
+//-------------------------------------------------------------------------------------------------
+// CUDA host/device
+//
+
+#ifdef __CUDACC__
+#define VKT_FUNC __host__ __device__
+#else
+#define VKT_FUNC
+#endif

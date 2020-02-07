@@ -35,7 +35,7 @@ namespace vkt
         std::size_t getSizeInBytes() const;
 
     private:
-        Vec3i dims_ = Vec3i(0);
+        Vec3i dims_ = { 0, 0, 0 };
         ColorFormat format_ = ColorFormat::Unspecified;
 
     };

@@ -29,7 +29,7 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(0),
+            { 0, 0, 0 },
             dest.getDims()
             );
 
@@ -53,8 +53,8 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(firstX, firstY, firstZ),
-            Vec3i(lastX, lastY, lastZ)
+            { firstX, firstY, firstZ },
+            { lastX, lastY, lastZ }
             );
 
         return NoError;
@@ -91,7 +91,7 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(0),
+            { 0, 0, 0 },
             dest.getDims()
             );
 
@@ -115,8 +115,8 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(firstX, firstY, firstZ),
-            Vec3i(lastX, lastY, lastZ)
+            { firstX, firstY, firstZ },
+            { lastX, lastY, lastZ }
             );
 
         return NoError;
@@ -153,7 +153,7 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(0),
+            { 0, 0, 0 },
             dest.getDims()
             );
 
@@ -177,8 +177,8 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(firstX, firstY, firstZ),
-            Vec3i(lastX, lastY, lastZ)
+            { firstX, firstY, firstZ },
+            { lastX, lastY, lastZ }
             );
 
         return NoError;
@@ -215,7 +215,7 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(0),
+            { 0, 0, 0 },
             dest.getDims()
             );
 
@@ -239,8 +239,8 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(firstX, firstY, firstZ),
-            Vec3i(lastX, lastY, lastZ)
+            { firstX, firstY, firstZ },
+            { lastX, lastY, lastZ }
             );
 
         return NoError;
@@ -277,7 +277,7 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(0),
+            { 0, 0, 0 },
             dest.getDims()
             );
 
@@ -301,8 +301,8 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(firstX, firstY, firstZ),
-            Vec3i(lastX, lastY, lastZ)
+            { firstX, firstY, firstZ },
+            { lastX, lastY, lastZ }
             );
 
         return NoError;
@@ -339,7 +339,7 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(0),
+            { 0, 0, 0 },
             dest.getDims()
             );
 
@@ -363,8 +363,8 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(firstX, firstY, firstZ),
-            Vec3i(lastX, lastY, lastZ)
+            { firstX, firstY, firstZ },
+            { lastX, lastY, lastZ }
             );
 
         return NoError;
@@ -401,7 +401,7 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(0),
+            { 0, 0, 0 },
             dest.getDims()
             );
 
@@ -425,8 +425,8 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(firstX, firstY, firstZ),
-            Vec3i(lastX, lastY, lastZ)
+            { firstX, firstY, firstZ },
+            { lastX, lastY, lastZ }
             );
 
         return NoError;
@@ -463,7 +463,7 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(0),
+            { 0, 0, 0 },
             dest.getDims()
             );
 
@@ -486,8 +486,8 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(firstX, firstY, firstZ),
-            Vec3i(lastX, lastY, lastZ)
+            { firstX, firstY, firstZ },
+            { lastX, lastY, lastZ }
             );
 
         return NoError;
@@ -524,7 +524,7 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(0),
+            { 0, 0, 0 },
             dest.getDims()
             );
 
@@ -548,8 +548,8 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(firstX, firstY, firstZ),
-            Vec3i(lastX, lastY, lastZ)
+            { firstX, firstY, firstZ },
+            { lastX, lastY, lastZ }
             );
 
         return NoError;
@@ -586,7 +586,7 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(0),
+            { 0, 0, 0 },
             dest.getDims()
             );
 
@@ -610,8 +610,8 @@ namespace vkt
             dest,
             source1,
             source2,
-            Vec3i(firstX, firstY, firstZ),
-            Vec3i(lastX, lastY, lastZ)
+            { firstX, firstY, firstZ },
+            { lastX, lastY, lastZ }
             );
 
         return NoError;

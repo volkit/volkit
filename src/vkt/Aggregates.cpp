@@ -22,7 +22,7 @@ namespace vkt
 {
     VKTAPI Error ComputeAggregates(StructuredVolume& volume, Aggregates& aggregates)
     {
-        VKT_CALL__(ComputeAggregatesRange, volume, aggregates, Vec3i(0, 0, 0), volume.getDims());
+        VKT_CALL__(ComputeAggregatesRange, volume, aggregates, { 0, 0, 0 }, volume.getDims());
 
         return NoError;
     }

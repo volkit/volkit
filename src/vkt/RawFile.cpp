@@ -55,7 +55,7 @@ namespace vkt
             // Dimensions
             res = sscanf(str.c_str(), "%dx%dx%d", &dimx, &dimy, &dimz);
             if (res == 3)
-                dims_ = Vec3i(dimx, dimy, dimz);
+                dims_ = { dimx, dimy, dimz };
 
             res = sscanf(str.c_str(), "int%hu", &bpv);
             if (res == 1)

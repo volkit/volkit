@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include <vkt/Fill.hpp>
 #include <vkt/LookupTable.hpp>
 #include <vkt/Render.hpp>
@@ -7,7 +9,7 @@
 int main()
 {
     // Create a structured volume
-    vkt::Vec3i dims(256,128,100);
+    vkt::Vec3i dims = { 256,128,100 };
 
     int bpv = 1;
     vkt::StructuredVolume volume(
@@ -21,8 +23,8 @@ int main()
 
     vkt::FillRange(
             volume,
-            vkt::Vec3i(64,4,4),
-            vkt::Vec3i(192,124,96),
+            { 64,4,4 },
+            { 192,124,96 },
             1.f
             );
 
@@ -40,9 +42,9 @@ int main()
     vkt::Rotate(
             rotatedVolume,
             volume,
-            vkt::Vec3f(1.f,.3f,0.f),                     // rotation axis
-            45.f * M_PI / 180.f,                         // rotation angle in radians
-            vkt::Vec3f(dims.x*.5f,dims.y*.5f,dims.z*.5f) // center of rotation
+            { 1.f,.3f,0.f },                     // rotation axis
+            45.f * M_PI / 180.f,                 // rotation angle in radians
+            { dims.x*.5f,dims.y*.5f,dims.z*.5f } // center of rotation
             );
 
     float rgba[] = {

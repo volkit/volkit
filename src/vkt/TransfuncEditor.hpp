@@ -41,7 +41,7 @@ namespace vkt
         GLuint texture_ = GLuint(-1);
 
         // Drawing canvas size
-        Vec2i canvasSize_ = Vec2i(300, 150);
+        Vec2i canvasSize_ = { 300, 150 };
 
         // Mouse state for drawing
         struct MouseEvent
@@ -49,7 +49,7 @@ namespace vkt
             enum Type { PassiveMotion, Motion, Press, Release };
             enum Button { Left, Middle, Right, None };
 
-            Vec2i pos = Vec2i(0);
+            Vec2i pos = { 0, 0 };
             int button = None;
             Type type = Motion;
         };

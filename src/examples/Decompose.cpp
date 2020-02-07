@@ -7,14 +7,14 @@
 int main()
 {
     // Volume dimensions
-    vkt::Vec3i dims(120,66,49);
+    vkt::Vec3i dims = { 120,66,49 };
 
     // Brick size
-    vkt::Vec3i brickSize(16);
+    vkt::Vec3i brickSize = { 16, 16, 16 };
 
     // Halo / ghost cells
-    vkt::Vec3i haloSizeNeg(1,1,1);
-    vkt::Vec3i haloSizePos(1,1,1);
+    vkt::Vec3i haloSizeNeg = { 1, 1, 1 };
+    vkt::Vec3i haloSizePos = { 1, 1, 1 };
 
     int bpv = 1;
 
@@ -62,7 +62,7 @@ int main()
             );
 
     vkt::Render(
-            decomp[decomp.dims()-vkt::Vec3i(1)],
+            decomp[{0,0,0}],
             {}
             );
 }

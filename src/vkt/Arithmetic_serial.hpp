@@ -5,8 +5,9 @@
 
 #include <cmath>
 
-#include <vkt/linalg.hpp>
 #include <vkt/StructuredVolume.hpp>
+
+#include "linalg.hpp"
 
 namespace vkt
 {

@@ -30,7 +30,7 @@ namespace vkt
             RotateRange,
             dest,
             source,
-            Vec3i(0),
+            { 0, 0, 0 },
             source.getDims(),
             axis,
             angleInRadians,
@@ -58,11 +58,11 @@ vktError vktRotateSV(
         RotateRange,
         dest->volume,
         source->volume,
-        vkt::Vec3i(0),
+        { 0, 0, 0 },
         source->volume.getDims(),
-        vkt::Vec3f(axis.x, axis.y, axis.z),
+        { axis.x, axis.y, axis.z },
         angleInRadians,
-        vkt::Vec3f(centerOfRotation.x, centerOfRotation.y, centerOfRotation.z)
+        { centerOfRotation.x, centerOfRotation.y, centerOfRotation.z }
         );
 
     return vktNoError;

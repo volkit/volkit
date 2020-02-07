@@ -115,7 +115,7 @@ namespace vkt
         }
 
     private:
-        Vec3i dims_ = Vec3i(0);
+        Vec3i dims_ = { 0, 0, 0 };
 
     };
 

@@ -39,7 +39,7 @@ namespace vkt
         char const* mode_ = 0;
         FILE* file_ = 0;
 
-        Vec3i dims_ = Vec3i(0);
+        Vec3i dims_ = { 0, 0, 0 };
         uint16_t bytesPerVoxel_ = 0;
 
     };

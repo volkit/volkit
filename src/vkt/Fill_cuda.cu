@@ -7,6 +7,7 @@
 #include <vkt/Voxel.hpp>
 
 #include "Fill_cuda.hpp"
+#include "linalg.hpp"
 #include "macros.hpp"
 
 namespace vkt

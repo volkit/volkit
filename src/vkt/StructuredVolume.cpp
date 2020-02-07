@@ -5,13 +5,13 @@
 #include <cassert>
 #include <cstring> // memcpy
 
-#include <vkt/linalg.hpp>
 #include <vkt/StructuredVolume.hpp>
 #include <vkt/Voxel.hpp>
 
 #include <vkt/StructuredVolume.h>
 #include <vkt/System.h>
 
+#include "linalg.hpp"
 #include "StructuredVolume_impl.hpp"
 
 //-------------------------------------------------------------------------------------------------
@@ -22,10 +22,10 @@ namespace vkt
 {
     StructuredVolume::StructuredVolume()
         : ManagedBuffer(0)
-        , dims_(0, 0 , 0)
+        , dims_{0, 0 , 0}
         , bytesPerVoxel_(1)
-        , dist_(1.f, 1.f, 1.f)
-        , voxelMapping_(0.f, 1.f)
+        , dist_{1.f, 1.f, 1.f}
+        , voxelMapping_{0.f, 1.f}
     {
     }
 
@@ -41,16 +41,16 @@ namespace vkt
             float mappingHi
             )
         : ManagedBuffer(dimX * size_t(dimY) * dimZ * bytesPerVoxel)
-        , dims_(dimX, dimY, dimZ)
+        , dims_{dimX, dimY, dimZ}
         , bytesPerVoxel_(bytesPerVoxel)
-        , dist_(distX, distY, distZ)
-        , voxelMapping_(mappingLo, mappingHi)
+        , dist_{distX, distY, distZ}
+        , voxelMapping_{mappingLo, mappingHi}
     {
     }
 
     void StructuredVolume::setDims(int32_t dimX, int32_t dimY, int32_t dimZ)
     {
-        setDims(Vec3i(dimX, dimY, dimZ));
+        setDims({ dimX, dimY, dimZ });
     }
 
     void StructuredVolume::getDims(int32_t& dimX, int32_t& dimY, int32_t& dimZ)
@@ -88,7 +88,7 @@ namespace vkt
 
     void StructuredVolume::setDist(float distX, float distY, float distZ)
     {
-        dist_ = Vec3f(distX, distY, distZ);
+        dist_ = { distX, distY, distZ };
     }
 
     void StructuredVolume::getDist(float& distX, float& distY, float& distZ)
@@ -146,8 +146,8 @@ namespace vkt
         float yf2 = y + 1.f;
         float zf2 = z + 1.f;
 
-        Vec3i lo(xf1, yf1, zf1);
-        Vec3i hi(xf2, yf2, zf2);
+        Vec3i lo{ (int)xf1, (int)yf1, (int)zf1 };
+        Vec3i hi{ (int)xf2, (int)yf2, (int)zf2 };
 
         lo.x = clamp(lo.x, 0, dims_.x - 1);
         lo.y = clamp(lo.y, 0, dims_.y - 1);
@@ -157,7 +157,7 @@ namespace vkt
         hi.z = clamp(hi.z, 0, dims_.z - 1);
         hi.z = clamp(hi.z, 0, dims_.z - 1);
 
-        Vec3f frac(xf1 - lo.x, yf1 - lo.y, zf1 - lo.z);
+        Vec3f frac{ xf1 - lo.x, yf1 - lo.y, zf1 - lo.z };
 
         float v[8];
         getValue(lo.x, lo.y, lo.z, v[0]);

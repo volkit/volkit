@@ -32,7 +32,7 @@ namespace vkt
         Error readRange(StructuredVolume& dst,
                         Vec3i first,
                         Vec3i last,
-                        Vec3i dstOffset = Vec3i(0, 0, 0));
+                        Vec3i dstOffset = { 0, 0, 0});
 
     private:
         DataSource& dataSource_;

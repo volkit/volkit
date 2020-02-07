@@ -6,6 +6,8 @@
 #include <vkt/Rotate.hpp>
 #include <vkt/StructuredVolume.hpp>
 
+#include "linalg.hpp"
+
 namespace vkt
 {
     inline Mat3f quaternionToRotationMatrix(float re, Vec3f im)
@@ -23,15 +25,15 @@ namespace vkt
 
         Mat3f result;
 
-        result(0, 0) = 2.f * (ww + xx) - 1.f;
-        result(1, 0) = 2.f * (xy + zw);
-        result(2, 0) = 2.f * (xz - yw);
-        result(0, 1) = 2.f * (xy - zw);
-        result(1, 1) = 2.f * (ww + yy) - 1.f;
-        result(2, 1) = 2.f * (yz + xw);
-        result(0, 2) = 2.f * (xz + yw);
-        result(1, 2) = 2.f * (yz - xw);
-        result(2, 2) = 2.f * (ww + zz) - 1.f;
+        result.col0.x = 2.f * (ww + xx) - 1.f;
+        result.col0.y = 2.f * (xy + zw);
+        result.col0.z = 2.f * (xz - yw);
+        result.col1.x = 2.f * (xy - zw);
+        result.col1.y = 2.f * (ww + yy) - 1.f;
+        result.col1.z = 2.f * (yz + xw);
+        result.col2.x = 2.f * (xz + yw);
+        result.col2.y = 2.f * (yz - xw);
+        result.col2.z = 2.f * (ww + zz) - 1.f;
 
         return result;
     }
@@ -54,11 +56,11 @@ namespace vkt
 
         // To quaternion
         float quatRe = cosf(angleInRadians * .5f);
-        Vec3f quatIm(
+        Vec3f quatIm{
             axis.x * sinf(angleInRadians * .5f),
             axis.y * sinf(angleInRadians * .5f),
             axis.z * sinf(angleInRadians * .5f)
-            );
+            };
 
         // Compute rotation matrix from axis and angle
         Mat3f rot = quaternionToRotationMatrix(quatRe, quatIm);
@@ -72,7 +74,7 @@ namespace vkt
             {
                 for (int x = 0; x < dest.getDims().x; ++x)
                 {
-                    Vec3f p(x, y, z);
+                    Vec3f p{ (float)x, (float)y, (float)z };
                     p = p - centerOfRotation;
                     p = rot * p;
                     p = p + centerOfRotation;

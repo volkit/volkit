@@ -24,9 +24,9 @@ namespace vkt
             CopyRange,
             dst,
             src,
-            Vec3i(0, 0, 0),
+            { 0, 0, 0 },
             dst.getDims(),
-            Vec3i(0, 0, 0)
+            { 0, 0, 0 }
             );
 
         return NoError;
@@ -50,9 +50,9 @@ namespace vkt
             CopyRange,
             dst,
             src,
-            Vec3i(firstX, firstY, firstZ),
-            Vec3i(lastX, lastY, lastZ),
-            Vec3i(dstOffsetX, dstOffsetY, dstOffsetZ)
+            { firstX, firstY, firstZ },
+            { lastX, lastY, lastZ },
+            { dstOffsetX, dstOffsetY, dstOffsetZ }
             );
 
         return NoError;
@@ -83,9 +83,9 @@ vktError vktCopySV(vktStructuredVolume dst, vktStructuredVolume src)
         CopyRange,
         dst->volume,
         src->volume,
-        vkt::Vec3i(0, 0, 0),
+        { 0, 0, 0 },
         dst->volume.getDims(),
-        vkt::Vec3i(0, 0, 0)
+        { 0, 0, 0 }
         );
 
     return vktNoError;
@@ -109,9 +109,9 @@ vktError vktCopyRangeSV(
         CopyRange,
         dst->volume,
         src->volume,
-        vkt::Vec3i(firstX, firstY, firstZ),
-        vkt::Vec3i(lastX, lastY, lastZ),
-        vkt::Vec3i(dstOffsetX, dstOffsetY, dstOffsetZ)
+        { firstX, firstY, firstZ },
+        { lastX, lastY, lastZ },
+        { dstOffsetX, dstOffsetY, dstOffsetZ }
         );
 
     return vktNoError;

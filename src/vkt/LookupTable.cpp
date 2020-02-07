@@ -23,14 +23,14 @@ namespace vkt
             ColorFormat format
             )
         : ManagedBuffer(dimX * size_t(dimY) * dimZ * ColorFormatInfoTable[(int)format].size)
-        , dims_(dimX, dimY, dimZ)
+        , dims_{dimX, dimY, dimZ}
         , format_(format)
     {
     }
 
     void LookupTable::setDims(int32_t dimX, int32_t dimY, int32_t dimZ)
     {
-        setDims(Vec3i(dimX, dimY, dimZ));
+        setDims({ dimX, dimY, dimZ });
     }
 
     void LookupTable::getDims(int32_t& dimX, int32_t& dimY, int32_t& dimZ)

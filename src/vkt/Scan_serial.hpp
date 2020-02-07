@@ -6,10 +6,10 @@
 #include <cstring>
 
 #include <vkt/Copy.hpp>
-#include <vkt/linalg.hpp>
 #include <vkt/StructuredVolume.hpp>
 
 #include "IntegralVoxel.hpp"
+#include "linalg.hpp"
 
 namespace vkt
 {

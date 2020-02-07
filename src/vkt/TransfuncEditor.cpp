@@ -8,10 +8,10 @@
 
 #include <imgui.h>
 
-#include <vkt/linalg.hpp>
-
 #include "ColorFormatInfo.hpp"
 #include "TransfuncEditor.hpp"
+
+#include "linalg.hpp"
 
 static void enableBlendCB(ImDrawList const*, ImDrawCmd const*)
 {
@@ -112,9 +112,9 @@ namespace vkt
                     float indexf = i / (float)(canvasSize_.x - 1) * (dims.x - 1);
                     int indexa = (int)indexf;
                     int indexb = indexa + 1;
-                    Vec3f rgb1(colors[4 * indexa], colors[4 * indexa + 1], colors[4 * indexa + 2]);
+                    Vec3f rgb1{ colors[4 * indexa], colors[4 * indexa + 1], colors[4 * indexa + 2] };
                     float alpha1 = colors[4 * indexa + 3];
-                    Vec3f rgb2(colors[4 * indexb], colors[4 * indexb + 1], colors[4 * indexb + 2]);
+                    Vec3f rgb2{ colors[4 * indexb], colors[4 * indexb + 1], colors[4 * indexb + 2] };
                     float alpha2 = colors[4 * indexb + 3];
                     float frac = indexf - indexa;
 
@@ -144,7 +144,7 @@ namespace vkt
             {
                 for (int x = 0; x < canvasSize_.x; ++x)
                 {
-                    Vec3f rgb(updated[4 * x], updated[4 * x + 1], updated[4 * x + 2]);
+                    Vec3f rgb{ updated[4 * x], updated[4 * x + 1], updated[4 * x + 2] };
                     float alpha = updated[4 * x + 3];
 
                     float grey = .9f;
@@ -185,7 +185,7 @@ namespace vkt
         int x = ImGui::GetIO().MousePos.x - ImGui::GetCursorScreenPos().x;
         int y = ImGui::GetCursorScreenPos().y - ImGui::GetIO().MousePos.y - 1;
         
-        event.pos = Vec2i(x, y);
+        event.pos = { x, y };
         event.button = ImGui::GetIO().MouseDown[0] ? MouseEvent::Left :
                        ImGui::GetIO().MouseDown[1] ? MouseEvent::Middle :
                        ImGui::GetIO().MouseDown[2] ? MouseEvent::Right:
