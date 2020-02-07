@@ -30,7 +30,8 @@ namespace vkt
             source1,
             source2,
             { 0, 0, 0 },
-            dest.getDims()
+            dest.getDims(),
+            { 0, 0, 0 }
             );
 
         return NoError;
@@ -45,7 +46,10 @@ namespace vkt
             int32_t firstZ,
             int32_t lastX,
             int32_t lastY,
-            int32_t lastZ
+            int32_t lastZ,
+            int32_t dstOffsetX,
+            int32_t dstOffsetY,
+            int32_t dstOffsetZ
             )
     {
         VKT_CALL__(
@@ -54,7 +58,8 @@ namespace vkt
             source1,
             source2,
             { firstX, firstY, firstZ },
-            { lastX, lastY, lastZ }
+            { lastX, lastY, lastZ },
+            { dstOffsetX, dstOffsetY, dstOffsetZ }
             );
 
         return NoError;
@@ -65,7 +70,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         VKT_CALL__(
@@ -74,7 +80,8 @@ namespace vkt
             source1,
             source2,
             first,
-            last
+            last,
+            dstOffset
             );
 
         return NoError;
@@ -92,7 +99,8 @@ namespace vkt
             source1,
             source2,
             { 0, 0, 0 },
-            dest.getDims()
+            dest.getDims(),
+            { 0, 0, 0 }
             );
 
         return NoError;
@@ -107,7 +115,10 @@ namespace vkt
             int32_t firstZ,
             int32_t lastX,
             int32_t lastY,
-            int32_t lastZ
+            int32_t lastZ,
+            int32_t dstOffsetX,
+            int32_t dstOffsetY,
+            int32_t dstOffsetZ
             )
     {
         VKT_CALL__(
@@ -116,7 +127,8 @@ namespace vkt
             source1,
             source2,
             { firstX, firstY, firstZ },
-            { lastX, lastY, lastZ }
+            { lastX, lastY, lastZ },
+            { dstOffsetX, dstOffsetY, dstOffsetZ }
             );
 
         return NoError;
@@ -127,7 +139,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         VKT_CALL__(
@@ -136,7 +149,8 @@ namespace vkt
             source1,
             source2,
             first,
-            last
+            last,
+            dstOffset
             );
 
         return NoError;
@@ -154,7 +168,8 @@ namespace vkt
             source1,
             source2,
             { 0, 0, 0 },
-            dest.getDims()
+            dest.getDims(),
+            { 0, 0, 0 }
             );
 
         return NoError;
@@ -169,7 +184,10 @@ namespace vkt
             int32_t firstZ,
             int32_t lastX,
             int32_t lastY,
-            int32_t lastZ
+            int32_t lastZ,
+            int32_t dstOffsetX,
+            int32_t dstOffsetY,
+            int32_t dstOffsetZ
             )
     {
         VKT_CALL__(
@@ -178,7 +196,8 @@ namespace vkt
             source1,
             source2,
             { firstX, firstY, firstZ },
-            { lastX, lastY, lastZ }
+            { lastX, lastY, lastZ },
+            { dstOffsetX, dstOffsetY, dstOffsetZ }
             );
 
         return NoError;
@@ -189,7 +208,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         VKT_CALL__(
@@ -198,7 +218,8 @@ namespace vkt
             source1,
             source2,
             first,
-            last
+            last,
+            dstOffset
             );
 
         return NoError;
@@ -216,7 +237,8 @@ namespace vkt
             source1,
             source2,
             { 0, 0, 0 },
-            dest.getDims()
+            dest.getDims(),
+            { 0, 0, 0 }
             );
 
         return NoError;
@@ -231,7 +253,10 @@ namespace vkt
             int32_t firstZ,
             int32_t lastX,
             int32_t lastY,
-            int32_t lastZ
+            int32_t lastZ,
+            int32_t dstOffsetX,
+            int32_t dstOffsetY,
+            int32_t dstOffsetZ
             )
     {
         VKT_CALL__(
@@ -240,7 +265,8 @@ namespace vkt
             source1,
             source2,
             { firstX, firstY, firstZ },
-            { lastX, lastY, lastZ }
+            { lastX, lastY, lastZ },
+            { dstOffsetX, dstOffsetY, dstOffsetZ }
             );
 
         return NoError;
@@ -251,7 +277,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         VKT_CALL__(
@@ -260,7 +287,8 @@ namespace vkt
             source1,
             source2,
             first,
-            last
+            last,
+            dstOffset
             );
 
         return NoError;
@@ -278,7 +306,8 @@ namespace vkt
             source1,
             source2,
             { 0, 0, 0 },
-            dest.getDims()
+            dest.getDims(),
+            { 0, 0, 0 }
             );
 
         return NoError;
@@ -293,7 +322,10 @@ namespace vkt
             int32_t firstZ,
             int32_t lastX,
             int32_t lastY,
-            int32_t lastZ
+            int32_t lastZ,
+            int32_t dstOffsetX,
+            int32_t dstOffsetY,
+            int32_t dstOffsetZ
             )
     {
         VKT_CALL__(
@@ -302,7 +334,8 @@ namespace vkt
             source1,
             source2,
             { firstX, firstY, firstZ },
-            { lastX, lastY, lastZ }
+            { lastX, lastY, lastZ },
+            { dstOffsetX, dstOffsetY, dstOffsetZ }
             );
 
         return NoError;
@@ -313,7 +346,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         VKT_CALL__(
@@ -322,7 +356,8 @@ namespace vkt
             source1,
             source2,
             first,
-            last
+            last,
+            dstOffset
             );
 
         return NoError;
@@ -340,7 +375,8 @@ namespace vkt
             source1,
             source2,
             { 0, 0, 0 },
-            dest.getDims()
+            dest.getDims(),
+            { 0, 0, 0 }
             );
 
         return NoError;
@@ -355,7 +391,10 @@ namespace vkt
             int32_t firstZ,
             int32_t lastX,
             int32_t lastY,
-            int32_t lastZ
+            int32_t lastZ,
+            int32_t dstOffsetX,
+            int32_t dstOffsetY,
+            int32_t dstOffsetZ
             )
     {
         VKT_CALL__(
@@ -364,7 +403,8 @@ namespace vkt
             source1,
             source2,
             { firstX, firstY, firstZ },
-            { lastX, lastY, lastZ }
+            { lastX, lastY, lastZ },
+            { dstOffsetX, dstOffsetY, dstOffsetZ }
             );
 
         return NoError;
@@ -375,7 +415,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         VKT_CALL__(
@@ -384,7 +425,8 @@ namespace vkt
             source1,
             source2,
             first,
-            last
+            last,
+            dstOffset
             );
 
         return NoError;
@@ -402,7 +444,8 @@ namespace vkt
             source1,
             source2,
             { 0, 0, 0 },
-            dest.getDims()
+            dest.getDims(),
+            { 0, 0, 0 }
             );
 
         return NoError;
@@ -417,7 +460,10 @@ namespace vkt
             int32_t firstZ,
             int32_t lastX,
             int32_t lastY,
-            int32_t lastZ
+            int32_t lastZ,
+            int32_t dstOffsetX,
+            int32_t dstOffsetY,
+            int32_t dstOffsetZ
             )
     {
         VKT_CALL__(
@@ -426,7 +472,8 @@ namespace vkt
             source1,
             source2,
             { firstX, firstY, firstZ },
-            { lastX, lastY, lastZ }
+            { lastX, lastY, lastZ },
+            { dstOffsetX, dstOffsetY, dstOffsetZ }
             );
 
         return NoError;
@@ -437,7 +484,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         VKT_CALL__(
@@ -446,7 +494,8 @@ namespace vkt
             source1,
             source2,
             first,
-            last
+            last,
+            dstOffset
             );
 
         return NoError;
@@ -464,7 +513,8 @@ namespace vkt
             source1,
             source2,
             { 0, 0, 0 },
-            dest.getDims()
+            dest.getDims(),
+            { 0, 0, 0 }
             );
 
         return NoError;
@@ -479,7 +529,11 @@ namespace vkt
             int32_t firstZ,
             int32_t lastX,
             int32_t lastY,
-            int32_t lastZ)
+            int32_t lastZ,
+            int32_t dstOffsetX,
+            int32_t dstOffsetY,
+            int32_t dstOffsetZ
+            )
     {
         VKT_CALL__(
             SafeProdRange,
@@ -487,7 +541,8 @@ namespace vkt
             source1,
             source2,
             { firstX, firstY, firstZ },
-            { lastX, lastY, lastZ }
+            { lastX, lastY, lastZ },
+            { dstOffsetX, dstOffsetY, dstOffsetZ }
             );
 
         return NoError;
@@ -498,7 +553,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         VKT_CALL__(
@@ -507,7 +563,8 @@ namespace vkt
             source1,
             source2,
             first,
-            last
+            last,
+            dstOffset
             );
 
         return NoError;
@@ -525,7 +582,8 @@ namespace vkt
             source1,
             source2,
             { 0, 0, 0 },
-            dest.getDims()
+            dest.getDims(),
+            { 0, 0, 0 }
             );
 
         return NoError;
@@ -540,7 +598,10 @@ namespace vkt
             int32_t firstZ,
             int32_t lastX,
             int32_t lastY,
-            int32_t lastZ
+            int32_t lastZ,
+            int32_t dstOffsetX,
+            int32_t dstOffsetY,
+            int32_t dstOffsetZ
             )
     {
         VKT_CALL__(
@@ -549,7 +610,8 @@ namespace vkt
             source1,
             source2,
             { firstX, firstY, firstZ },
-            { lastX, lastY, lastZ }
+            { lastX, lastY, lastZ },
+            { dstOffsetX, dstOffsetY, dstOffsetZ }
             );
 
         return NoError;
@@ -560,7 +622,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         VKT_CALL__(
@@ -569,7 +632,8 @@ namespace vkt
             source1,
             source2,
             first,
-            last
+            last,
+            dstOffset
             );
 
         return NoError;
@@ -587,7 +651,8 @@ namespace vkt
             source1,
             source2,
             { 0, 0, 0 },
-            dest.getDims()
+            dest.getDims(),
+            { 0, 0, 0 }
             );
 
         return NoError;
@@ -602,7 +667,10 @@ namespace vkt
             int32_t firstZ,
             int32_t lastX,
             int32_t lastY,
-            int32_t lastZ
+            int32_t lastZ,
+            int32_t dstOffsetX,
+            int32_t dstOffsetY,
+            int32_t dstOffsetZ
             )
     {
         VKT_CALL__(
@@ -611,7 +679,8 @@ namespace vkt
             source1,
             source2,
             { firstX, firstY, firstZ },
-            { lastX, lastY, lastZ }
+            { lastX, lastY, lastZ },
+            { dstOffsetX, dstOffsetY, dstOffsetZ }
             );
 
         return NoError;
@@ -622,7 +691,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         VKT_CALL__(
@@ -631,7 +701,8 @@ namespace vkt
             source1,
             source2,
             first,
-            last
+            last,
+            dstOffset
             );
 
         return NoError;

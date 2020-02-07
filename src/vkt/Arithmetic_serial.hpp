@@ -18,6 +18,7 @@ namespace vkt
             StructuredVolume& source2,
             Vec3i first,
             Vec3i last,
+            Vec3i dstOffset,
             Func func
             )
     {
@@ -35,7 +36,12 @@ namespace vkt
 
                     float val3 = func(val1, val2);
 
-                    dest.setValue(x, y, z, val3);
+                    dest.setValue(
+                        x + dstOffset.x,
+                        y + dstOffset.y,
+                        z + dstOffset.z,
+                        val3
+                        );
                 }
             }
         }
@@ -46,7 +52,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         ArithmeticOp(
@@ -55,6 +62,7 @@ namespace vkt
             source2,
             first,
             last,
+            dstOffset,
             [](float f1, float f2) { return f1 + f2; }
             );
     }
@@ -64,7 +72,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         ArithmeticOp(
@@ -73,6 +82,7 @@ namespace vkt
             source2,
             first,
             last,
+            dstOffset,
             [](float f1, float f2) { return f1 - f2; }
             );
     }
@@ -82,7 +92,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         ArithmeticOp(
@@ -91,6 +102,7 @@ namespace vkt
             source2,
             first,
             last,
+            dstOffset,
             [](float f1, float f2) { return f1 * f2; }
             );
     }
@@ -100,7 +112,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         ArithmeticOp(
@@ -109,6 +122,7 @@ namespace vkt
             source2,
             first,
             last,
+            dstOffset,
             [](float f1, float f2) { return f1 / f2; }
             );
     }
@@ -118,7 +132,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         ArithmeticOp(
@@ -127,6 +142,7 @@ namespace vkt
             source2,
             first,
             last,
+            dstOffset,
             [](float f1, float f2) { return fabsf(f1 - f2); }
             );
     }
@@ -136,7 +152,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         float lo = dest.getVoxelMapping().x;
@@ -148,6 +165,7 @@ namespace vkt
             source2,
             first,
             last,
+            dstOffset,
             [lo, hi](float f1, float f2) { return clamp(f1 + f2, lo, hi); }
             );
     }
@@ -157,7 +175,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         float lo = dest.getVoxelMapping().x;
@@ -169,6 +188,7 @@ namespace vkt
             source2,
             first,
             last,
+            dstOffset,
             [lo, hi](float f1, float f2) { return clamp(f1 - f2, lo, hi); }
             );
     }
@@ -178,7 +198,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         float lo = dest.getVoxelMapping().x;
@@ -190,6 +211,7 @@ namespace vkt
             source2,
             first,
             last,
+            dstOffset,
             [lo, hi](float f1, float f2) { return clamp(f1 * f2, lo, hi); }
             );
     }
@@ -199,7 +221,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         float lo = dest.getVoxelMapping().x;
@@ -211,6 +234,7 @@ namespace vkt
             source2,
             first,
             last,
+            dstOffset,
             [lo, hi](float f1, float f2) { return clamp(f1 / f2, lo, hi); }
             );
     }
@@ -220,7 +244,8 @@ namespace vkt
             StructuredVolume& source1,
             StructuredVolume& source2,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         float lo = dest.getVoxelMapping().x;
@@ -232,6 +257,7 @@ namespace vkt
             source2,
             first,
             last,
+            dstOffset,
             [lo, hi](float f1, float f2) { return clamp(fabsf(f1 - f2), lo, hi); }
             );
     }
