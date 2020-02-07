@@ -18,6 +18,19 @@
 
 namespace vkt
 {
+    Error Transform(StructuredVolume& volume, TransformUnaryOp unaryOp)
+    {
+        VKT_CALL__(
+            TransformRange,
+            volume,
+            { 0, 0, 0 },
+            volume.getDims(),
+            unaryOp
+            );
+
+        return NoError;
+    }
+
     Error TransformRange(
             StructuredVolume& volume,
             int32_t firstX,
