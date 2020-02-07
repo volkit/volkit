@@ -39,32 +39,32 @@ namespace vkt
 
         inline iterator begin()
         {
-            return reinterpret_cast<T*>(Base::data_);
+            return Base::data_;
         }
 
         inline const_iterator begin() const
         {
-            return reinterpret_cast<T const*>(Base::data_);
+            return Base::data_;
         }
 
         inline const_iterator cbegin()
         {
-            return reinterpret_cast<T const*>(Base::data_);
+            return Base::data_;
         }
 
         inline iterator end()
         {
-            return reinterpret_cast<T*>(Base::data_) + numElements();
+            return Base::data_ + numElements();
         }
 
         inline const_iterator end() const
         {
-            return reinterpret_cast<T const*>(Base::data_) + numElements();
+            return Base::data_ + numElements();
         }
 
         inline const_iterator cend()
         {
-            return reinterpret_cast<T const*>(Base::data_) + numElements();
+            return Base::data_ + numElements();
         }
 
         inline T& operator[](Vec3i const& index)
@@ -94,14 +94,14 @@ namespace vkt
         {
             Base::migrate();
 
-            return reinterpret_cast<T*>(Base::data_);
+            return Base::data_;
         }
 
         inline T const* data() const
         {
             const_cast<Array3D<T>*>(this)->migrate();
 
-            return reinterpret_cast<T const*>(Base::data_);
+            return Base::data_;
         }
 
         inline Vec3i dims() const
