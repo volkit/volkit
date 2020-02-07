@@ -314,7 +314,7 @@ struct MultiScatteringKernel : AccumulationKernel
                     albedo = rgba.xyz();
                 }
                 else
-                    albedo = vec3(1.f-mu(r.ori));
+                    albedo = vec3(mu(r.ori));
 
                 throughput *= albedo;
                 // Russian roulette absorption
