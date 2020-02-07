@@ -52,6 +52,8 @@ int main()
     // CPU rendering
     vkt::RenderState renderState;
     renderState.renderAlgo = vkt::RenderAlgo::MultiScattering;
+    vkt::Render(volume1, renderState);
+    vkt::Render(volume2, renderState);
     vkt::Render(volume3, renderState);
     vkt::Render(volume4, renderState);
 }

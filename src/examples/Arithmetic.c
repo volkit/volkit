@@ -70,6 +70,8 @@ int main()
     // CPU rendering
     vktRenderStateDefaultInit(&renderState);
     renderState.renderAlgo = vktRenderAlgoMultiScattering;
+    vktRenderSV(volume1, renderState, NULL);
+    vktRenderSV(volume2, renderState, NULL);
     vktRenderSV(volume3, renderState, NULL);
     vktRenderSV(volume4, renderState, NULL);
 }
