@@ -19,6 +19,7 @@ vkt_add_executable(ExecutionPolicyC ExecutionPolicy.c)
 vkt_add_executable(FileIOC FileIO.c)
 vkt_add_executable(ScanC Scan.c)
 
+vkt_add_executable(ArithmeticCPP Arithmetic.cpp)
 vkt_add_executable(DecomposeCPP Decompose.cpp)
 vkt_add_executable(ExecutionPolicyCPP ExecutionPolicy.cpp)
 vkt_add_executable(FileIOCPP FileIO.cpp)
