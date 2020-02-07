@@ -6,13 +6,13 @@
 #include <cstring> // memcpy
 
 #include <vkt/StructuredVolume.hpp>
-#include <vkt/Voxel.hpp>
 
 #include <vkt/StructuredVolume.h>
 #include <vkt/System.h>
 
 #include "linalg.hpp"
 #include "StructuredVolume_impl.hpp"
+#include "VoxelMapping.hpp"
 
 //-------------------------------------------------------------------------------------------------
 // C++ API
@@ -110,7 +110,7 @@ namespace vkt
 
     void StructuredVolume::setVoxelMapping(float lo, float hi)
     {
-        voxelMapping_ = Vec2f(lo, hi);
+        voxelMapping_ = {lo, hi };
     }
 
     void StructuredVolume::getVoxelMapping(float& lo, float& hi)
@@ -182,7 +182,7 @@ namespace vkt
 
         size_t index = linearIndex(x, y, z);
 
-        MapVoxel(
+        MapVoxelImpl(
             ManagedBuffer::data_ + index,
             value,
             bytesPerVoxel_,
@@ -197,7 +197,7 @@ namespace vkt
 
         size_t index = linearIndex(x, y, z);
 
-        UnmapVoxel(
+        UnmapVoxelImpl(
             value,
             ManagedBuffer::data_ + index,
             bytesPerVoxel_,
@@ -212,7 +212,7 @@ namespace vkt
 
         size_t lindex = linearIndex(index);
 
-        MapVoxel(
+        MapVoxelImpl(
             ManagedBuffer::data_ + lindex,
             value,
             bytesPerVoxel_,
@@ -227,7 +227,7 @@ namespace vkt
 
         size_t lindex = linearIndex(index);
 
-        UnmapVoxel(
+        UnmapVoxelImpl(
             value,
             ManagedBuffer::data_ + lindex,
             bytesPerVoxel_,

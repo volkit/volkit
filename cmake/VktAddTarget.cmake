@@ -18,12 +18,17 @@ function(vkt_cuda_compile outfiles)
             return()
         endif()
 
+        set(nvcc_flags_old__ ${CUDA_NVCC_FLAGS})
+        set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "--expt-extended-lambda")
+
         if(BUILD_SHARED_LIBS)
             cuda_compile(cuda_compile_obj ${f} SHARED)
         else()
             cuda_compile(cuda_compile_obj ${f})
         endif()
         set(out ${out} ${f} ${cuda_compile_obj})
+
+        set (CUDA_NVC_FLAGS ${nvcc_flags_old__})
     endforeach()
 
     set(${outfiles} ${out} PARENT_SCOPE)
@@ -43,7 +48,13 @@ function(vkt_add_cuda_executable name)
         return()
     endif()
 
+    set(nvcc_flags_old__ ${CUDA_NVCC_FLAGS})
+    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "--expt-extended-lambda")
+
     cuda_add_executable(${name} ${ARGN})
+
+    set (CUDA_NVC_FLAGS ${nvcc_flags_old__})
+
     target_link_libraries(${name} ${__VKT_LINK_LIBRARIES})
 
     if(VKT_MACOSX_BUNDLE)
