@@ -4,8 +4,8 @@
 #include <vkt/Arithmetic.hpp>
 #include <vkt/StructuredVolume.hpp>
 
-//#include <vkt/Arithmetic.h>
-//#include <vkt/StructuredVolume.h>
+#include <vkt/Arithmetic.h>
+#include <vkt/StructuredVolume.h>
 
 #include "Arithmetic_cuda.hpp"
 #include "Arithmetic_serial.hpp"
@@ -715,3 +715,442 @@ namespace vkt
 // C API
 //
 
+vktError vktSumSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2
+        )
+{
+    return (vktError)vkt::Sum(
+            dest->volume,
+            source1->volume,
+            source2->volume
+            );
+}
+
+vktError vktSumRangeSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2,
+        int32_t firstX,
+        int32_t firstY,
+        int32_t firstZ,
+        int32_t lastX,
+        int32_t lastY,
+        int32_t lastZ,
+        int32_t dstOffsetX,
+        int32_t dstOffsetY,
+        int32_t dstOffsetZ
+        )
+{
+    return (vktError)vkt::SumRange(
+            dest->volume,
+            source1->volume,
+            source2->volume,
+            firstX,
+            firstY,
+            firstZ,
+            lastX,
+            lastY,
+            lastZ,
+            dstOffsetX,
+            dstOffsetY,
+            dstOffsetZ
+            );
+}
+
+vktError vktDiffSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2
+        )
+{
+    return (vktError)vkt::Diff(
+            dest->volume,
+            source1->volume,
+            source2->volume
+            );
+}
+
+vktError vktDiffRangeSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2,
+        int32_t firstX,
+        int32_t firstY,
+        int32_t firstZ,
+        int32_t lastX,
+        int32_t lastY,
+        int32_t lastZ,
+        int32_t dstOffsetX,
+        int32_t dstOffsetY,
+        int32_t dstOffsetZ
+        )
+{
+    return (vktError)vkt::DiffRange(
+            dest->volume,
+            source1->volume,
+            source2->volume,
+            firstX,
+            firstY,
+            firstZ,
+            lastX,
+            lastY,
+            lastZ,
+            dstOffsetX,
+            dstOffsetY,
+            dstOffsetZ
+            );
+}
+
+vktError vktProdSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2
+        )
+{
+    return (vktError)vkt::Prod(
+            dest->volume,
+            source1->volume,
+            source2->volume
+            );
+}
+
+vktError vktProdRangeSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2,
+        int32_t firstX,
+        int32_t firstY,
+        int32_t firstZ,
+        int32_t lastX,
+        int32_t lastY,
+        int32_t lastZ,
+        int32_t dstOffsetX,
+        int32_t dstOffsetY,
+        int32_t dstOffsetZ
+        )
+{
+    return (vktError)vkt::ProdRange(
+            dest->volume,
+            source1->volume,
+            source2->volume,
+            firstX,
+            firstY,
+            firstZ,
+            lastX,
+            lastY,
+            lastZ,
+            dstOffsetX,
+            dstOffsetY,
+            dstOffsetZ
+            );
+}
+
+vktError vktQuotSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2
+        )
+{
+    return (vktError)vkt::Quot(
+            dest->volume,
+            source1->volume,
+            source2->volume
+            );
+}
+
+vktError vktQuotRangeSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2,
+        int32_t firstX,
+        int32_t firstY,
+        int32_t firstZ,
+        int32_t lastX,
+        int32_t lastY,
+        int32_t lastZ,
+        int32_t dstOffsetX,
+        int32_t dstOffsetY,
+        int32_t dstOffsetZ
+        )
+{
+    return (vktError)vkt::QuotRange(
+            dest->volume,
+            source1->volume,
+            source2->volume,
+            firstX,
+            firstY,
+            firstZ,
+            lastX,
+            lastY,
+            lastZ,
+            dstOffsetX,
+            dstOffsetY,
+            dstOffsetZ
+            );
+}
+
+vktError vktAbsDiffSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2
+        )
+{
+    return (vktError)vkt::AbsDiff(
+            dest->volume,
+            source1->volume,
+            source2->volume
+            );
+}
+
+vktError vktAbsDiffRangeSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2,
+        int32_t firstX,
+        int32_t firstY,
+        int32_t firstZ,
+        int32_t lastX,
+        int32_t lastY,
+        int32_t lastZ,
+        int32_t dstOffsetX,
+        int32_t dstOffsetY,
+        int32_t dstOffsetZ
+        )
+{
+    return (vktError)vkt::AbsDiffRange(
+            dest->volume,
+            source1->volume,
+            source2->volume,
+            firstX,
+            firstY,
+            firstZ,
+            lastX,
+            lastY,
+            lastZ,
+            dstOffsetX,
+            dstOffsetY,
+            dstOffsetZ
+            );
+}
+
+vktError vktSafeSumSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2
+        )
+{
+    return (vktError)vkt::SafeSum(
+            dest->volume,
+            source1->volume,
+            source2->volume
+            );
+}
+
+vktError vktSafeSumRangeSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2,
+        int32_t firstX,
+        int32_t firstY,
+        int32_t firstZ,
+        int32_t lastX,
+        int32_t lastY,
+        int32_t lastZ,
+        int32_t dstOffsetX,
+        int32_t dstOffsetY,
+        int32_t dstOffsetZ
+        )
+{
+    return (vktError)vkt::SafeSumRange(
+            dest->volume,
+            source1->volume,
+            source2->volume,
+            firstX,
+            firstY,
+            firstZ,
+            lastX,
+            lastY,
+            lastZ,
+            dstOffsetX,
+            dstOffsetY,
+            dstOffsetZ
+            );
+}
+
+vktError vktSafeDiffSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2
+        )
+{
+    return (vktError)vkt::SafeDiff(
+            dest->volume,
+            source1->volume,
+            source2->volume
+            );
+}
+
+vktError vktSafeDiffRangeSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2,
+        int32_t firstX,
+        int32_t firstY,
+        int32_t firstZ,
+        int32_t lastX,
+        int32_t lastY,
+        int32_t lastZ,
+        int32_t dstOffsetX,
+        int32_t dstOffsetY,
+        int32_t dstOffsetZ
+        )
+{
+    return (vktError)vkt::SafeDiffRange(
+            dest->volume,
+            source1->volume,
+            source2->volume,
+            firstX,
+            firstY,
+            firstZ,
+            lastX,
+            lastY,
+            lastZ,
+            dstOffsetX,
+            dstOffsetY,
+            dstOffsetZ
+            );
+}
+
+vktError vktSafeProdSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2
+        )
+{
+    return (vktError)vkt::SafeProd(
+            dest->volume,
+            source1->volume,
+            source2->volume
+            );
+}
+
+vktError vktSafeProdRangeSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2,
+        int32_t firstX,
+        int32_t firstY,
+        int32_t firstZ,
+        int32_t lastX,
+        int32_t lastY,
+        int32_t lastZ,
+        int32_t dstOffsetX,
+        int32_t dstOffsetY,
+        int32_t dstOffsetZ
+        )
+{
+    return (vktError)vkt::SafeProdRange(
+            dest->volume,
+            source1->volume,
+            source2->volume,
+            firstX,
+            firstY,
+            firstZ,
+            lastX,
+            lastY,
+            lastZ,
+            dstOffsetX,
+            dstOffsetY,
+            dstOffsetZ
+            );
+}
+
+vktError vktSafeQuotSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2
+        )
+{
+    return (vktError)vkt::SafeQuot(
+            dest->volume,
+            source1->volume,
+            source2->volume
+            );
+}
+
+vktError vktSafeQuotRangeSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2,
+        int32_t firstX,
+        int32_t firstY,
+        int32_t firstZ,
+        int32_t lastX,
+        int32_t lastY,
+        int32_t lastZ,
+        int32_t dstOffsetX,
+        int32_t dstOffsetY,
+        int32_t dstOffsetZ
+        )
+{
+    return (vktError)vkt::SafeQuotRange(
+            dest->volume,
+            source1->volume,
+            source2->volume,
+            firstX,
+            firstY,
+            firstZ,
+            lastX,
+            lastY,
+            lastZ,
+            dstOffsetX,
+            dstOffsetY,
+            dstOffsetZ
+            );
+}
+
+vktError vktSafeAbsDiffSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2
+        )
+{
+    return (vktError)vkt::SafeAbsDiff(
+            dest->volume,
+            source1->volume,
+            source2->volume
+            );
+}
+
+vktError vktSafeAbsDiffRangeSV(
+        vktStructuredVolume dest,
+        vktStructuredVolume source1,
+        vktStructuredVolume source2,
+        int32_t firstX,
+        int32_t firstY,
+        int32_t firstZ,
+        int32_t lastX,
+        int32_t lastY,
+        int32_t lastZ,
+        int32_t dstOffsetX,
+        int32_t dstOffsetY,
+        int32_t dstOffsetZ
+        )
+{
+    return (vktError)vkt::SafeAbsDiffRange(
+            dest->volume,
+            source1->volume,
+            source2->volume,
+            firstX,
+            firstY,
+            firstZ,
+            lastX,
+            lastY,
+            lastZ,
+            dstOffsetX,
+            dstOffsetY,
+            dstOffsetZ
+            );
+}

@@ -13,6 +13,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include/shared)
 
 vkt_link_libraries(volkit)
 
+vkt_add_executable(ArithmeticC Arithmetic.c)
 vkt_add_executable(CoreAlgorithmsC CoreAlgorithms.c)
 vkt_add_executable(DecomposeC Decompose.c)
 vkt_add_executable(ExecutionPolicyC ExecutionPolicy.c)
