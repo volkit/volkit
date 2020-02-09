@@ -36,8 +36,7 @@ namespace vkt
             {
                 for (int32_t x = first.x; x != last.x; ++x)
                 {
-                    float val = 0.f;
-                    volume.getValue(x, y, z, val);
+                    float val = volume.getValue(x, y, z);
 
                     if (val < aggregates.min)
                     {
@@ -72,8 +71,7 @@ namespace vkt
             {
                 for (int32_t x = first.x; x != last.x; ++x)
                 {
-                    float val = 0.f;
-                    volume.getValue(x, y, z, val);
+                    float val = volume.getValue(x, y, z);
 
                     aggregates.var += (val - aggregates.mean) * (val - aggregates.mean);
                 }

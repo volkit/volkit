@@ -67,8 +67,7 @@ namespace vkt
                             int32_t dstY = y - first.y + dstOffset.y;
                             int32_t dstZ = z - first.z + dstOffset.z;
 
-                            float val = 0.f;
-                            src.getValue(srcX, srcY, srcZ, val);
+                            float val = src.getValue(srcX, srcY, srcZ);
                             dst.setValue(dstX, dstY, dstZ, val);
                         }
                     }

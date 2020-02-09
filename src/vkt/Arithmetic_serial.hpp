@@ -28,11 +28,8 @@ namespace vkt
             {
                 for (int32_t x = first.x; x != last.x; ++x)
                 {
-                    float val1;
-                    float val2;
-
-                    source1.getValue(x, y, z, val1);
-                    source2.getValue(x, y, z, val2);
+                    float val1 = source1.getValue(x, y, z);
+                    float val2 = source2.getValue(x, y, z);
 
                     float val3 = func(val1, val2);
 

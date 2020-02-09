@@ -159,15 +159,16 @@ namespace vkt
 
         Vec3f frac{ xf1 - lo.x, yf1 - lo.y, zf1 - lo.z };
 
-        float v[8];
-        getValue(lo.x, lo.y, lo.z, v[0]);
-        getValue(hi.x, lo.y, lo.z, v[1]);
-        getValue(lo.x, hi.y, lo.z, v[2]);
-        getValue(hi.x, hi.y, lo.z, v[3]);
-        getValue(lo.x, lo.y, hi.z, v[4]);
-        getValue(hi.x, lo.y, hi.z, v[5]);
-        getValue(lo.x, hi.y, hi.z, v[6]);
-        getValue(hi.x, hi.y, hi.z, v[7]);
+        float v[8] = {
+            getValue(lo.x, lo.y, lo.z),
+            getValue(hi.x, lo.y, lo.z),
+            getValue(lo.x, hi.y, lo.z),
+            getValue(hi.x, hi.y, lo.z),
+            getValue(lo.x, lo.y, hi.z),
+            getValue(hi.x, lo.y, hi.z),
+            getValue(lo.x, hi.y, hi.z),
+            getValue(hi.x, hi.y, hi.z)
+            };
 
         return lerp(
             lerp(lerp(v[0], v[1], frac.x), lerp(v[2], v[3], frac.x), frac.y),
@@ -206,6 +207,25 @@ namespace vkt
             );
     }
 
+    float StructuredVolume::getValue(int32_t x, int32_t y, int32_t z)
+    {
+        migrate();
+
+        size_t index = linearIndex(x, y, z);
+
+        float value = 0.f;
+
+        UnmapVoxelImpl(
+            value,
+            ManagedBuffer::data_ + index,
+            bytesPerVoxel_,
+            voxelMapping_.x,
+            voxelMapping_.y
+            );
+
+        return value;
+    }
+
     void StructuredVolume::setValue(Vec3i index, float value)
     {
         migrate();
@@ -234,6 +254,25 @@ namespace vkt
             voxelMapping_.x,
             voxelMapping_.y
             );
+    }
+
+    float StructuredVolume::getValue(Vec3i index)
+    {
+        migrate();
+
+        size_t lindex = linearIndex(index);
+
+        float value = 0.f;
+
+        UnmapVoxelImpl(
+            value,
+            ManagedBuffer::data_ + lindex,
+            bytesPerVoxel_,
+            voxelMapping_.x,
+            voxelMapping_.y
+            );
+
+        return value;
     }
 
     void StructuredVolume::setBytes(int32_t x, int32_t y, int32_t z, uint8_t const* data)

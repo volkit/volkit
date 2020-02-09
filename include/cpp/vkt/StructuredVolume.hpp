@@ -63,9 +63,11 @@ namespace vkt
 
         void setValue(int32_t x, int32_t y, int32_t z, float value);
         void getValue(int32_t x, int32_t y, int32_t z, float& value);
+        float getValue(int32_t x, int32_t y, int32_t z);
 
         void setValue(Vec3i index, float value);
         void getValue(Vec3i index, float& value);
+        float getValue(Vec3i index);
 
         void setBytes(int32_t x, int32_t y, int32_t z, uint8_t const* data);
         void getBytes(int32_t x, int32_t y, int32_t z, uint8_t* data);
