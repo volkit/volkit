@@ -3,12 +3,22 @@
 
 find_package(CUDA)
 find_package(SDL2)
+find_package(SWIG)
 find_package(Visionaray)
 
 vkt_use_package(CUDA)
 vkt_use_package(SDL2)
+vkt_use_package(SWIG)
 #vkt_use_package(Visionaray COMPONENTS common) # TODO!!
 vkt_use_package(Visionaray)
+
+cmake_policy(SET CMP0078 NEW)
+
+if(SWIG_FOUND)
+    include(${SWIG_USE_FILE})
+    find_package(Python3 3.6 COMPONENTS Interpreter Development REQUIRED)
+    include_directories(SYSTEM ${Python3_INCLUDE_DIRS})
+endif()
 
 #---------------------------------------------------------------------------------------------------
 # Dependencies pulled in by visionaray
@@ -151,4 +161,11 @@ vkt_add_library(volkit
 # Explicitly link with visionaray_common
 if(VISIONARAY_COMMON_LIBRARY)
     target_link_libraries(volkit ${VISIONARAY_COMMON_LIBRARY})
+endif()
+
+if(SWIG_FOUND)
+    set_property(SOURCE volkit.i PROPERTY CPLUSPLUS ON)
+    swig_add_library(volkitpy LANGUAGE python SOURCES volkit.i)
+    swig_link_libraries(volkitpy ${Python3_LIBRARIES})
+    swig_link_libraries(volkitpy volkit)
 endif()
