@@ -58,6 +58,26 @@ namespace vkt
         return NoError;
     }
 
+    Error ScanRange(
+            StructuredVolume& dst,
+            StructuredVolume& src,
+            Vec3i first,
+            Vec3i last,
+            Vec3i dstOffset
+            )
+    {
+        VKT_CALL__(
+            ScanRange,
+            dst,
+            src,
+            first,
+            last,
+            dstOffset
+            );
+
+        return NoError;
+    }
+
 } // vkt
 
 //-------------------------------------------------------------------------------------------------
