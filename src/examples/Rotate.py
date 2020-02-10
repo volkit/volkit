@@ -55,8 +55,19 @@ def main():
             centerOfRotation
             )
 
+    rgba = [
+        1., 1., 1., .005,
+        0., .1, .1, .25,
+        .5, .5, .7, .5,
+        .7, .7, .07, .75,
+        1., .3, .3, 1.
+        ]
+    lut = vkt.LookupTable(5,1,1,vkt.ColorFormat_RGBA32F)
+    lut.setData(rgba)
+
     renderState = vkt.RenderState()
     renderState.renderAlgo = vkt.RenderAlgo_MultiScattering
+    renderState.rgbaLookupTable = lut.getResourceHandle();
     vkt.Render(rotatedVolume, renderState)
 
 if __name__ == '__main__':
