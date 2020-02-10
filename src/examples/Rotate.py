@@ -40,7 +40,7 @@ def main():
     # Rotate the volume with rotation center in the middle
     axis = vkt.Vec3f()
     axis.x = 1.
-    axis.y = 3.
+    axis.y = .3
     axis.z = 0.
     angleInRadians = 45.*math.pi/180
     centerOfRotation = vkt.Vec3f()
