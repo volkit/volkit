@@ -55,7 +55,7 @@ int main()
             1.f, .3f, .3f, 1.f
             };
     vkt::LookupTable lut(5,1,1,vkt::ColorFormat::RGBA32F);
-    std::memcpy(lut.getData(), rgba, sizeof(rgba));
+    lut.setData((uint8_t*)rgba);
 
     vkt::RenderState renderState;
     renderState.renderAlgo = vkt::RenderAlgo::MultiScattering;
