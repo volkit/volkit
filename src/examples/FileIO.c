@@ -52,7 +52,7 @@ int main(int argc, char** argv)
     rgba[16] =  1.f; rgba[17] = .3f; rgba[18] = .3f;  rgba[19] = 1.f;
 
     vktLookupTableCreate(&lut,5,1,1,vktColorFormatRGBA32F);
-    vktLookupTableSetData(lut,rgba);
+    vktLookupTableSetData(lut,(uint8_t*)rgba);
 
     vktRenderStateDefaultInit(&renderState);
     //renderState.renderAlgo = vktRenderAlgoRayMarching;
