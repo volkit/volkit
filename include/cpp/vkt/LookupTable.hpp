@@ -30,6 +30,10 @@ namespace vkt
         void setColorFormat(ColorFormat pf);
         ColorFormat getColorFormat() const;
 
+        /*!
+         * @brief  Provide data buffer: LUT will copy that data to its own memory
+         */
+        void setData(uint8_t* data);
         uint8_t* getData();
 
         std::size_t getSizeInBytes() const;

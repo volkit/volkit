@@ -1,7 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include <vkt/InputStream.h>
 #include <vkt/LookupTable.h>
@@ -53,7 +52,7 @@ int main(int argc, char** argv)
     rgba[16] =  1.f; rgba[17] = .3f; rgba[18] = .3f;  rgba[19] = 1.f;
 
     vktLookupTableCreate(&lut,5,1,1,vktColorFormatRGBA32F);
-    memcpy(vktLookupTableGetData(lut), rgba, sizeof(rgba));
+    vktLookupTableSetData(lut,rgba);
 
     vktRenderStateDefaultInit(&renderState);
     //renderState.renderAlgo = vktRenderAlgoRayMarching;

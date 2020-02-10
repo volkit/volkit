@@ -66,6 +66,13 @@ namespace vkt
         return format_;
     }
 
+    void LookupTable::setData(uint8_t* data)
+    {
+        migrate();
+
+        std::memcpy(ManagedBuffer::data_, data, getSizeInBytes());
+    }
+
     uint8_t* LookupTable::getData()
     {
         migrate();
@@ -143,6 +150,11 @@ void vktLookupTableSetColorFormat(vktLookupTable lut, vktColorFormat format)
 vktColorFormat vktLookupTableGetColorFormat(vktLookupTable lut)
 {
     return (vktColorFormat)lut->lut.getColorFormat();
+}
+
+void vktLookupTableSetData(vktLookupTable lut, uint8_t* data)
+{
+    return lut->lut.setData(data);
 }
 
 uint8_t* vktLookupTableGetData(vktLookupTable lut)

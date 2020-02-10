@@ -45,6 +45,8 @@ VKTAPI void vktLookupTableSetColorFormat(vktLookupTable lut,
 
 VKTAPI vktColorFormat vktLookupTableGetColorFormat(vktLookupTable lut);
 
+VKTAPI void vktLookupTableSetData(vktLookupTable lut, uint8_t* data);
+
 VKTAPI uint8_t* vktLookupTableGetData(vktLookupTable lut);
 
 VKTAPI size_t vktLookupTableGetSizeInBytes(vktLookupTable lut);
