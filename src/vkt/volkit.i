@@ -8,6 +8,7 @@
 #include <vkt/linalg.hpp>
 
 #include <vkt/Arithmetic.hpp>
+#include <vkt/Array3D.hpp>
 #include <vkt/Copy.hpp>
 #include <vkt/Decompose.hpp>
 #include <vkt/Fill.hpp>
@@ -57,8 +58,24 @@ namespace std
 
 %include "typemaps.i"
 %include <vkt/Arithmetic.hpp>
+%include <vkt/Array3D.hpp>
 %include <vkt/Copy.hpp>
+
 %include <vkt/Decompose.hpp>
+%template(Array3D_StructuredVolume) vkt::Array3D<vkt::StructuredVolume>;
+%extend vkt::Array3D<vkt::StructuredVolume>
+{
+    vkt::StructuredVolume& __getitem__(vkt::Vec3i index)
+    {
+        return (*($self))[index];
+    }
+
+    vkt::StructuredVolume const& __getitem__(vkt::Vec3i index) const
+    {
+        return (*($self))[index];
+    }
+}
+
 %include <vkt/Fill.hpp>
 %include <vkt/Flip.hpp>
 %include <vkt/InputStream.hpp>
