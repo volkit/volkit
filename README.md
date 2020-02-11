@@ -62,7 +62,7 @@ vkt.Scan(volume2, volume1)
 Rendering
 ---------
 
-Volkit is _not_ a volume rendering library, but still, rendering is an important algorithm to quickly review the outcome of compuations. Volkit currently supports ray marching with the absorption + emission model, implicit isosurface ray casting, and multi-scattering using delta tracking.
+Volkit is _not_ a volume rendering library, but still, rendering is an important algorithm to quickly review the outcome of computations. Volkit currently supports ray marching with the absorption + emission model, implicit isosurface ray casting, and multi-scattering using delta tracking.
 
 ```
 # 1-d transfer function lookup table
