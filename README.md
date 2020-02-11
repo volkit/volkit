@@ -29,8 +29,8 @@ vkt::StructuredVolume volume(dims.x, dims.y, dims.z, bpv);
 is.read(volume);
 
 vkt::StructuredVolume volume2(32,32,32,1);
-vkt::CopyRange(volume,      // copy from volume2
-               volume2,     // ... to volume
+vkt::CopyRange(volume,      // copy to volume
+               volume2,     // ... from volume2
                2,2,2,       // from voxel position (2,2,2)
                8,8,8,       // to (but excluding) voxel position (8,8,8)
                1,1,1);      // save range beginning at (1,1,1) in destination volume
