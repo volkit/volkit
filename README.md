@@ -62,6 +62,8 @@ vkt.Scan(volume2, volume1)
 Rendering
 ---------
 
+<img src="/doc/img/rotate.png" width="270" /><img src="/doc/img/backpack.png" width="320" /><img src="/doc/img/foot.png" width="270" />
+
 Volkit is _not_ a volume rendering library, but still, rendering is an important algorithm to quickly review the outcome of computations. Volkit currently supports ray marching with the absorption + emission model, implicit isosurface ray casting, and multi-scattering using delta tracking.
 
 ```
@@ -84,14 +86,12 @@ rs = vkt.RenderState()
 rs.renderAlgo = vkt.RenderAlgo_MultiScattering
 
 # resources like lookup tables, volumes, etc. are
-# managed by volkit can be accessed via handles
+# managed by volkit and can be accessed via handles
 rs.rgbaLookupTable = lut.getResourceHandle()
 
 # Rendering call
 vkt.Render(volume, rs)
 ```
-
-<img src="/doc/img/rotate.png" width="270" /><img src="/doc/img/backpack.png" width="320" /><img src="/doc/img/foot.png" width="270" />
 
 Execution Policies
 ------------------
