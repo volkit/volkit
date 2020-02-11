@@ -56,7 +56,6 @@ vkt.FillRange(volume1, 0,0,0, 4,4,4, .1)
 
 # Compute 3D prefix sum and store result in volume2
 vkt.Scan(volume2, volume1)
-
 ```
 
 Rendering
