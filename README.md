@@ -127,6 +127,10 @@ Core Algorithms
 
 ### Copy
 
+### Delete
+
+### Crop
+
 ### Transform
 
 ### Core Algorithm Variants
