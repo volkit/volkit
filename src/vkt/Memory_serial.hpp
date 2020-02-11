@@ -20,9 +20,4 @@ namespace vkt
     {
         free(ptr);
     }
-
-    inline void Copy_serial(void* dst, void const* src, std::size_t size, CopyKind)
-    {
-        std::memcpy(dst, src, size);
-    }
 } // vkt
