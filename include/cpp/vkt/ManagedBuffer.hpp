@@ -40,13 +40,11 @@ namespace vkt
          */
         void migrate();
 
-        void resize(std::size_t size);
-
-        void copy(ManagedBuffer& rhs);
-
     protected:
         void allocate(std::size_t size);
         void deallocate();
+        void resize(std::size_t size);
+        void copy(ManagedBuffer& rhs);
 
         T* data_ = nullptr;
         std::size_t size_ = 0;
@@ -199,6 +197,31 @@ namespace vkt
     }
 
     template <typename T>
+    void ManagedBuffer<T>::allocate(std::size_t size)
+    {
+        lastAllocationPolicy_ = GetThreadExecutionPolicy();
+
+        size_ = size;
+
+        Allocate((void**)&data_, size_ * sizeof(T));
+    }
+
+    template <typename T>
+    void ManagedBuffer<T>::deallocate()
+    {
+        // Free with last allocation policy
+        ExecutionPolicy curr = GetThreadExecutionPolicy();
+
+        SetThreadExecutionPolicy(lastAllocationPolicy_);
+
+        Free(data_);
+
+        // Make policy from before Free() call current
+        lastAllocationPolicy_ = curr;
+        SetThreadExecutionPolicy(curr);
+    }
+
+    template <typename T>
     void ManagedBuffer<T>::resize(std::size_t size)
     {
         std::size_t oldSize = size_;
@@ -235,31 +258,6 @@ namespace vkt
                         : CopyKind::HostToHost;
 
         Copy(data_, rhs.data_, std::min(size_, rhs.size_) * sizeof(T), ck);
-    }
-
-    template <typename T>
-    void ManagedBuffer<T>::allocate(std::size_t size)
-    {
-        lastAllocationPolicy_ = GetThreadExecutionPolicy();
-
-        size_ = size;
-
-        Allocate((void**)&data_, size_ * sizeof(T));
-    }
-
-    template <typename T>
-    void ManagedBuffer<T>::deallocate()
-    {
-        // Free with last allocation policy
-        ExecutionPolicy curr = GetThreadExecutionPolicy();
-
-        SetThreadExecutionPolicy(lastAllocationPolicy_);
-
-        Free(data_);
-
-        // Make policy from before Free() call current
-        lastAllocationPolicy_ = curr;
-        SetThreadExecutionPolicy(curr);
     }
 
 } // vkt
