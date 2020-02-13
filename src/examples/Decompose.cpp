@@ -61,8 +61,5 @@ int main()
             haloSizePos
             );
 
-    vkt::Render(
-            decomp[{0,0,0}],
-            {}
-            );
+    vkt::Render(decomp[{0,0,0}]);
 }

@@ -75,7 +75,7 @@ namespace vkt
     };
 
     VKTAPI Error Render(StructuredVolume& volume,
-                        RenderState const& renderState,
+                        RenderState const& renderState = {},
                         RenderState* newRenderState = 0);
 
 } // vkt

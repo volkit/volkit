@@ -70,10 +70,7 @@ def main():
             haloSizePos
             )
 
-    vkt.Render(
-            decomp[vkt.Vec3i()],
-            vkt.RenderState()
-            )
+    vkt.Render(decomp[vkt.Vec3i()])
 
 if __name__ == '__main__':
     main()
