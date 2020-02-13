@@ -7,6 +7,7 @@
 #include <vkt/common.hpp>
 #include <vkt/linalg.hpp>
 
+#include <vkt/Aggregates.hpp>
 #include <vkt/Arithmetic.hpp>
 #include <vkt/Array3D.hpp>
 #include <vkt/Copy.hpp>
@@ -57,6 +58,7 @@ namespace std
 %include <vkt/Voxel.hpp>
 
 %include "typemaps.i"
+%include <vkt/Aggregates.hpp>
 %include <vkt/Arithmetic.hpp>
 %include <vkt/Array3D.hpp>
 %include <vkt/Copy.hpp>

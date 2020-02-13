@@ -26,6 +26,46 @@ namespace vkt
 
         return NoError;
     }
+
+    VKTAPI Error ComputeAggregatesRange(
+            StructuredVolume& volume,
+            Aggregates& aggregates,
+            int32_t firstX,
+            int32_t firstY,
+            int32_t firstZ,
+            int32_t lastX,
+            int32_t lastY,
+            int32_t lastZ
+            )
+    {
+        VKT_CALL__(
+            ComputeAggregatesRange,
+            volume,
+            aggregates,
+            { firstX, firstY, firstZ },
+            { lastX, lastY, lastZ }
+            );
+
+        return NoError;
+    }
+
+    VKTAPI Error ComputeAggregatesRange(
+            StructuredVolume& volume,
+            Aggregates& aggregates,
+            Vec3i first,
+            Vec3i last
+            )
+    {
+        VKT_CALL__(
+            ComputeAggregatesRange,
+            volume,
+            aggregates,
+            first,
+            last
+            );
+
+        return NoError;
+    }
 } // vkt
 
 //-------------------------------------------------------------------------------------------------
@@ -37,6 +77,35 @@ VKTAPI vktError vktComputeAggregatesSV(vktStructuredVolume volume, vktAggregates
     vkt::Aggregates aggrCPP;
 
     vkt::ComputeAggregates(volume->volume, aggrCPP);
+
+    std::memcpy(aggregates, &aggrCPP, sizeof(aggrCPP));
+
+    return vktNoError;
+}
+
+VKTAPI vktError vktComputeAggregatesRangeSV(
+        vktStructuredVolume volume,
+        vktAggregates_t* aggregates,
+        int32_t firstX,
+        int32_t firstY,
+        int32_t firstZ,
+        int32_t lastX,
+        int32_t lastY,
+        int32_t lastZ
+        )
+{
+    vkt::Aggregates aggrCPP;
+
+    vkt::ComputeAggregatesRange(
+        volume->volume,
+        aggrCPP,
+        firstX,
+        firstY,
+        firstZ,
+        lastX,
+        lastY,
+        lastZ
+        );
 
     std::memcpy(aggregates, &aggrCPP, sizeof(aggrCPP));
 

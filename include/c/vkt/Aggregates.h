@@ -19,8 +19,7 @@ typedef struct
     float min;
     float max;
     float mean;
-    float median;
-    float std;
+    float stddev;
     float var;
     float sum;
     float prod;
