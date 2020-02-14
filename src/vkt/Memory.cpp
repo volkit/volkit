@@ -11,9 +11,15 @@
 
 #include <vkt/Memory.hpp>
 
+#include <vkt/Memory.h>
+
 #include "macros.hpp"
 #include "Memory_cuda.hpp"
 #include "Memory_serial.hpp"
+
+//-------------------------------------------------------------------------------------------------
+// C++ API
+//
 
 namespace vkt
 {
@@ -27,7 +33,7 @@ namespace vkt
         VKT_CALL__(Free, ptr);
     }
 
-    void Copy(void* dst, void const* src, std::size_t size, CopyKind ck)
+    void Memcpy(void* dst, void const* src, std::size_t size, CopyKind ck)
     {
 #if VKT_HAVE_CUDA
         cudaMemcpyKind cck;
@@ -60,3 +66,22 @@ namespace vkt
     }
 
 } // vkt
+
+//-------------------------------------------------------------------------------------------------
+// C API
+//
+
+void vktAllocate(void** ptr, size_t size)
+{
+    VKT_CALL__(vkt::Allocate, ptr, size);
+}
+
+void vktFree(void* ptr)
+{
+    VKT_CALL__(vkt::Free, ptr);
+}
+
+void vktMemcpy(void* dst, void const* src, size_t size, vktCopyKind ck)
+{
+    vkt::Memcpy(dst, src, size, (vkt::CopyKind)ck);
+}

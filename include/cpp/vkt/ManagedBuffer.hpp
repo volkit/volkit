@@ -5,7 +5,6 @@
 
 #include <algorithm>
 #include <cstddef>
-#include <cstdint>
 
 #include <vkt/ExecutionPolicy.hpp>
 #include <vkt/ManagedResource.hpp>
@@ -178,7 +177,7 @@ namespace vkt
                             ? CopyKind::HostToDevice
                             : CopyKind::DeviceToHost;
 
-            Copy(newData, data_, size_ * sizeof(T), ck);
+            Memcpy(newData, data_, size_ * sizeof(T), ck);
 
             // Free the data array with the old allocation policy
             SetThreadExecutionPolicy(lastAllocationPolicy_);
@@ -235,13 +234,13 @@ namespace vkt
                         ? CopyKind::DeviceToDevice
                         : CopyKind::HostToHost;
 
-        uint8_t* temp = nullptr;
+        T* temp = nullptr;
         Allocate((void**)&temp, oldSize * sizeof(T));
-        Copy(temp, data_, std::min(oldSize, newSize * sizeof(T)), ck);
+        Memcpy(temp, data_, std::min(oldSize * sizeof(T), newSize * sizeof(T)), ck);
 
         Free(data_);
-        Allocate((void**)data_, newSize * sizeof(T));
-        Copy(data_, temp, std::min(oldSize, newSize * sizeof(T)), ck);
+        Allocate((void**)&data_, newSize * sizeof(T));
+        Memcpy(data_, temp, std::min(oldSize * sizeof(T), newSize * sizeof(T)), ck);
 
         Free(temp);
 
@@ -257,7 +256,7 @@ namespace vkt
                         ? CopyKind::DeviceToDevice
                         : CopyKind::HostToHost;
 
-        Copy(data_, rhs.data_, std::min(size_, rhs.size_) * sizeof(T), ck);
+        Memcpy(data_, rhs.data_, std::min(size_, rhs.size_) * sizeof(T), ck);
     }
 
 } // vkt

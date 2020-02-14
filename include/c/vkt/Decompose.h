@@ -30,6 +30,18 @@ VKTAPI vktError vktBrickDecomposeSV(vktArray3D_vktStructuredVolume decomp,
                                     int32_t haloSizePosY,
                                     int32_t haloSizePosZ);
 
+VKTAPI vktError vktBrickDecomposeResizeSV(vktArray3D_vktStructuredVolume decomp,
+                                          vktStructuredVolume source,
+                                          int32_t brickSizeX,
+                                          int32_t brickSizeY,
+                                          int32_t brickSizeZ,
+                                          int32_t haloSizeNegX,
+                                          int32_t haloSizeNegY,
+                                          int32_t haloSizeNegZ,
+                                          int32_t haloSizePosX,
+                                          int32_t haloSizePosY,
+                                          int32_t haloSizePosZ);
+
 #ifdef __cplusplus
 }
 #endif

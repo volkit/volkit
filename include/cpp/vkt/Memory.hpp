@@ -5,6 +5,8 @@
 
 #include <cstddef>
 
+#include "common.hpp"
+
 namespace vkt
 {
     enum class CopyKind
@@ -15,10 +17,10 @@ namespace vkt
         DeviceToDevice,
     };
 
-    void Allocate(void** ptr, std::size_t size);
+    VKTAPI void Allocate(void** ptr, std::size_t size);
 
-    void Free(void* ptr);
+    VKTAPI void Free(void* ptr);
 
-    void Copy(void* dst, void const* src, std::size_t size, CopyKind ck);
+    VKTAPI void Memcpy(void* dst, void const* src, std::size_t size, CopyKind ck);
 
 } // vkt

@@ -37,34 +37,40 @@ namespace vkt
         Array3D& operator=(Array3D& rhs) = default;
         Array3D& operator=(Array3D&& rhs) = default;
 
+        inline void resize(Vec3i const& dims)
+        {
+            Base::resize(dims.x * sizeof(dims.y) * dims.z * sizeof(T));
+            dims_ = dims;
+        }
+
         inline iterator begin()
         {
-            return Base::data_;
+            return data();
         }
 
         inline const_iterator begin() const
         {
-            return Base::data_;
+            return data();
         }
 
         inline const_iterator cbegin()
         {
-            return Base::data_;
+            return data();
         }
 
         inline iterator end()
         {
-            return Base::data_ + numElements();
+            return data() + numElements();
         }
 
         inline const_iterator end() const
         {
-            return Base::data_ + numElements();
+            return data() + numElements();
         }
 
         inline const_iterator cend()
         {
-            return Base::data_ + numElements();
+            return data() + numElements();
         }
 
         inline T& operator[](Vec3i const& index)
@@ -111,7 +117,7 @@ namespace vkt
 
         inline std::size_t numElements() const
         {
-            return dims_.x * dims_.y * dims_.z;
+            return dims_.x * size_t(dims_.y) * dims_.z;
         }
 
     private:

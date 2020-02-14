@@ -17,6 +17,8 @@ typedef uint32_t vktResourceHandle;
 
 VKTAPI vktResourceHandle vktRegisterManagedResource(vktManagedResource resource);
 
+VKTAPI void vktUnregisterManagedResource(vktResourceHandle handle);
+
 VKTAPI vktManagedResource vktGetManagedResource(vktResourceHandle handle);
 
 #ifdef __cplusplus
