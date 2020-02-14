@@ -97,7 +97,7 @@ namespace vkt
     }
 
 
-    //--- Vec3f -------------------------------------------
+    //--- Vec3i -------------------------------------------
 
     VKT_FUNC inline bool operator==(Vec3i const& a, Vec3i const& b)
     {
@@ -126,6 +126,36 @@ namespace vkt
     }
 
     VKT_FUNC inline Vec3i& operator-=(Vec3i& a, Vec3i const& b)
+    {
+        a = a - b;
+        return a;
+    }
+
+
+    //--- vktVec3i_t --------------------------------------
+
+    VKT_FUNC inline vktVec3i_t operator+(vktVec3i_t const& a, vktVec3i_t const& b)
+    {
+        return { a.x + b.x, a.y + b.y, a.z + b.z };
+    }
+
+    VKT_FUNC inline vktVec3i_t operator-(vktVec3i_t const& a, vktVec3i_t const& b)
+    {
+        return { a.x - b.x, a.y - b.y, a.z - b.z };
+    }
+
+    VKT_FUNC inline vktVec3i_t operator*(vktVec3i_t const& a, vktVec3i_t const& b)
+    {
+        return { a.x * b.x, a.y * b.y, a.z * b.z };
+    }
+
+    VKT_FUNC inline vktVec3i_t& operator+=(vktVec3i_t& a, vktVec3i_t const& b)
+    {
+        a = a + b;
+        return a;
+    }
+
+    VKT_FUNC inline vktVec3i_t& operator-=(vktVec3i_t& a, vktVec3i_t const& b)
     {
         a = a - b;
         return a;

@@ -14,4 +14,14 @@ namespace vkt
             )
     {
     }
+
+    void BrickDecomposeC_cuda(
+            vktArray3D_vktStructuredVolume dest,
+            vktStructuredVolume source,
+            vktVec3i_t brickSize,
+            vktVec3i_t haloSizeNeg,
+            vktVec3i_t haloSizePos
+            )
+    {
+    }
 } // vkt
