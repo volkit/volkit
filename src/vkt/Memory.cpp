@@ -3,6 +3,7 @@
 
 #include <vkt/config.h>
 
+#include <cassert>
 #include <cstring>
 
 #if VKT_HAVE_CUDA
@@ -35,33 +36,36 @@ namespace vkt
 
     void Memcpy(void* dst, void const* src, std::size_t size, CopyKind ck)
     {
-#if VKT_HAVE_CUDA
-        cudaMemcpyKind cck;
-
-        switch (ck)
+        if (ck == CopyKind::HostToHost)
         {
-        case CopyKind::HostToHost:
-            cck = cudaMemcpyHostToHost;
-            break;
-
-        case CopyKind::HostToDevice:
-            cck = cudaMemcpyHostToDevice;
-            break;
-
-        case CopyKind::DeviceToHost:
-            cck = cudaMemcpyDeviceToHost;
-            break;
-
-        case CopyKind::DeviceToDevice:
-            cck = cudaMemcpyDeviceToDevice;
-            break;
+            std::memcpy(dst, src, size);
         }
+        else
+        {
+#if VKT_HAVE_CUDA
+            cudaMemcpyKind cck;
 
-        VKT_CUDA_SAFE_CALL__(cudaMemcpy(dst, src, size, cck));
-#else
-        assert(ck == CopyKind::HostToHost);
+            switch (ck)
+            {
+            case CopyKind::HostToHost:
+                assert(0);
+                return;
 
-        std::memcpy(dst, src, size);
+            case CopyKind::HostToDevice:
+                cck = cudaMemcpyHostToDevice;
+                break;
+
+            case CopyKind::DeviceToHost:
+                cck = cudaMemcpyDeviceToHost;
+                break;
+
+            case CopyKind::DeviceToDevice:
+                cck = cudaMemcpyDeviceToDevice;
+                break;
+            }
+
+            VKT_CUDA_SAFE_CALL__(cudaMemcpy(dst, src, size, cck));
+        }
 #endif
     }
 
