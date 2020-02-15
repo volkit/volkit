@@ -27,7 +27,6 @@ namespace vkt
                 );
 
         using accum_t = uint32_t;
-        using voxel_t = IntegralVoxel<accum_t>;
 
         auto get = [&](int32_t x, int32_t y, int32_t z)
         {
