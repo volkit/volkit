@@ -23,6 +23,7 @@
 #include <vkt/Rotate.hpp>
 #include <vkt/Scan.hpp>
 #include <vkt/StructuredVolume.hpp>
+#include <vkt/VirvoFile.hpp>
 #include <vkt/Voxel.hpp>
 using namespace vkt;
 %}
@@ -36,6 +37,7 @@ using namespace vkt;
 %include <vkt/linalg.hpp>
 
 %include <vkt/RawFile.hpp>
+%include <vkt/VirvoFile.hpp>
 
 %include "std_vector.i"
 namespace std
