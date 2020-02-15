@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include <vkt/Aggregates.h>
+#include <vkt/Decompose.h>
 #include <vkt/InputStream.h>
 #include <vkt/RawFile.h>
 #include <vkt/StructuredVolume.h>
@@ -32,6 +33,11 @@ int main(int argc, char** argv)
     uint16_t bpv;
     vktStructuredVolume volume;
     vktInputStream is;
+    vktVec3i_t brickSize;
+    vktVec3i_t decompDims;
+    int x, y, z;
+    int firstX, firstY, firstZ;
+    int lastX, lastY, lastZ;
 
     if (argc < 2)
     {
@@ -63,8 +69,41 @@ int main(int argc, char** argv)
     vktAggregates_t aggr;
     vktComputeAggregatesSV(volume, &aggr);
     printStatistics(aggr,0,0,0,dims.x,dims.y,dims.z);
-    // TODO: brick decomposition (cf. C++ and Python examples)
+    printf("\n");
 
+    // Compute a brick decomposition and print per-brick statistics
+    brickSize.x = 100;
+    brickSize.y = 100;
+    brickSize.z = 100;
+
+    vktArray3D_vktStructuredVolume decomp;
+    vktArray3D_vktStructuredVolume_CreateEmpty(&decomp);
+    vktBrickDecomposeResizeSV(decomp, volume, brickSize.x,brickSize.y,brickSize.z,0,0,0,0,0,0);
+    vktBrickDecomposeSV(decomp, volume, brickSize.x,brickSize.y,brickSize.z,0,0,0,0,0,0);
+
+    decompDims = vktArray3D_vktStructuredVolume_Dims(decomp);
+    for (z = 0; z < decompDims.z; ++z)
+    {
+        for (y = 0; y < decompDims.y; ++y)
+        {
+            for (x = 0; x < decompDims.x; ++x)
+            {
+                firstX = x * brickSize.x;
+                firstY = y * brickSize.y;
+                firstZ = z * brickSize.z;
+                lastX = dims.x < firstX+brickSize.x ? dims.x : firstX+brickSize.x;
+                lastY = dims.y < firstY+brickSize.y ? dims.y : firstY+brickSize.y;
+                lastZ = dims.z < firstZ+brickSize.z ? dims.z : firstZ+brickSize.z;
+                // Compute aggregates only for the brick range
+                vktComputeAggregatesRangeSV(volume, &aggr,firstX,firstY,firstZ,
+                                                          lastX,lastY,lastZ);
+                printStatistics(aggr,firstX,firstY,firstZ,lastX,lastY,lastZ);
+                printf("\n");
+            }
+        }
+    }
+
+    vktArray3D_vktStructuredVolume_Destroy(decomp);
     vktInputStreamDestroy(is);
     vktStructuredVolumeDestroy(volume);
     vktRawFileDestroy(file);
