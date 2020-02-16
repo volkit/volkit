@@ -12,6 +12,7 @@
 #include <vkt/Array3D.hpp>
 #include <vkt/Copy.hpp>
 #include <vkt/Decompose.hpp>
+#include <vkt/ExecutionPolicy.hpp>
 #include <vkt/Fill.hpp>
 #include <vkt/Flip.hpp>
 #include <vkt/InputStream.hpp>
@@ -36,6 +37,7 @@ using namespace vkt;
 %include <vkt/common.hpp>
 %include <vkt/linalg.hpp>
 
+%include <vkt/ExecutionPolicy.hpp>
 %include <vkt/RawFile.hpp>
 %include <vkt/VirvoFile.hpp>
 
