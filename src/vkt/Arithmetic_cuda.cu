@@ -23,17 +23,17 @@ namespace vkt
         int ny = last.y - first.y;
         int nz = last.z - first.z;
 
-        int x = (blockIdx.x * blockDim.x + threadIdx.x) - first.x;
-        int y = (blockIdx.y * blockDim.y + threadIdx.y) - first.y;
-        int z = (blockIdx.z * blockDim.z + threadIdx.z) - first.z;
+        int x = blockIdx.x * blockDim.x + threadIdx.x;
+        int y = blockIdx.y * blockDim.y + threadIdx.y;
+        int z = blockIdx.z * blockDim.z + threadIdx.z;
 
         if (x < nx && y < ny && z < nz)
         {
             float val1;
             float val2;
 
-            source1.getValue(x, y, z, val1);
-            source2.getValue(x, y, z, val2);
+            source1.getValue(x + first.x, y + first.y, z + first.z, val1);
+            source2.getValue(x + first.x, y + first.y, z + first.z, val2);
 
             float val3 = func(val1, val2);
 

@@ -11,13 +11,16 @@
 namespace vkt
 {
     void CopyRange_cuda(
-            StructuredVolume& dst,
-            StructuredVolume& src,
+            StructuredVolume& dest,
+            StructuredVolume& source,
             Vec3i first,
             Vec3i last,
             Vec3i dstOffset
             )
-    {
-    }
+#if VKT_HAVE_CUDA
+    ;
+#else
+    {}
+#endif
 
 } // vkt

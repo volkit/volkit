@@ -102,6 +102,15 @@ namespace vkt
                 );
         }
 
+        VKT_FUNC float getValue(int32_t x, int32_t y, int32_t z)
+        {
+            float value = 0.f;
+
+            getValue(x, y, z, value);
+
+            return value;
+        }
+
         VKT_FUNC void setValue(Vec3i index, float value)
         {
             std::size_t lindex = linearIndex(index);
@@ -126,6 +135,38 @@ namespace vkt
                 voxelMapping_.x,
                 voxelMapping_.y
                 );
+        }
+
+        VKT_FUNC void setBytes(int32_t x, int32_t y, int32_t z, uint8_t const* data)
+        {
+            std::size_t index = linearIndex(x, y, z);
+
+            for (uint16_t i = 0; i < bytesPerVoxel_; ++i)
+                data_[index + i] = data[i];
+        }
+
+        VKT_FUNC void getBytes(int32_t x, int32_t y, int32_t z, uint8_t* data)
+        {
+            std::size_t index = linearIndex(x, y, z);
+
+            for (uint16_t i = 0; i < bytesPerVoxel_; ++i)
+                data[i] = data_[index + i];
+        }
+
+        VKT_FUNC void setBytes(Vec3i index, uint8_t const* data)
+        {
+            std::size_t lindex = linearIndex(index);
+
+            for (uint16_t i = 0; i < bytesPerVoxel_; ++i)
+                data_[lindex + i] = data[i];
+        }
+
+        VKT_FUNC void getBytes(Vec3i index, uint8_t* data)
+        {
+            std::size_t lindex = linearIndex(index);
+
+            for (uint16_t i = 0; i < bytesPerVoxel_; ++i)
+                data[i] = data[lindex + i];
         }
 
     private:

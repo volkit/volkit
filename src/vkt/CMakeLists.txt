@@ -151,6 +151,7 @@ set(SOURCES
 
 vkt_cuda_compile(CUDA_SOURCES
     Arithmetic_cuda.cu
+    Copy_cuda.cu
     Decompose_cuda.cu
     Fill_cuda.cu
 )
