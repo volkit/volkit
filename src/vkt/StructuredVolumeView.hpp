@@ -18,7 +18,7 @@ namespace vkt
     class StructuredVolumeView
     {
     public:
-        VKT_FUNC constexpr static uint16_t GetMaxBytesPerVoxel() { return 4; }
+        VKT_FUNC constexpr static uint16_t GetMaxBytesPerVoxel() { return 8; }
 
     public:
         StructuredVolumeView() = default;

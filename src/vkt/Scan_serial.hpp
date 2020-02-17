@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <cstring>
 
 #include <vkt/Copy.hpp>
@@ -22,11 +23,11 @@ namespace vkt
             )
     {
         static_assert(
-                sizeof(uint32_t) >= StructuredVolume::GetMaxBytesPerVoxel(),
+                sizeof(uint64_t) >= StructuredVolume::GetMaxBytesPerVoxel(),
                 "Type mismatch"
                 );
 
-        using accum_t = uint32_t;
+        using accum_t = uint64_t;
 
         auto get = [&](int32_t x, int32_t y, int32_t z)
         {
