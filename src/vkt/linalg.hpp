@@ -131,6 +131,12 @@ namespace vkt
         return a;
     }
 
+    VKT_FUNC inline std::ostream& operator<<(std::ostream& out, Vec3i const& v)
+    {
+        out << '(' << v.x << ',' << v.y << ',' << v.z << ')';
+        return out;
+    }
+
 
     //--- vktVec3i_t --------------------------------------
 
