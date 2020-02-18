@@ -32,6 +32,7 @@ namespace vkt
         auto get = [&](int32_t x, int32_t y, int32_t z)
         {
             uint8_t data[StructuredVolume::GetMaxBytesPerVoxel()];
+            std::memset(data, 0, StructuredVolume::GetMaxBytesPerVoxel());
             dst.getBytes(x, y, z, data);
             return IntegralVoxel<accum_t>(data);
         };
