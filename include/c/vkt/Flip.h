@@ -21,13 +21,13 @@ VKTAPI vktError vktFlipSV(vktStructuredVolume dest,
 
 VKTAPI vktError vktFlipRangeSV(vktStructuredVolume dest,
                                vktStructuredVolume source,
+                               vktAxis axis,
                                int32_t firstX,
                                int32_t firstY,
                                int32_t firstZ,
                                int32_t lastX,
                                int32_t lastY,
-                               int32_t lastZ,
-                               vktAxis axis);
+                               int32_t lastZ);
 
 #ifdef __cplusplus
 }

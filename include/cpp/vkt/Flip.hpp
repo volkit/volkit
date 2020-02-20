@@ -17,18 +17,18 @@ namespace vkt
 
     VKTAPI Error FlipRange(StructuredVolume& dest,
                            StructuredVolume& source,
+                           Axis axis,
                            int32_t firstX,
                            int32_t firstY,
                            int32_t firstZ,
                            int32_t lastX,
                            int32_t lastY,
-                           int32_t lastZ,
-                           Axis axis);
+                           int32_t lastZ);
 
     VKTAPI Error FlipRange(StructuredVolume& dest,
                            StructuredVolume& source,
+                           Axis axis,
                            Vec3i first,
-                           Vec3i last,
-                           Axis axis);
+                           Vec3i last);
 
 } // vkt

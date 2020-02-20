@@ -24,9 +24,9 @@ namespace vkt
             FlipRange,
             dest,
             source,
+            axis,
             { 0, 0, 0 },
-            dest.getDims(),
-            axis
+            dest.getDims()
             );
 
         return NoError;
@@ -35,22 +35,22 @@ namespace vkt
     Error FlipRange(
             StructuredVolume& dest,
             StructuredVolume& source,
+            Axis axis,
             int32_t firstX,
             int32_t firstY,
             int32_t firstZ,
             int32_t lastX,
             int32_t lastY,
-            int32_t lastZ,
-            Axis axis
+            int32_t lastZ
             )
     {
         VKT_CALL__(
             FlipRange,
             dest,
             source,
+            axis,
             { firstX, firstY, firstZ },
-            { lastX, lastY, lastZ },
-            axis
+            { lastX, lastY, lastZ }
             );
 
         return NoError;
@@ -59,12 +59,12 @@ namespace vkt
     Error FlipRange(
             StructuredVolume& dest,
             StructuredVolume& source,
+            Axis axis,
             Vec3i first,
-            Vec3i last,
-            Axis axis
+            Vec3i last
             )
     {
-        VKT_CALL__(FlipRange, dest, source, first, last, axis);
+        VKT_CALL__(FlipRange, dest, source, axis, first, last);
 
         return NoError;
     }
@@ -81,9 +81,9 @@ vktError vktFlipSV(vktStructuredVolume dest, vktStructuredVolume source, vktAxis
         FlipRange,
         dest->volume,
         source->volume,
+        (vkt::Axis)axis,
         { 0, 0, 0 },
-        dest->volume.getDims(),
-        (vkt::Axis)axis
+        dest->volume.getDims()
         );
 
     return vktNoError;
@@ -92,22 +92,22 @@ vktError vktFlipSV(vktStructuredVolume dest, vktStructuredVolume source, vktAxis
 vktError vktFlipRangeSV(
         vktStructuredVolume dest,
         vktStructuredVolume source,
+        vktAxis axis,
         int32_t firstX,
         int32_t firstY,
         int32_t firstZ,
         int32_t lastX,
         int32_t lastY,
-        int32_t lastZ,
-        vktAxis axis
+        int32_t lastZ
         )
 {
     VKT_CALL__(
         FlipRange,
         dest->volume,
         source->volume,
+        (vkt::Axis)axis,
         { firstX, firstY, firstZ },
-        { lastX, lastY, lastZ },
-        (vkt::Axis)axis
+        { lastX, lastY, lastZ }
         );
 
     return vktNoError;
