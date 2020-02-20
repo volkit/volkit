@@ -17,7 +17,7 @@ namespace vkt
             Vec3i first,
             Vec3i last
             )
-#if 0//VKT_HAVE_CUDA
+#if VKT_HAVE_CUDA
     ;
 #else
     {}

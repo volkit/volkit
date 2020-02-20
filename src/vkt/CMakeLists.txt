@@ -154,6 +154,7 @@ vkt_cuda_compile(CUDA_SOURCES
     Copy_cuda.cu
     Decompose_cuda.cu
     Fill_cuda.cu
+    Flip_cuda.cu
 )
 
 vkt_add_library(volkit
