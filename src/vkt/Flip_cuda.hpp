@@ -10,7 +10,13 @@
 
 namespace vkt
 {
-    void FlipRange_cuda(StructuredVolume& volume, Vec3i first, Vec3i last, Axis axis)
+    void FlipRange_cuda(
+            StructuredVolume& dest,
+            StructuredVolume& source,
+            Vec3i first,
+            Vec3i last,
+            Axis axi
+            )
 #if 0//VKT_HAVE_CUDA
     ;
 #else

@@ -15,10 +15,12 @@ extern "C"
 {
 #endif
 
-VKTAPI vktError vktFlipSV(vktStructuredVolume volume,
+VKTAPI vktError vktFlipSV(vktStructuredVolume dest,
+                          vktStructuredVolume source,
                           vktAxis axis);
 
-VKTAPI vktError vktFlipRangeSV(vktStructuredVolume volume,
+VKTAPI vktError vktFlipRangeSV(vktStructuredVolume dest,
+                               vktStructuredVolume source,
                                int32_t firstX,
                                int32_t firstY,
                                int32_t firstZ,

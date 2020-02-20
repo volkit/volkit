@@ -106,8 +106,8 @@ int main()
     VKT_SAFE_CALL(vktStructuredVolumeCreateCopy(&volume3,
                                                 volume2));
 
-    // Flip volume3 (not a core algorithm)
-    VKT_SAFE_CALL(vktFlipSV(volume3, vktAxisX));
+    // Flip volume3 in-place (not a core algorithm)
+    VKT_SAFE_CALL(vktFlipSV(volume3, volume3, vktAxisX));
 
     // Transform w/ binary operation
     VKT_SAFE_CALL(vktTransformSV2(volume2,

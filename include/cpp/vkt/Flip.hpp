@@ -11,10 +11,12 @@
 
 namespace vkt
 {
-    VKTAPI Error Flip(StructuredVolume& volume,
+    VKTAPI Error Flip(StructuredVolume& dest,
+                      StructuredVolume& source,
                       Axis axis);
 
-    VKTAPI Error FlipRange(StructuredVolume& volume,
+    VKTAPI Error FlipRange(StructuredVolume& dest,
+                           StructuredVolume& source,
                            int32_t firstX,
                            int32_t firstY,
                            int32_t firstZ,
@@ -23,7 +25,8 @@ namespace vkt
                            int32_t lastZ,
                            Axis axis);
 
-    VKTAPI Error FlipRange(StructuredVolume& volume,
+    VKTAPI Error FlipRange(StructuredVolume& dest,
+                           StructuredVolume& source,
                            Vec3i first,
                            Vec3i last,
                            Axis axis);

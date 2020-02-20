@@ -8,7 +8,13 @@
 
 namespace vkt
 {
-    inline void FlipRange_serial(StructuredVolume& volume, Vec3i first, Vec3i last, Axis axis)
+    inline void FlipRange_serial(
+            StructuredVolume& dest,
+            StructuredVolume& source,
+            Vec3i first,
+            Vec3i last,
+            Axis axis
+            )
     {
         int32_t rangeX = last.x - first.x;
         int32_t rangeY = last.y - first.y;
@@ -29,7 +35,7 @@ namespace vkt
             break;
         }
 
-        Vec3i dims = volume.getDims();
+        Vec3i dims = dest.getDims();
 
         for (int32_t z = 0; z < rangeZ; ++z)
         {
@@ -44,11 +50,12 @@ namespace vkt
                     uint8_t voxel1[StructuredVolume::GetMaxBytesPerVoxel()];
                     uint8_t voxel2[StructuredVolume::GetMaxBytesPerVoxel()];
 
-                    volume.getBytes(x, y, z, voxel1);
-                    volume.getBytes(xx, yy, zz, voxel2);
+                    // Exchange in a way that would even work if dest eq source
+                    source.getBytes(x, y, z, voxel1);
+                    source.getBytes(xx, yy, zz, voxel2);
 
-                    volume.setBytes(x, y, z, voxel2);
-                    volume.setBytes(xx, yy, zz, voxel1);
+                    dest.setBytes(x, y, z, voxel2);
+                    dest.setBytes(xx, yy, zz, voxel1);
                 }
             }
         }

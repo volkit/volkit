@@ -18,13 +18,14 @@
 
 namespace vkt
 {
-    Error Flip(StructuredVolume& volume, Axis axis)
+    Error Flip(StructuredVolume& dest, StructuredVolume& source, Axis axis)
     {
         VKT_CALL__(
             FlipRange,
-            volume,
+            dest,
+            source,
             { 0, 0, 0 },
-            volume.getDims(),
+            dest.getDims(),
             axis
             );
 
@@ -32,7 +33,8 @@ namespace vkt
     }
 
     Error FlipRange(
-            StructuredVolume& volume,
+            StructuredVolume& dest,
+            StructuredVolume& source,
             int32_t firstX,
             int32_t firstY,
             int32_t firstZ,
@@ -44,7 +46,8 @@ namespace vkt
     {
         VKT_CALL__(
             FlipRange,
-            volume,
+            dest,
+            source,
             { firstX, firstY, firstZ },
             { lastX, lastY, lastZ },
             axis
@@ -53,9 +56,15 @@ namespace vkt
         return NoError;
     }
 
-    Error FlipRange(StructuredVolume& volume, Vec3i first, Vec3i last, Axis axis)
+    Error FlipRange(
+            StructuredVolume& dest,
+            StructuredVolume& source,
+            Vec3i first,
+            Vec3i last,
+            Axis axis
+            )
     {
-        VKT_CALL__(FlipRange, volume, first, last, axis);
+        VKT_CALL__(FlipRange, dest, source, first, last, axis);
 
         return NoError;
     }
@@ -66,13 +75,14 @@ namespace vkt
 // C API
 //
 
-vktError vktFlipSV(vktStructuredVolume volume, vktAxis axis)
+vktError vktFlipSV(vktStructuredVolume dest, vktStructuredVolume source, vktAxis axis)
 {
     VKT_CALL__(
         FlipRange,
-        volume->volume,
+        dest->volume,
+        source->volume,
         { 0, 0, 0 },
-        volume->volume.getDims(),
+        dest->volume.getDims(),
         (vkt::Axis)axis
         );
 
@@ -80,7 +90,8 @@ vktError vktFlipSV(vktStructuredVolume volume, vktAxis axis)
 }
 
 vktError vktFlipRangeSV(
-        vktStructuredVolume volume,
+        vktStructuredVolume dest,
+        vktStructuredVolume source,
         int32_t firstX,
         int32_t firstY,
         int32_t firstZ,
@@ -92,7 +103,8 @@ vktError vktFlipRangeSV(
 {
     VKT_CALL__(
         FlipRange,
-        volume->volume,
+        dest->volume,
+        source->volume,
         { firstX, firstY, firstZ },
         { lastX, lastY, lastZ },
         (vkt::Axis)axis
