@@ -13,7 +13,8 @@ namespace vkt
             StructuredVolume& source,
             Axis axis,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         int32_t rangeX = last.x - first.x;
@@ -54,8 +55,8 @@ namespace vkt
                     source.getBytes(x, y, z, voxel1);
                     source.getBytes(xx, yy, zz, voxel2);
 
-                    dest.setBytes(x, y, z, voxel2);
-                    dest.setBytes(xx, yy, zz, voxel1);
+                    dest.setBytes(dstOffset.x + x, dstOffset.y + y, dstOffset.z + z, voxel2);
+                    dest.setBytes(dstOffset.x + xx, dstOffset.y + yy, dstOffset.z + zz, voxel1);
                 }
             }
         }

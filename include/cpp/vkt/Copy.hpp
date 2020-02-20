@@ -30,5 +30,5 @@ namespace vkt
                            StructuredVolume& src,
                            Vec3i first,
                            Vec3i last,
-                           Vec3i dstOffset = { 0, 0, 0});
+                           Vec3i dstOffset = { 0, 0, 0 });
 } // vkt

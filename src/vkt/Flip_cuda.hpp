@@ -15,7 +15,8 @@ namespace vkt
             StructuredVolume& source,
             Axis axis,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
 #if VKT_HAVE_CUDA
     ;

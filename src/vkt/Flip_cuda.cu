@@ -13,7 +13,8 @@ namespace vkt
             StructuredVolumeView source,
             Axis axis,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         int nx = last.x - first.x;
@@ -37,8 +38,8 @@ namespace vkt
             source.getBytes(x, y, z, voxel1);
             source.getBytes(xx, yy, zz, voxel2);
 
-            dest.setBytes(x, y, z, voxel2);
-            dest.setBytes(xx, yy, zz, voxel1);
+            dest.setBytes(dstOffset.x + x, dstOffset.y + y, dstOffset.z + z, voxel2);
+            dest.setBytes(dstOffset.x + xx, dstOffset.y + yy, dstOffset.z + zz, voxel1);
         }
     }
 
@@ -47,7 +48,8 @@ namespace vkt
             StructuredVolume& source,
             Axis axis,
             Vec3i first,
-            Vec3i last
+            Vec3i last,
+            Vec3i dstOffset
             )
     {
         unsigned nx = last.x - first.x;
@@ -66,7 +68,8 @@ namespace vkt
                 StructuredVolumeView(source),
                 axis,
                 first,
-                last
+                last,
+                dstOffset
                 );
     }
 
