@@ -231,6 +231,24 @@ struct ImplicitIsoKernel : AccumulationKernel
 template <typename Volume, typename Transfunc>
 struct MultiScatteringKernel : AccumulationKernel
 {
+    visionaray::vec3 albedo(visionaray::vec3 const& pos)
+    {
+        using namespace visionaray;
+
+        float voxel = convert_to_float(tex3D(volume, pos / bbox.size()));
+
+        // normalize to [0..1]
+        voxel /= float(numeric_limits<typename Volume::value_type>::max());
+
+        if (transfunc)
+        {
+            vec4f rgba = tex1D(transfunc, voxel);
+            return rgba.xyz();
+        }
+        else
+            return vec3(voxel);
+    }
+
     float mu(visionaray::vec3 const& pos)
     {
         using namespace visionaray;
@@ -306,17 +324,8 @@ struct MultiScatteringKernel : AccumulationKernel
                     break;
                 }
 
-                vec3 albedo(0.f);
-                
-                if (transfunc)
-                {
-                    vec4 rgba = tex1D(transfunc, mu(r.ori));
-                    albedo = rgba.xyz();
-                }
-                else
-                    albedo = vec3(mu(r.ori));
+                throughput *= albedo(r.ori);
 
-                throughput *= albedo;
                 // Russian roulette absorption
                 float prob = max_element(throughput);
                 if (prob < 0.2f)
