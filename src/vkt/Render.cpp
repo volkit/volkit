@@ -205,7 +205,7 @@ void ViewerCPU::on_display()
         using VolumeRef = decltype(volume_ref);
         using TransfuncRef = decltype(transfunc_ref);
 
-        float heightf(this->width());
+        float heightf(this->height());
         MultiScatteringKernel<VolumeRef, TransfuncRef> kernel;
         kernel.bbox = bbox;
         kernel.volume = volume_ref;
