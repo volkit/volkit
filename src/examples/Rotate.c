@@ -47,7 +47,7 @@ int main(void)
             0.f, 1.f
             );
 
-    vktFillSV(rotatedVolume, 1.f);
+    vktFillSV(rotatedVolume, .1f);
 
     // Rotate the volume with rotation center in the middle
     vktRotateSV(
