@@ -4,7 +4,7 @@
 #include <vkt/Render.h>
 #include <vkt/StructuredVolume.h>
 
-int main()
+int main(void)
 {
     // Volume dimensions
     vktVec3i_t dims = { .x=120,.y=66,.z=49 };

@@ -23,7 +23,7 @@ static void TransformOp2(int32_t x, int32_t y, int32_t z, vktVoxelView_t voxel1,
     voxel2.bytes[0]  = voxel1.bytes[0];
 }
 
-int main()
+int main(void)
 {
     //--- Declarations ------------------------------------
     vktExecutionPolicy_t ep;

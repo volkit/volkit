@@ -7,7 +7,7 @@
 
 #include "common.h"
 
-int main()
+int main(void)
 {
     vktStructuredVolume volume;
     vktRenderState_t renderState;

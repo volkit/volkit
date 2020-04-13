@@ -24,7 +24,7 @@
 MAKE_CHECKERED_INIT(2)
 MAKE_CHECKERED_INIT(3)
 
-int main()
+int main(void)
 {
     vktVec3i_t dims;
     int bpv;

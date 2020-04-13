@@ -65,7 +65,7 @@ void* threadFunc(void* arg)
     return NULL;
 }
 
-int main()
+int main(void)
 {
     vktExecutionPolicy_t ep;
     pthread_t thread;
