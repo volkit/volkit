@@ -34,7 +34,7 @@ namespace vkt
          */
         uint16_t getBytesPerVoxel() const;
 
-    public:
+    private:
         char const* fileName_ = 0;
         char const* mode_ = 0;
         FILE* file_ = 0;
