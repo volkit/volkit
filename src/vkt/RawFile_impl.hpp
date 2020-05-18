@@ -7,17 +7,26 @@
 
 #include <vkt/RawFile.hpp>
 
+#include "DataSource_impl.hpp"
+
 struct vktRawFile_impl
 {
     vktRawFile_impl(char const* fileName, char const* mode)
-        : file(fileName, mode)
+        : base(new vktDataSource_impl)
     {
+        base->source = new vkt::RawFile(fileName, mode);
     }
 
     vktRawFile_impl(FILE* fd)
-        : file(fd)
+        : base(new vktDataSource_impl)
     {
+        base->source = new vkt::RawFile(fd);
     }
 
-    vkt::RawFile file;
+   ~vktRawFile_impl()
+    {
+        delete base;
+    }
+
+    vktDataSource base;
 };

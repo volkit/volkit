@@ -19,10 +19,12 @@ VKTAPI void vktRawFileCreateS(vktRawFile* file,
                               char const* fileName,
                               char const* mode);
 
-VKTAPI void vktRawFileDestroy(vktRawFile file);
-
 VKTAPI void vktRawFileCreateFD(vktRawFile* file,
                                FILE* fd);
+
+VKTAPI vktDataSource vktRawFileGetBase(vktRawFile file);
+
+VKTAPI void vktRawFileDestroy(vktRawFile file);
 
 VKTAPI size_t vktRawFileRead(vktRawFile file,
                              char* buf,

@@ -118,6 +118,11 @@ void vktRawFileCreateFD(vktRawFile* file, FILE* fd)
     *file = new vktRawFile_impl(fd);
 }
 
+vktDataSource vktRawFileGetBase(vktRawFile file)
+{
+    return file->base;
+}
+
 void vktRawFileDestroy(vktRawFile file)
 {
     delete file;
@@ -125,22 +130,28 @@ void vktRawFileDestroy(vktRawFile file)
 
 size_t vktRawFileRead(vktRawFile file, char* buf, size_t len)
 {
-    return file->file.read(buf, len);
+    return file->base->source->read(buf, len);
 }
 
 vktBool_t vktRawFileGood(vktRawFile file)
 {
-    return file->file.good();
+    return file->base->source->good();
 }
 
 vktVec3i_t vktRawFileGetDims3iv(vktRawFile file)
 {
-    vkt::Vec3i dims = file->file.getDims();
+    vkt::RawFile* rf = dynamic_cast<vkt::RawFile*>(file->base->source);
+    assert(rf);
+
+    vkt::Vec3i dims = rf->getDims();
 
     return { dims.x, dims.y, dims.z };
 }
 
 uint16_t vktRawFileGetBytesPerVoxel(vktRawFile file)
 {
-    return file->file.getBytesPerVoxel();
+    vkt::RawFile* rf = dynamic_cast<vkt::RawFile*>(file->base->source);
+    assert(rf);
+
+    return rf->getBytesPerVoxel();
 }

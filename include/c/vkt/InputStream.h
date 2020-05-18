@@ -13,8 +13,8 @@ extern "C"
 {
 #endif
 
-VKTAPI void vktInputStreamCreateF(vktInputStream* stream,
-                                  vktRawFile file);
+VKTAPI void vktInputStreamCreate(vktInputStream* stream,
+                                 vktDataSource source);
 
 VKTAPI void vktInputStreamDestroy(vktInputStream stream);
 

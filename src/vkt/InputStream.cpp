@@ -68,11 +68,11 @@ namespace vkt
 // C API
 //
 
-void vktInputStreamCreateF(vktInputStream* stream, vktRawFile file)
+void vktInputStreamCreate(vktInputStream* stream, vktDataSource source)
 {
     assert(stream != nullptr);
 
-    *stream = new vktInputStream_impl(file);
+    *stream = new vktInputStream_impl(source);
 }
 
 void vktInputStreamDestroy(vktInputStream stream)

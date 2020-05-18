@@ -5,12 +5,12 @@
 
 #include <vkt/InputStream.hpp>
 
-#include "RawFile_impl.hpp"
+#include "DataSource_impl.hpp"
 
 struct vktInputStream_impl
 {
-    vktInputStream_impl(vktRawFile_impl* file)
-        : stream(file->file)
+    vktInputStream_impl(vktDataSource_impl* source)
+        : stream(*source->source)
     {
     }
 

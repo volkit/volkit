@@ -62,7 +62,7 @@ int main(int argc, char** argv)
     }
 
     vktStructuredVolumeCreate(&volume, dims.x, dims.y, dims.z, bpv, 1.f, 1.f, 1.f, 0.f, 1.f);
-    vktInputStreamCreateF(&is, file);
+    vktInputStreamCreate(&is, vktRawFileGetBase(file));
     vktInputStreamReadSV(is, volume);
 
     // Print statistics for the whole volume
