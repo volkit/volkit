@@ -25,6 +25,7 @@ struct vktRawFile_impl
 
    ~vktRawFile_impl()
     {
+        delete base->source;
         delete base;
     }
 
