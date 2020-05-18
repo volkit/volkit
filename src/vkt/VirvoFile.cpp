@@ -13,6 +13,8 @@
 
 #include <vkt/VirvoFile.hpp>
 
+#include <vkt/VirvoFile.h>
+
 namespace vkt
 {
     struct VirvoFile::Impl
