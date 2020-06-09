@@ -4,11 +4,13 @@
 find_package(CUDA)
 find_package(SDL2)
 find_package(SWIG)
+find_package(Threads REQUIRED)
 find_package(Virvo)
 find_package(Visionaray)
 
 vkt_use_package(CUDA)
 vkt_use_package(SDL2)
+vkt_use_package(Threads)
 vkt_use_package(SWIG)
 vkt_use_package(Virvo)
 if(VIRVO_FOUND)
