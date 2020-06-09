@@ -4,6 +4,11 @@
 
 #include <pthread.h>
 
+#ifdef __linux__
+#include <sys/types.h>
+#include <sys/syscall.h>
+#endif
+
 #include <vkt/ExecutionPolicy.h>
 
 #include "common.h"
@@ -14,9 +19,17 @@ static void print(vktExecutionPolicy_t ep)
     char device[20];
     char hostApi[20];
     char deviceApi[20];
+#ifdef __linux__
+    pid_t tid;
+#else
     uint64_t tid;
+#endif
 
+#ifdef __linux__
+    tid = syscall(__NR_gettid);
+#else
     pthread_threadid_np(0, &tid);
+#endif
 
     if (ep.device == vktExecutionPolicyDeviceCPU)
         sprintf(device, "%s", "CPU");
