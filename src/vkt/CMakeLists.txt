@@ -17,7 +17,9 @@ endif()
 #vkt_use_package(Visionaray COMPONENTS common) # TODO!!
 vkt_use_package(Visionaray)
 
-cmake_policy(SET CMP0078 NEW)
+if(POLICY CMP0078)
+    cmake_policy(SET CMP0078 NEW)
+endif()
 
 if(SWIG_FOUND)
     include(${SWIG_USE_FILE})
