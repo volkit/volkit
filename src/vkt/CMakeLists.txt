@@ -6,7 +6,6 @@ find_package(SDL2)
 find_package(SWIG)
 find_package(Threads REQUIRED)
 find_package(Virvo)
-find_package(Visionaray)
 
 vkt_use_package(CUDA)
 vkt_use_package(SDL2)
@@ -16,8 +15,6 @@ vkt_use_package(Virvo)
 if(VIRVO_FOUND)
     set(__VKT_LINK_LIBRARIES ${__VKT_LINK_LIBRARIES} ${VIRVO_FILEIO_LIBRARY})
 endif()
-#vkt_use_package(Visionaray COMPONENTS common) # TODO!!
-vkt_use_package(Visionaray)
 
 if(POLICY CMP0078)
     cmake_policy(SET CMP0078 NEW)
@@ -30,34 +27,34 @@ if(SWIG_FOUND)
 endif()
 
 #---------------------------------------------------------------------------------------------------
-# Dependencies pulled in by visionaray
+# Visionaray submodule and dependencies
 #
 
-if(VISIONARAY_FOUND AND VISIONARAY_COMMON_LIBRARY)
-    find_package(GLEW REQUIRED)
-    find_package(GLUT REQUIRED)
-    find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(GLUT REQUIRED)
+find_package(OpenGL REQUIRED)
 
-    vkt_use_package(GLEW)
-    vkt_use_package(GLUT)
-    vkt_use_package(OpenGL)
+vkt_use_package(GLEW)
+vkt_use_package(GLUT)
+vkt_use_package(OpenGL)
 
-    # Private visionaray_common headers
-    include_directories(${VISIONARAY_INCLUDE_DIR}/visionaray/private)
+include_directories(${VSNRAY_DIR}/include)
+# For private visionaray_common headers
+include_directories(${VSNRAY_DIR}/src)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/../3rdparty/visionaray/config)
 
-    # TODO
-    set(3DCONNEXIONCLIENT_FOUND NOTFOUND)
+# TODO
+set(3DCONNEXIONCLIENT_FOUND NOTFOUND)
 
-    if (APPLE)
-        include(CMakeFindFrameworks)
+if (APPLE)
+    include(CMakeFindFrameworks)
 
-        CMAKE_FIND_FRAMEWORKS(3DconnexionClient)
+    CMAKE_FIND_FRAMEWORKS(3DconnexionClient)
 
-        if (3DconnexionClient_FRAMEWORKS)
-            set(__VKT_LINK_LIBRARIES ${__VKT_LINK_LIBRARIES} ${3DconnexionClient_FRAMEWORKS})
-            set(__VKT_USED_PACKAGES ${__VKT_USED_PACKAGES} 3DCONNEXIONCLIENT)
-            set(3DCONNEXIONCLIENT_FOUND FOUND)
-        endif()
+    if (3DconnexionClient_FRAMEWORKS)
+        set(__VKT_LINK_LIBRARIES ${__VKT_LINK_LIBRARIES} ${3DconnexionClient_FRAMEWORKS})
+        set(__VKT_USED_PACKAGES ${__VKT_USED_PACKAGES} 3DCONNEXIONCLIENT)
+        set(3DCONNEXIONCLIENT_FOUND FOUND)
     endif()
 endif()
 
@@ -170,10 +167,9 @@ vkt_add_library(volkit
 )
 
 
-# Explicitly link with visionaray_common
-if(VISIONARAY_COMMON_LIBRARY)
-    target_link_libraries(volkit ${VISIONARAY_COMMON_LIBRARY})
-endif()
+# Explicitly link with visionaray
+target_link_libraries(volkit visionaray)
+target_link_libraries(volkit visionaray_common)
 
 if(SWIG_FOUND)
     set_property(SOURCE volkit.i PROPERTY CPLUSPLUS ON)

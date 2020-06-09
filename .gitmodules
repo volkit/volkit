@@ -1,3 +1,6 @@
 [submodule "src/3rdparty/imgui"]
 	path = src/3rdparty/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "src/3rdparty/visionaray"]
+	path = src/3rdparty/visionaray
+	url = https://github.com/szellmann/visionaray
