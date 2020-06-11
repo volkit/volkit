@@ -289,7 +289,7 @@ struct MultiScatteringKernel : AccumulationKernel
 
         r.ori = pos;
         return true;
-    };
+    }
 
     template <typename Ray>
     auto operator()(Ray r, visionaray::random_generator<float>& gen, int x, int y)
