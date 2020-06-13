@@ -17,6 +17,13 @@
 
 namespace vkt
 {
+    LookupTable::LookupTable()
+        : ManagedBuffer(0)
+        , dims_{0, 0, 0}
+        , format_(ColorFormat::Unspecified)
+    {
+    }
+
     LookupTable::LookupTable(
             int32_t dimX,
             int32_t dimY,

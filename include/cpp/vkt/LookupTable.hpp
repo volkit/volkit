@@ -19,6 +19,7 @@ namespace vkt
     class LookupTable : public ManagedBuffer<uint8_t>
     {
     public:
+        LookupTable();
         LookupTable(int32_t dimX, int32_t dimY, int32_t dimZ, ColorFormat format);
 
         void setDims(int32_t dimX, int32_t dimY, int32_t dimZ);
