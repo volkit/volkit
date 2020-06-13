@@ -103,6 +103,7 @@ if (${CMAKE_HOST_UNIX})
         PATHS
             ${GLEW_LOCATION}/lib
             $ENV{GLEW_LOCATION}/lib
+            /usr/lib/x86_64-linux-gnu
             /usr/lib64
             /usr/lib
             /usr/local/lib64
