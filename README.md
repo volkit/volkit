@@ -61,7 +61,7 @@ vkt.Scan(volume2, volume1)
 Rendering
 ---------
 
-<img src="/docs/img/rotate.png" width="270" /><img src="/docs/img/backpack.png" width="300" /><img src="/docs/img/foot.png" width="270" />
+<img src="/docs/img/rotate.png" width="265" /><img src="/docs/img/backpack.png" width="320" /><img src="/docs/img/foot.png" width="265" />
 
 Volkit is _not_ a volume rendering library, but still, rendering is an important algorithm to quickly review the outcome of computations. Volkit currently supports ray marching with the absorption + emission model, implicit isosurface ray casting, and multi-scattering using delta tracking.
 
