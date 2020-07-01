@@ -111,7 +111,7 @@ namespace vkt
                 {
                     float indexf = i / (float)(canvasSize_.x - 1) * (dims.x - 1);
                     int indexa = (int)indexf;
-                    int indexb = indexa + 1;
+                    int indexb = min(indexa + 1, dims.x - 1);
                     Vec3f rgb1{ colors[4 * indexa], colors[4 * indexa + 1], colors[4 * indexa + 2] };
                     float alpha1 = colors[4 * indexa + 3];
                     Vec3f rgb2{ colors[4 * indexb], colors[4 * indexb + 1], colors[4 * indexb + 2] };
@@ -218,35 +218,38 @@ namespace vkt
         {
             float* updated = (float*)rgbaLookupTable_->getData();
 
-            updated[4 * event.pos.x + 3] = event.pos.y / (float)(canvasSize_.y - 1);
+            // Allow for drawing even when we're slightly outside
+            // (i.e. not hovering) the drawing area
+            int thisX = clamp(event.pos.x, 0, canvasSize_.x - 1);
+            int thisY = clamp(event.pos.y, 0, canvasSize_.y - 1);
+            int lastX = clamp(lastEvent_.pos.x, 0, canvasSize_.x - 1);
+
+            updated[4 * thisX + 3] = thisY / (float)(canvasSize_.y - 1);
 
             // Also set the alphas that were potentially skipped b/c
             // the mouse movement was faster than the rendering frame
             // rate
             if (lastEvent_.button == MouseEvent::Left
-                && std::abs(lastEvent_.pos.x - event.pos.x) > 1)
+                && std::abs(lastX - thisX) > 1)
             {
                 float alpha1;
                 float alpha2;
-                if (lastEvent_.pos.x > event.pos.x)
+                if (lastX > thisX)
                 {
-                    alpha1 = updated[4 * lastEvent_.pos.x + 3];
-                    alpha2 = updated[4 * event.pos.x + 3];
+                    alpha1 = updated[4 * lastX + 3];
+                    alpha2 = updated[4 * thisX + 3];
                 }
                 else
                 {
-                    alpha1 = updated[4 * event.pos.x + 3];
-                    alpha2 = updated[4 * lastEvent_.pos.x + 3];
+                    alpha1 = updated[4 * thisX + 3];
+                    alpha2 = updated[4 * lastX + 3];
                 }
 
                 int inc = lastEvent_.pos.x < event.pos.x ? 1 : -1;
 
-                for (int x = lastEvent_.pos.x + inc; x != event.pos.x; x += inc)
+                for (int x = lastX + inc; x != thisX; x += inc)
                 {
-                    if (x < 0 || x >= canvasSize_.x)
-                        break;
-
-                    float frac = (event.pos.x - x) / (float)std::abs(event.pos.x - lastEvent_.pos.x);
+                    float frac = (thisX - x) / (float)std::abs(thisX - lastX);
 
                     updated[4 * x + 3] = lerp(alpha1, alpha2, frac);
                 }
