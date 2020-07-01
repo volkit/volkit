@@ -39,6 +39,12 @@ namespace vkt
     }
 
     template <typename T>
+    VKT_FUNC inline T saturate(T const& x)
+    {
+        return clamp(x, T(0.0), T(1.0));
+    }
+
+    template <typename T>
     VKT_FUNC inline T div_up(T a, T b)
     {
         return (a + b - 1) / b;
