@@ -45,6 +45,12 @@ namespace vkt
         return rgbaLookupTable_;
     }
 
+    void TransfuncEditor::setZoom(float min, float max)
+    {
+        zoomMin_ = min;
+        zoomMax_ = max;
+    }
+
     bool TransfuncEditor::updated() const
     {
         return lutChanged_;
@@ -88,17 +94,19 @@ namespace vkt
             glBindTexture(GL_TEXTURE_2D, texture_);
         }
 
-        Vec3i dims = userLookupTable_->getDims();
+        Vec3i userDims = userLookupTable_->getDims();
         ColorFormat format = userLookupTable_->getColorFormat();
 
-        if (dims.x >= 1 && dims.y == 1 && dims.z == 1 && format == ColorFormat::RGBA32F)
+        if (userDims.x >= 1 && userDims.y == 1 && userDims.z == 1 && format == ColorFormat::RGBA32F)
         {
             float* colors = nullptr;
             float* updated = nullptr;
 
             if (rgbaLookupTable_ == nullptr)
             {
-                rgbaLookupTable_ = new LookupTable(canvasSize_.x, 1, 1, userLookupTable_->getColorFormat());
+                rgbaLookupTable_ = new LookupTable(8192, 1, 1, userLookupTable_->getColorFormat());
+
+                Vec3i actualDims = rgbaLookupTable_->getDims();
 
                 // The user-provided colors
                 colors = (float*)userLookupTable_->getData();
@@ -107,11 +115,11 @@ namespace vkt
                 updated = (float*)rgbaLookupTable_->getData();
 
                 // Lerp colors and alpha
-                for (int i = 0; i < canvasSize_.x; ++i)
+                for (int i = 0; i < actualDims.x; ++i)
                 {
-                    float indexf = i / (float)(canvasSize_.x - 1) * (dims.x - 1);
+                    float indexf = i / (float)(actualDims.x - 1) * (userDims.x - 1);
                     int indexa = (int)indexf;
-                    int indexb = min(indexa + 1, dims.x - 1);
+                    int indexb = min(indexa + 1, userDims.x - 1);
                     Vec3f rgb1{ colors[4 * indexa], colors[4 * indexa + 1], colors[4 * indexa + 2] };
                     float alpha1 = colors[4 * indexa + 3];
                     Vec3f rgb2{ colors[4 * indexb], colors[4 * indexb + 1], colors[4 * indexb + 2] };
@@ -140,12 +148,19 @@ namespace vkt
             // Blend on the CPU (TODO: figure out how textures can be
             // blended with ImGui..)
             std::vector<Vec4f> rgba(canvasSize_.x * canvasSize_.y);
+            Vec3i actualDims = rgbaLookupTable_->getDims();
             for (int y = 0; y < canvasSize_.y; ++y)
             {
                 for (int x = 0; x < canvasSize_.x; ++x)
                 {
-                    Vec3f rgb{ updated[4 * x], updated[4 * x + 1], updated[4 * x + 2] };
-                    float alpha = updated[4 * x + 3];
+                    float indexf = x / (float)(canvasSize_.x - 1);
+                    indexf *= zoomMax_ - zoomMin_;
+                    indexf += zoomMin_;
+                    indexf *= actualDims.x - 1;
+                    int xx = (int)indexf;
+
+                    Vec3f rgb{ updated[4 * xx], updated[4 * xx + 1], updated[4 * xx + 2] };
+                    float alpha = updated[4 * xx + 3];
 
                     float grey = .9f;
                     float a = ((canvasSize_.y - y - 1) / (float)canvasSize_.y) <= alpha ? .6f : 0.f;
@@ -218,13 +233,23 @@ namespace vkt
         {
             float* updated = (float*)rgbaLookupTable_->getData();
 
+            Vec3i actualDims = rgbaLookupTable_->getDims();
+
             // Allow for drawing even when we're slightly outside
             // (i.e. not hovering) the drawing area
             int thisX = clamp(event.pos.x, 0, canvasSize_.x - 1);
             int thisY = clamp(event.pos.y, 0, canvasSize_.y - 1);
             int lastX = clamp(lastEvent_.pos.x, 0, canvasSize_.x - 1);
 
-            updated[4 * thisX + 3] = thisY / (float)(canvasSize_.y - 1);
+            auto zoom = [=](int x) {
+                float indexf = x / (float)(canvasSize_.x - 1);
+                indexf *= zoomMax_ - zoomMin_;
+                indexf += zoomMin_;
+                indexf *= actualDims.x - 1;
+                return (int)indexf;
+            };
+
+            updated[4 * zoom(thisX) + 3] = thisY / (float)(canvasSize_.y - 1);
 
             // Also set the alphas that were potentially skipped b/c
             // the mouse movement was faster than the rendering frame
@@ -236,20 +261,20 @@ namespace vkt
                 float alpha2;
                 if (lastX > thisX)
                 {
-                    alpha1 = updated[4 * lastX + 3];
-                    alpha2 = updated[4 * thisX + 3];
+                    alpha1 = updated[4 * zoom(lastX) + 3];
+                    alpha2 = updated[4 * zoom(thisX) + 3];
                 }
                 else
                 {
-                    alpha1 = updated[4 * thisX + 3];
-                    alpha2 = updated[4 * lastX + 3];
+                    alpha1 = updated[4 * zoom(thisX) + 3];
+                    alpha2 = updated[4 * zoom(lastX) + 3];
                 }
 
                 int inc = lastEvent_.pos.x < event.pos.x ? 1 : -1;
 
-                for (int x = lastX + inc; x != thisX; x += inc)
+                for (int x = zoom(lastX) + inc; x != zoom(thisX); x += inc)
                 {
-                    float frac = (thisX - x) / (float)std::abs(thisX - lastX);
+                    float frac = (zoom(thisX) - x) / (float)std::abs(zoom(thisX) - zoom(lastX));
 
                     updated[4 * x + 3] = lerp(alpha1, alpha2, frac);
                 }

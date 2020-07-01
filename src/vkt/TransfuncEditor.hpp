@@ -21,6 +21,9 @@ namespace vkt
         //! Get an updated LUT that is a copied of the user-provided one
         LookupTable* getUpdatedLookupTable() const;
 
+        //! Set a zoom range to visually zoom into the LUT
+        void setZoom(float min, float max);
+
         //! Indicates that the internal copy of the LUT has changed
         bool updated() const;
 
@@ -33,6 +36,12 @@ namespace vkt
 
         // User-provided LUT
         LookupTable* userLookupTable_ = nullptr;
+
+        // Zoom min set by user
+        float zoomMin_ = 0.f;
+
+        // Zoom max set by user
+        float zoomMax_ = 1.f;
 
         // Flag indicating that texture needs to be regenerated
         bool lutChanged_ = false;
