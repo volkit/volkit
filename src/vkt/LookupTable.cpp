@@ -81,6 +81,43 @@ namespace vkt
         std::memcpy(ManagedBuffer::data_, data, getSizeInBytes());
     }
 
+    void LookupTable::setData(
+            uint8_t* data,
+            int32_t dimX,
+            int32_t dimY,
+            int32_t dimZ,
+            ColorFormat sourceFormat
+            )
+    {
+        migrate();
+
+        // TODO: interpolate between different formats
+        assert(sourceFormat == format_);
+
+        unsigned bpv = ColorFormatInfoTable[(int)format_].size;
+
+        for (int iz = 0; iz < dims_.z; ++iz)
+        {
+            for (int iy = 0; iy < dims_.y; ++iy)
+            {
+                for (int ix = 0; ix < dims_.x; ++ix)
+                {
+                    // TODO: linear
+                    int32_t x = ix / (float)dims_.x * dimX;
+                    int32_t y = iy / (float)dims_.y * dimY;
+                    int32_t z = iz / (float)dims_.z * dimZ;
+
+                    int32_t xlo = x - .5f;
+
+                    size_t srcIndex = (z * dimX * size_t(dimY) + y * dimX + x) * bpv;
+                    size_t dstIndex = (iz * dims_.x * size_t(dims_.y) + iy * dims_.x + ix) * bpv;
+
+                    std::memcpy(ManagedBuffer::data_ + dstIndex, data + srcIndex, bpv);
+                }
+            }
+        }
+    }
+
     uint8_t* LookupTable::getData()
     {
         migrate();

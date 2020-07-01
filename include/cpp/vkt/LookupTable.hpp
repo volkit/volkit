@@ -28,13 +28,23 @@ namespace vkt
         void setDims(Vec3i dims);
         Vec3i getDims() const;
 
-        void setColorFormat(ColorFormat pf);
+        void setColorFormat(ColorFormat cf);
         ColorFormat getColorFormat() const;
 
         /*!
          * @brief  Provide data buffer: LUT will copy that data to its own memory
          */
         void setData(uint8_t* data);
+
+        /*!
+         * @brief  Provide data buffer, data points will be resampled
+         */
+        void setData(uint8_t* data,
+                     int32_t dimX,
+                     int32_t dimY,
+                     int32_t dimZ,
+                     ColorFormat sourceFormat);
+
         uint8_t* getData();
 
         std::size_t getSizeInBytes() const;
