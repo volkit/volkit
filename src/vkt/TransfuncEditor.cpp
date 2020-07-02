@@ -87,6 +87,8 @@ namespace vkt
         if (!lutChanged_)
             return;
 
+        setExecutionPolicyCPU();
+
         // TODO: maybe move to a function called by user?
         if (texture_ == GLuint(-1))
         {
@@ -191,10 +193,14 @@ namespace vkt
             assert(0);
 
         lutChanged_ = false;
+
+        resetExecutionPolicy();
     }
 
     TransfuncEditor::MouseEvent TransfuncEditor::generateMouseEvent()
     {
+        setExecutionPolicyCPU();
+
         MouseEvent event;
 
         int x = ImGui::GetIO().MousePos.x - ImGui::GetCursorScreenPos().x;
@@ -217,11 +223,15 @@ namespace vkt
         else
             event.type = MouseEvent::Release;
 
+        resetExecutionPolicy();
+
         return event;
     }
 
     void TransfuncEditor::handleMouseEvent(TransfuncEditor::MouseEvent const& event)
     {
+        setExecutionPolicyCPU();
+
         bool hovered = ImGui::IsItemHovered()
                 && event.pos.x >= 0 && event.pos.x < canvasSize_.x
                 && event.pos.y >= 0 && event.pos.y < canvasSize_.y;
@@ -285,6 +295,21 @@ namespace vkt
         }
 
         lastEvent_ = event;
+
+        resetExecutionPolicy();
+    }
+
+    void TransfuncEditor::setExecutionPolicyCPU()
+    {
+        vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
+        prevPolicy_ = ep;
+        ep.device = vkt::ExecutionPolicy::Device::CPU;
+        vkt::SetThreadExecutionPolicy(ep);
+    }
+
+    void TransfuncEditor::resetExecutionPolicy()
+    {
+        vkt::SetThreadExecutionPolicy(prevPolicy_);
     }
 
 } // vkt

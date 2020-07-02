@@ -21,6 +21,7 @@ struct AccumulationKernel
     bool sRGB;
     visionaray::vec4f* accumBuffer = nullptr;
 
+    VSNRAY_FUNC
     visionaray::vec4f accum(visionaray::vec4f src, int x, int y)
     {
         using namespace visionaray;
@@ -45,6 +46,7 @@ template <typename Volume, typename Transfunc>
 struct RayMarchingKernel : AccumulationKernel
 {
     template <typename Ray>
+    VSNRAY_FUNC
     auto operator()(Ray ray, visionaray::random_generator<float>& gen, int x, int y)
     {
         using namespace visionaray;
@@ -65,7 +67,7 @@ struct RayMarchingKernel : AccumulationKernel
 
         C dst(0.f);
 
-        while (any(t < hit_rec.tfar))
+        while (visionaray::any(t < hit_rec.tfar))
         {
             // sample volume
             S voxel = convert_to_float(tex3D(volume, tex_coord));
@@ -94,7 +96,7 @@ struct RayMarchingKernel : AccumulationKernel
                     );
 
             // early-ray termination - don't traverse w/o a contribution
-            if (all(result.color.w >= 0.999))
+            if (visionaray::all(result.color.w >= 0.999))
             {
                 break;
             }
@@ -145,6 +147,7 @@ struct ImplicitIsoKernel : AccumulationKernel
     }
 
     template <typename Ray>
+    VSNRAY_FUNC
     auto operator()(Ray ray, visionaray::random_generator<float>& gen, int x, int y)
     {
         using namespace visionaray;
@@ -169,7 +172,7 @@ struct ImplicitIsoKernel : AccumulationKernel
 
         C dst(0.f);
 
-        while (any(t < hit_rec.tfar))
+        while (visionaray::any(t < hit_rec.tfar))
         {
             // sample volume
             S voxel = convert_to_float(tex3D(volume, tex_coord));
@@ -177,7 +180,7 @@ struct ImplicitIsoKernel : AccumulationKernel
             // normalize to [0..1]
             voxel /= S(numeric_limits<typename Volume::value_type>::max());
 
-            if (any(last >= S(-1e10f)))
+            if (visionaray::any(last >= S(-1e10f)))
             {
                 for (uint16_t i = 0; i < numIsoSurfaces; ++i)
                 {
@@ -200,7 +203,7 @@ struct ImplicitIsoKernel : AccumulationKernel
                 }
             }
 
-            if (all(isoT >= S(-1e10f)))
+            if (visionaray::all(isoT >= S(-1e10f)))
                 break;
 
             // step on
@@ -231,6 +234,7 @@ struct ImplicitIsoKernel : AccumulationKernel
 template <typename Volume, typename Transfunc>
 struct MultiScatteringKernel : AccumulationKernel
 {
+    VSNRAY_FUNC
     visionaray::vec3 albedo(visionaray::vec3 const& pos)
     {
         using namespace visionaray;
@@ -249,6 +253,7 @@ struct MultiScatteringKernel : AccumulationKernel
             return vec3(voxel);
     }
 
+    VSNRAY_FUNC
     float mu(visionaray::vec3 const& pos)
     {
         using namespace visionaray;
@@ -268,6 +273,7 @@ struct MultiScatteringKernel : AccumulationKernel
     }
 
     template <typename Ray>
+    VSNRAY_FUNC
     bool sample_interaction(Ray& r, float d, visionaray::random_generator<float>& gen)
     {
         using namespace visionaray;
@@ -292,6 +298,7 @@ struct MultiScatteringKernel : AccumulationKernel
     }
 
     template <typename Ray>
+    VSNRAY_FUNC
     auto operator()(Ray r, visionaray::random_generator<float>& gen, int x, int y)
     {
         using namespace visionaray;
@@ -308,7 +315,7 @@ struct MultiScatteringKernel : AccumulationKernel
 
         auto hit_rec = intersect(r, bbox);
 
-        if (any(hit_rec.hit))
+        if (visionaray::any(hit_rec.hit))
         {
             r.ori += r.dir * hit_rec.tnear;
             hit_rec.tfar -= hit_rec.tnear;

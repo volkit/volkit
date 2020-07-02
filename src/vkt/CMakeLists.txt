@@ -143,7 +143,6 @@ set(SOURCES
     Memory.cpp
     NiftiFile.cpp
     RawFile.cpp
-    Render.cpp
     Rotate.cpp
     Scan.cpp
     StructuredVolume.cpp
@@ -153,13 +152,20 @@ set(SOURCES
     Voxel.cpp
 )
 
-vkt_cuda_compile(CUDA_SOURCES
-    Arithmetic_cuda.cu
-    Copy_cuda.cu
-    Decompose_cuda.cu
-    Fill_cuda.cu
-    Flip_cuda.cu
-)
+if(CUDA_FOUND AND VSNRAY_ENABLE_CUDA)
+    vkt_cuda_compile(CUDA_SOURCES
+        Arithmetic_cuda.cu
+        Copy_cuda.cu
+        Decompose_cuda.cu
+        Fill_cuda.cu
+        Flip_cuda.cu
+        Render.cu
+    )
+else()
+    set(SOURCES ${SOURCES}
+        Render.cpp
+    )
+endif()
 
 vkt_add_library(volkit
     ${HEADERS}

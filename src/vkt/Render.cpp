@@ -12,6 +12,7 @@
 #include <visionaray/math/ray.h>
 #include <visionaray/texture/texture.h>
 #include <visionaray/cpu_buffer_rt.h>
+#include <visionaray/gpu_buffer_rt.h>
 #include <visionaray/scheduler.h>
 #include <visionaray/thin_lens_camera.h>
 
@@ -28,6 +29,7 @@
 #include <common/viewer_glut.h>
 #endif
 
+#include <vkt/ExecutionPolicy.hpp>
 #include <vkt/LookupTable.hpp>
 #include <vkt/Render.hpp>
 #include <vkt/StructuredVolume.hpp>
@@ -62,10 +64,6 @@ struct ViewerCPU : ViewerBase
 
     aabb                                      bbox;
     thin_lens_camera                          cam;
-    // Two render targets for double buffering
-    cpu_buffer_rt<PF_RGBA32F, PF_UNSPECIFIED> host_rt[2];
-    tiled_sched<RayType>                      host_sched;
-    std::vector<vec4>                         accumBuffer;
     unsigned                                  frame_num;
 
     vkt::TransfuncEditor                      transfuncEditor;
@@ -74,6 +72,69 @@ struct ViewerCPU : ViewerBase
     std::mutex                                displayMutex;
 
     int frontBufferIndex;
+
+    bool useCuda;
+
+    // Two render targets for double buffering
+    cpu_buffer_rt<PF_RGBA32F, PF_UNSPECIFIED> host_rt[2];
+    tiled_sched<RayType>                      host_sched;
+    std::vector<vec4>                         host_accumBuffer;
+
+    // Two render targets for double buffering
+    gpu_buffer_rt<PF_RGBA32F, PF_UNSPECIFIED> device_rt[2];
+    cuda_sched<RayType>                       device_sched;
+    thrust::device_vector<vec4>               device_accumBuffer;
+    cuda_texture<uint8_t, 3>                  device_volumeUint8;
+    cuda_texture<uint16_t, 3>                 device_volumeUint16;
+    cuda_texture<uint32_t, 3>                 device_volumeUint32;
+    cuda_texture<vec4, 1>                     device_transfunc;
+
+    inline cuda_texture_ref<uint8_t, 3> prepareDeviceVolume(uint8_t /* */)
+    {
+        return cuda_texture_ref<uint8_t, 3>(device_volumeUint8);
+    }
+
+    inline cuda_texture_ref<uint16_t, 3> prepareDeviceVolume(uint16_t /* */)
+    {
+        return cuda_texture_ref<uint16_t, 3>(device_volumeUint16);
+    }
+
+    inline cuda_texture_ref<uint32_t, 3> prepareDeviceVolume(uint32_t /* */)
+    {
+        return cuda_texture_ref<uint32_t, 3>(device_volumeUint32);
+    }
+
+    inline cuda_texture_ref<vec4, 1> prepareDeviceTransfunc()
+    {
+        using namespace vkt;
+
+        if (renderState.rgbaLookupTable != ResourceHandle(-1))
+        {
+            LookupTable* lut = transfuncEditor.getUpdatedLookupTable();
+            if (lut == nullptr)
+                lut = (LookupTable*)GetManagedResource(renderState.rgbaLookupTable);
+
+            ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
+            ExecutionPolicy prev = ep;
+            ep.device = vkt::ExecutionPolicy::Device::CPU;
+            SetThreadExecutionPolicy(ep);
+
+            device_transfunc = cuda_texture<vec4, 1>(
+                (vec4*)lut->getData(),
+                lut->getDims().x,
+                Clamp,
+                Nearest
+                );
+
+            SetThreadExecutionPolicy(prev);
+
+            return cuda_texture_ref<vec4, 1>(device_transfunc);
+        }
+        else
+            return cuda_texture_ref<vec4, 1>();
+    };
+
+
 
     ViewerCPU(
         vkt::StructuredVolume& volume,
@@ -104,6 +165,49 @@ ViewerCPU::ViewerCPU(
 {
     if (renderState.rgbaLookupTable != vkt::ResourceHandle(-1))
         transfuncEditor.setLookupTableResource(renderState.rgbaLookupTable);
+
+    vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
+
+    useCuda = ep.device == vkt::ExecutionPolicy::Device::GPU
+           && ep.deviceApi == vkt::ExecutionPolicy::DeviceAPI::CUDA;
+
+    // Initialize device textures
+    if (useCuda)
+    {
+        switch (volume.getBytesPerVoxel())
+        {
+        case 1:
+            device_volumeUint8 = cuda_texture<uint8_t, 3>(
+                (uint8_t*)volume.getData(),
+                volume.getDims().x,
+                volume.getDims().y,
+                volume.getDims().z,
+                Clamp,
+                Nearest
+                );
+            break;
+        case 2:
+            device_volumeUint16 = cuda_texture<uint16_t, 3>(
+                (uint16_t*)volume.getData(),
+                volume.getDims().x,
+                volume.getDims().y,
+                volume.getDims().z,
+                Clamp,
+                Nearest
+                );
+            break;
+        case 4:
+            device_volumeUint32 = cuda_texture<uint32_t, 3>(
+                (uint32_t*)volume.getData(),
+                volume.getDims().x,
+                volume.getDims().y,
+                volume.getDims().z,
+                Clamp,
+                Nearest
+                );
+            break;
+        }
+    }
 }
 
 void ViewerCPU::clearFrame()
@@ -118,28 +222,28 @@ void ViewerCPU::on_display()
         clearFrame();
 
     // Prepare a kernel with the volume set up appropriately
-    // according to the provided texel type
-    auto prepareTexture = [&](auto texel)
+    // according to the provided texture and texel type
+    auto prepareVolume = [&](auto texel)
     {
         using TexelType = decltype(texel);
-        using VolumeRef = texture_ref<TexelType, 3>;
+        using Texture = texture_ref<TexelType, 3>;
 
-        VolumeRef volume_ref(
+        Texture volume_tex(
                 volume.getDims().x,
                 volume.getDims().y,
                 volume.getDims().z
                 );
-        volume_ref.reset((TexelType*)volume.getData());
-        volume_ref.set_filter_mode(Nearest);
-        volume_ref.set_address_mode(Clamp);
-        return volume_ref;
+        volume_tex.reset((TexelType*)volume.getData());
+        volume_tex.set_filter_mode(Nearest);
+        volume_tex.set_address_mode(Clamp);
+        return volume_tex;
     };
 
     auto prepareTransfunc = [&]()
     {
         using namespace vkt;
 
-        texture_ref<vec4f, 1> transfunc_ref(0);
+        texture_ref<vec4, 1> transfunc_tex(0);
 
         if (renderState.rgbaLookupTable != ResourceHandle(-1))
         {
@@ -147,43 +251,43 @@ void ViewerCPU::on_display()
             if (lut == nullptr)
                 lut = (LookupTable*)GetManagedResource(renderState.rgbaLookupTable);
 
-            transfunc_ref = texture_ref<vec4f, 1>(lut->getDims().x);
-            transfunc_ref.set_filter_mode(Nearest);
-            transfunc_ref.set_address_mode(Clamp);
-            transfunc_ref.reset((vec4*)lut->getData());
+            transfunc_tex = texture_ref<vec4, 1>(lut->getDims().x);
+            transfunc_tex.set_filter_mode(Nearest);
+            transfunc_tex.set_address_mode(Clamp);
+            transfunc_tex.reset((vec4*)lut->getData());
         }
 
-        return transfunc_ref;
+        return transfunc_tex;
     };
 
-    auto prepareRayMarchingKernel = [&](auto volume_ref, auto transfunc_ref)
+    auto prepareRayMarchingKernel = [&](auto volume_tex, auto transfunc_tex, auto accumBuffer)
     {
-        using VolumeRef = decltype(volume_ref);
-        using TransfuncRef = decltype(transfunc_ref);
+        using VolumeTex = decltype(volume_tex);
+        using TransfuncTex = decltype(transfunc_tex);
 
-        RayMarchingKernel<VolumeRef, TransfuncRef> kernel;
+        RayMarchingKernel<VolumeTex, TransfuncTex> kernel;
         kernel.bbox = bbox;
-        kernel.volume = volume_ref;
-        kernel.transfunc = transfunc_ref;
+        kernel.volume = volume_tex;
+        kernel.transfunc = transfunc_tex;
         kernel.dt = renderState.dtRayMarching;
         kernel.width = width();
         kernel.height = height();
         kernel.frameNum = frame_num;
-        kernel.accumBuffer = accumBuffer.data();
+        kernel.accumBuffer = accumBuffer;
         kernel.sRGB = (bool)renderState.sRGB;
 
         return kernel;
     };
 
-    auto prepareImplicitIsoKernel = [&](auto volume_ref, auto transfunc_ref)
+    auto prepareImplicitIsoKernel = [&](auto volume_tex, auto transfunc_tex, auto accumBuffer)
     {
-        using VolumeRef = decltype(volume_ref);
-        using TransfuncRef = decltype(transfunc_ref);
+        using VolumeTex = decltype(volume_tex);
+        using TransfuncTex = decltype(transfunc_tex);
 
-        ImplicitIsoKernel<VolumeRef, TransfuncRef> kernel;
+        ImplicitIsoKernel<VolumeTex, TransfuncTex> kernel;
         kernel.bbox = bbox;
-        kernel.volume = volume_ref;
-        kernel.transfunc = transfunc_ref;
+        kernel.volume = volume_tex;
+        kernel.transfunc = transfunc_tex;
         kernel.numIsoSurfaces = renderState.numIsoSurfaces;
         std::memcpy(
             &kernel.isoSurfaces,
@@ -194,28 +298,28 @@ void ViewerCPU::on_display()
         kernel.width = width();
         kernel.height = height();
         kernel.frameNum = frame_num;
-        kernel.accumBuffer = accumBuffer.data();
+        kernel.accumBuffer = accumBuffer;
         kernel.sRGB = (bool)renderState.sRGB;
 
         return kernel;
     };
 
-    auto prepareMultiScatteringKernel = [&](auto volume_ref, auto transfunc_ref)
+    auto prepareMultiScatteringKernel = [&](auto volume_tex, auto transfunc_tex, auto accumBuffer)
     {
-        using VolumeRef = decltype(volume_ref);
-        using TransfuncRef = decltype(transfunc_ref);
+        using VolumeTex = decltype(volume_tex);
+        using TransfuncTex = decltype(transfunc_tex);
 
         float heightf(this->height());
-        MultiScatteringKernel<VolumeRef, TransfuncRef> kernel;
+        MultiScatteringKernel<VolumeTex, TransfuncTex> kernel;
         kernel.bbox = bbox;
-        kernel.volume = volume_ref;
-        kernel.transfunc = transfunc_ref;
+        kernel.volume = volume_tex;
+        kernel.transfunc = transfunc_tex;
         kernel.mu_ = renderState.majorant;
         kernel.heightf_ = heightf;
         kernel.width = width();
         kernel.height = height();
         kernel.frameNum = frame_num;
-        kernel.accumBuffer = accumBuffer.data();
+        kernel.accumBuffer = accumBuffer;
         kernel.sRGB = (bool)renderState.sRGB;
 
         return kernel;
@@ -238,36 +342,79 @@ void ViewerCPU::on_display()
             renderFuture = std::async(
                 [&,this]()
                 {
-                    pixel_sampler::jittered_type blend_params;
-                    auto sparams = make_sched_params(
-                            blend_params,
-                            cam,
-                            host_rt[!frontBufferIndex]
-                            );
+                    if (useCuda)
+                    {
+                        pixel_sampler::jittered_type blend_params;
+                        auto sparams = make_sched_params(
+                                blend_params,
+                                cam,
+                                device_rt[!frontBufferIndex]
+                                );
 
-                    if (renderState.renderAlgo == vkt::RenderAlgo::RayMarching)
-                    {
-                        auto kernel = prepareRayMarchingKernel(
-                                prepareTexture(TexelType{}),
-                                prepareTransfunc()
-                                );
-                        host_sched.frame(kernel, sparams);
+                        if (renderState.renderAlgo == vkt::RenderAlgo::RayMarching)
+                        {
+                            auto kernel = prepareRayMarchingKernel(
+                                    prepareDeviceVolume(TexelType{}),
+                                    prepareDeviceTransfunc(),
+                                    thrust::raw_pointer_cast(device_accumBuffer.data())
+                                    );
+                            device_sched.frame(kernel, sparams);
+                        }
+                        else if (renderState.renderAlgo == vkt::RenderAlgo::ImplicitIso)
+                        {
+                            auto kernel = prepareImplicitIsoKernel(
+                                    prepareDeviceVolume(TexelType{}),
+                                    prepareDeviceTransfunc(),
+                                    thrust::raw_pointer_cast(device_accumBuffer.data())
+                                    );
+                            device_sched.frame(kernel, sparams);
+                        }
+                        else if (renderState.renderAlgo == vkt::RenderAlgo::MultiScattering)
+                        {
+                            auto kernel = prepareMultiScatteringKernel(
+                                    prepareDeviceVolume(TexelType{}),
+                                    prepareDeviceTransfunc(),
+                                    thrust::raw_pointer_cast(device_accumBuffer.data())
+                                    );
+                            device_sched.frame(kernel, sparams);
+                        }
                     }
-                    else if (renderState.renderAlgo == vkt::RenderAlgo::ImplicitIso)
+                    else
                     {
-                        auto kernel = prepareImplicitIsoKernel(
-                                prepareTexture(TexelType{}),
-                                prepareTransfunc()
+                        pixel_sampler::jittered_type blend_params;
+                        auto sparams = make_sched_params(
+                                blend_params,
+                                cam,
+                                host_rt[!frontBufferIndex]
                                 );
-                        host_sched.frame(kernel, sparams);
-                    }
-                    else if (renderState.renderAlgo == vkt::RenderAlgo::MultiScattering)
-                    {
-                        auto kernel = prepareMultiScatteringKernel(
-                                prepareTexture(TexelType{}),
-                                prepareTransfunc()
-                                );
-                        host_sched.frame(kernel, sparams);
+
+                        if (renderState.renderAlgo == vkt::RenderAlgo::RayMarching)
+                        {
+                            auto kernel = prepareRayMarchingKernel(
+                                    prepareVolume(TexelType{}),
+                                    prepareTransfunc(),
+                                    host_accumBuffer.data()
+                                    );
+                            host_sched.frame(kernel, sparams);
+                        }
+                        else if (renderState.renderAlgo == vkt::RenderAlgo::ImplicitIso)
+                        {
+                            auto kernel = prepareImplicitIsoKernel(
+                                    prepareVolume(TexelType{}),
+                                    prepareTransfunc(),
+                                    host_accumBuffer.data()
+                                    );
+                            host_sched.frame(kernel, sparams);
+                        }
+                        else if (renderState.renderAlgo == vkt::RenderAlgo::MultiScattering)
+                        {
+                            auto kernel = prepareMultiScatteringKernel(
+                                    prepareVolume(TexelType{}),
+                                    prepareTransfunc(),
+                                    host_accumBuffer.data()
+                                    );
+                            host_sched.frame(kernel, sparams);
+                        }
                     }
                 });
         }
@@ -296,7 +443,10 @@ void ViewerCPU::on_display()
 
     {
         std::unique_lock<std::mutex> l(displayMutex);
-        host_rt[frontBufferIndex].display_color_buffer();
+        if (useCuda)
+            device_rt[frontBufferIndex].display_color_buffer();
+        else
+            host_rt[frontBufferIndex].display_color_buffer();
     }
 
     if (have_imgui_support() && renderState.rgbaLookupTable != vkt::ResourceHandle(-1))
@@ -329,9 +479,14 @@ void ViewerCPU::on_resize(int w, int h)
 
     {
         std::unique_lock<std::mutex> l(displayMutex);
-        accumBuffer.resize(w * h);
+
+        host_accumBuffer.resize(w * h);
         host_rt[0].resize(w, h);
         host_rt[1].resize(w, h);
+
+        device_accumBuffer.resize(w * h);
+        device_rt[0].resize(w, h);
+        device_rt[1].resize(w, h);
     }
 
     clearFrame();

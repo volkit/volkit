@@ -5,6 +5,7 @@
 
 #include <GL/glew.h>
 
+#include <vkt/ExecutionPolicy.hpp>
 #include <vkt/LookupTable.hpp>
 #include <vkt/ManagedResource.hpp>
 
@@ -52,6 +53,9 @@ namespace vkt
         // Drawing canvas size
         Vec2i canvasSize_ = { 300, 150 };
 
+        // Temporarily stored execution policy
+        ExecutionPolicy prevPolicy_;
+
         // Mouse state for drawing
         struct MouseEvent
         {
@@ -77,6 +81,12 @@ namespace vkt
 
         // Handle mouse event
         void handleMouseEvent(MouseEvent const& event);
+
+        // Set execution policy to CPU and store the current one
+        void setExecutionPolicyCPU();
+
+        // Reset execution policy that was previously stored
+        void resetExecutionPolicy();
     };
 
 } // vkt
