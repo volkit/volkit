@@ -114,19 +114,22 @@ struct ViewerCPU : ViewerBase
             if (lut == nullptr)
                 lut = (LookupTable*)GetManagedResource(renderState.rgbaLookupTable);
 
-            ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
-            ExecutionPolicy prev = ep;
-            ep.device = vkt::ExecutionPolicy::Device::CPU;
-            SetThreadExecutionPolicy(ep);
+            if (transfuncEditor.updated() || !device_transfunc)
+            {
+                ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
+                ExecutionPolicy prev = ep;
+                ep.device = vkt::ExecutionPolicy::Device::CPU;
+                SetThreadExecutionPolicy(ep);
 
-            device_transfunc = cuda_texture<vec4, 1>(
-                (vec4*)lut->getData(),
-                lut->getDims().x,
-                Clamp,
-                Nearest
-                );
+                device_transfunc = cuda_texture<vec4, 1>(
+                    (vec4*)lut->getData(),
+                    lut->getDims().x,
+                    Clamp,
+                    Nearest
+                    );printf("%d\n",lut->getDims().x);
 
-            SetThreadExecutionPolicy(prev);
+                SetThreadExecutionPolicy(prev);
+            }
 
             return cuda_texture_ref<vec4, 1>(device_transfunc);
         }
