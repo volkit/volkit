@@ -126,7 +126,7 @@ struct ViewerCPU : ViewerBase
                     lut->getDims().x,
                     Clamp,
                     Nearest
-                    );printf("%d\n",lut->getDims().x);
+                    );
 
                 SetThreadExecutionPolicy(prev);
             }
