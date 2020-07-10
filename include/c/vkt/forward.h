@@ -16,3 +16,4 @@ typedef struct vktRawFile_impl* vktRawFile;
 typedef struct vktInputStream_impl* vktInputStream;
 typedef struct vktStructuredVolume_impl* vktStructuredVolume;
 typedef struct vktVirvoFile_impl* vktVirvoFile;
+typedef struct vktVolumeFile_impl* vktVolumeFile;

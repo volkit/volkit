@@ -9,14 +9,20 @@ def main():
         print("Usage: ", sys.argv[0], "file.raw")
         return
   
-    file = vkt.RawFile(sys.argv[1], "r")
-  
-    dims = file.getDims()
+    file = vkt.VolumeFile(sys.argv[1])
+
+    hdr = file.getHeader()
+
+    if not hdr.isStructured:
+        print("No valid volume file\n")
+        return
+
+    dims = hdr.dims
     if dims.x * dims.y * dims.y < 1:
         print("Cannot parse dimensions from file name")
         return
 
-    bpv = file.getBytesPerVoxel()
+    bpv = hdr.bytesPerVoxel
     if bpv == 0:
         print("Cannot parse bytes per voxel from file name, guessing 1...")
         bpv = 1

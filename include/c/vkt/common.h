@@ -10,6 +10,8 @@
 
 /*! Boolean */
 typedef uint8_t vktBool_t;
+#define VKT_FALSE 0
+#define VKT_TRUE  1
 
 /*! Error constants */
 typedef enum

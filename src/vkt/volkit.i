@@ -19,12 +19,14 @@
 #include <vkt/LookupTable.hpp>
 #include <vkt/ManagedBuffer.hpp>
 #include <vkt/ManagedResource.hpp>
+#include <vkt/NiftiFile.hpp>
 #include <vkt/RawFile.hpp>
 #include <vkt/Render.hpp>
 #include <vkt/Rotate.hpp>
 #include <vkt/Scan.hpp>
 #include <vkt/StructuredVolume.hpp>
 #include <vkt/VirvoFile.hpp>
+#include <vkt/VolumeFile.hpp>
 #include <vkt/Voxel.hpp>
 using namespace vkt;
 %}
@@ -38,8 +40,10 @@ using namespace vkt;
 %include <vkt/linalg.hpp>
 
 %include <vkt/ExecutionPolicy.hpp>
+%include <vkt/NiftiFile.hpp>
 %include <vkt/RawFile.hpp>
 %include <vkt/VirvoFile.hpp>
+%include <vkt/VolumeFile.hpp>
 
 %include "std_vector.i"
 namespace std
@@ -90,6 +94,7 @@ namespace std
 %include <vkt/Scan.hpp>
 %apply vkt::StructuredVolume &INOUT { vkt::StructuredVolume &sv };
 %apply vkt::RenderState &INOUT { vkt::RenderState &rs };
+%apply vkt::VolumeFileHeader &INOUT { vkt::VolumeFileHeader &hdr };
 
 /* typedefs */
 typedef void* ManagedResource;

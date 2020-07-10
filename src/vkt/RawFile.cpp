@@ -135,7 +135,7 @@ size_t vktRawFileRead(vktRawFile file, char* buf, size_t len)
 
 vktBool_t vktRawFileGood(vktRawFile file)
 {
-    return file->base->source->good();
+    return file->base->source->good() ? VKT_TRUE : VKT_FALSE;
 }
 
 vktVec3i_t vktRawFileGetDims3iv(vktRawFile file)

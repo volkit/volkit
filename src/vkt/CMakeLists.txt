@@ -1,6 +1,7 @@
 # This file is distributed under the MIT license.
 # See the LICENSE file for details.
 
+find_package(Boost COMPONENTS filesystem system REQUIRED)
 find_package(CUDA)
 find_package(Nifti)
 find_package(SDL2)
@@ -8,6 +9,7 @@ find_package(SWIG)
 find_package(Threads REQUIRED)
 find_package(Virvo)
 
+vkt_use_package(Boost)
 vkt_use_package(CUDA)
 vkt_use_package(Nifti)
 vkt_use_package(SDL2)
@@ -149,6 +151,7 @@ set(SOURCES
     TransfuncEditor.cpp
     Transform.cpp
     VirvoFile.cpp
+    VolumeFile.cpp
     Voxel.cpp
 )
 

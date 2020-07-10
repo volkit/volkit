@@ -4,9 +4,9 @@
 
 #include <vkt/InputStream.hpp>
 #include <vkt/LookupTable.hpp>
-#include <vkt/RawFile.hpp>
 #include <vkt/Render.hpp>
 #include <vkt/StructuredVolume.hpp>
+#include <vkt/VolumeFile.hpp>
 
 int main(int argc, char** argv)
 {
@@ -16,16 +16,24 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    vkt::RawFile file(argv[1], "r");
+    vkt::VolumeFile file(argv[1]);
 
-    vkt::Vec3i dims = file.getDims();
+    vkt::VolumeFileHeader hdr = file.getHeader();
+
+    if (!hdr.isStructured)
+    {
+        std::cerr << "No valid volume file\n";
+        return EXIT_FAILURE;
+    }
+
+    vkt::Vec3i dims = hdr.dims;
     if (dims.x * dims.y * dims.z < 1)
     {
         std::cerr << "Cannot parse dimensions from file name\n";
         return EXIT_FAILURE;
     }
 
-    uint16_t bpv = file.getBytesPerVoxel();
+    uint16_t bpv = hdr.bytesPerVoxel;
     if (bpv == 0)
     {
         std::cerr << "Cannot parse bytes per voxel from file name, guessing 1...\n";

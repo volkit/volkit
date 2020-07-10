@@ -4,13 +4,14 @@
 
 #include <vkt/InputStream.h>
 #include <vkt/LookupTable.h>
-#include <vkt/RawFile.h>
 #include <vkt/Render.h>
 #include <vkt/StructuredVolume.h>
+#include <vkt/VolumeFile.h>
 
 int main(int argc, char** argv)
 {
-    vktRawFile file;
+    vktVolumeFile file;
+    vktVolumeFileHeader_t hdr;
     vktVec3i_t dims;
     uint16_t bpv;
     vktStructuredVolume volume;
@@ -25,16 +26,24 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    vktRawFileCreateS(&file, argv[1], "r");
+    vktVolumeFileCreateS(&file, argv[1]);
 
-    dims = vktRawFileGetDims3iv(file);
+    hdr = vktVolumeFileGetHeader(file);
+
+    if (!hdr.isStructured)
+    {
+        fprintf(stderr, "%s", "No valid volume file\n");
+        return EXIT_FAILURE;
+    }
+
+    dims = hdr.dims;
     if (dims.x * dims.y * dims.z < 1)
     {
         fprintf(stderr, "%s", "Cannot parse dimensions from file name\n");
         return EXIT_FAILURE;
     }
 
-    bpv = vktRawFileGetBytesPerVoxel(file);
+    bpv = hdr.bytesPerVoxel;
     if (bpv == 0)
     {
         fprintf(stderr, "%s", "Cannot parse bytes per voxel from file name, guessing 1...\n");
@@ -42,7 +51,7 @@ int main(int argc, char** argv)
     }
 
     vktStructuredVolumeCreate(&volume, dims.x, dims.y, dims.z, bpv, 1.f, 1.f, 1.f, 0.f, 1.f);
-    vktInputStreamCreate(&is, vktRawFileGetBase(file));
+    vktInputStreamCreate(&is, vktVolumeFileGetBase(file));
     vktInputStreamReadSV(is, volume);
 
     rgba[ 0] =  1.f; rgba[ 1] = 1.f; rgba[ 2] = 1.f;  rgba[ 3] = .005f;
@@ -64,5 +73,5 @@ int main(int argc, char** argv)
     vktLookupTableDestroy(lut);
     vktInputStreamDestroy(is);
     vktStructuredVolumeDestroy(volume);
-    vktRawFileDestroy(file);
+    vktVolumeFileDestroy(file);
 }
