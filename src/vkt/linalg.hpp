@@ -96,7 +96,7 @@ namespace vkt
         return a / length(a);
     }
 
-    VKT_FUNC inline std::ostream& operator<<(std::ostream& out, Vec3f const& v)
+    inline std::ostream& operator<<(std::ostream& out, Vec3f const& v)
     {
         out << '(' << v.x << ',' << v.y << ',' << v.z << ')';
         return out;
@@ -137,7 +137,7 @@ namespace vkt
         return a;
     }
 
-    VKT_FUNC inline std::ostream& operator<<(std::ostream& out, Vec3i const& v)
+    inline std::ostream& operator<<(std::ostream& out, Vec3i const& v)
     {
         out << '(' << v.x << ',' << v.y << ',' << v.z << ')';
         return out;
@@ -185,7 +185,7 @@ namespace vkt
             };
     }
 
-    VKT_FUNC inline std::ostream& operator<<(std::ostream& out, Mat3f const& m)
+    inline std::ostream& operator<<(std::ostream& out, Mat3f const& m)
     {
         out << '(' << m.col0 << ',' << m.col1 << ',' << m.col2 << ')';
         return out;
