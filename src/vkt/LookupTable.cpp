@@ -4,7 +4,9 @@
 #include <cassert>
 #include <cstring>
 
+#include <vkt/ExecutionPolicy.hpp>
 #include <vkt/LookupTable.hpp>
+#include <vkt/Memory.hpp>
 
 #include <vkt/LookupTable.h>
 
@@ -78,7 +80,13 @@ namespace vkt
     {
         migrate();
 
-        std::memcpy(ManagedBuffer::data_, data, getSizeInBytes());
+        ExecutionPolicy ep = GetThreadExecutionPolicy();
+
+        CopyKind ck = ep.device == ExecutionPolicy::Device::GPU
+                        ? CopyKind::DeviceToDevice
+                        : CopyKind::HostToHost;
+
+        Memcpy(ManagedBuffer::data_, data, getSizeInBytes(), ck);
     }
 
     void LookupTable::setData(
@@ -90,6 +98,12 @@ namespace vkt
             )
     {
         migrate();
+
+        ExecutionPolicy ep = GetThreadExecutionPolicy();
+
+        CopyKind ck = ep.device == ExecutionPolicy::Device::GPU
+                        ? CopyKind::DeviceToDevice
+                        : CopyKind::HostToHost;
 
         // TODO: interpolate between different formats
         assert(sourceFormat == format_);
@@ -112,7 +126,7 @@ namespace vkt
                     size_t srcIndex = (z * dimX * size_t(dimY) + y * dimX + x) * bpv;
                     size_t dstIndex = (iz * dims_.x * size_t(dims_.y) + iy * dims_.x + ix) * bpv;
 
-                    std::memcpy(ManagedBuffer::data_ + dstIndex, data + srcIndex, bpv);
+                    Memcpy(ManagedBuffer::data_ + dstIndex, data + srcIndex, bpv, ck);
                 }
             }
         }
