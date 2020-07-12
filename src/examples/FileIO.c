@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <vkt/ExecutionPolicy.h>
 #include <vkt/InputStream.h>
 #include <vkt/LookupTable.h>
 #include <vkt/Render.h>
@@ -19,6 +20,7 @@ int main(int argc, char** argv)
     float rgba[20];
     vktLookupTable lut;
     vktRenderState_t renderState;
+    vktExecutionPolicy_t ep;
 
     if (argc < 2)
     {
@@ -62,6 +64,11 @@ int main(int argc, char** argv)
 
     vktLookupTableCreate(&lut,5,1,1,vktColorFormatRGBA32F);
     vktLookupTableSetData(lut,(uint8_t*)rgba);
+
+    // Switch execution to GPU (remove those lines for CPU rendering)
+    memset(&ep, 0, sizeof(ep));
+    ep.device = vktExecutionPolicyDeviceGPU;
+    vktSetThreadExecutionPolicy(ep);
 
     vktRenderStateDefaultInit(&renderState);
     //renderState.renderAlgo = vktRenderAlgoRayMarching;

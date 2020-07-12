@@ -41,6 +41,11 @@ def main():
     lut = vkt.LookupTable(5,1,1,vkt.ColorFormat_RGBA32F)
     lut.setData(rgba)
 
+    # Switch execution to GPU (remove those lines for CPU rendering)
+    ep = vkt.GetThreadExecutionPolicy()
+    ep.device = vkt.ExecutionPolicy.Device_GPU
+    vkt.SetThreadExecutionPolicy(ep)
+
     rs = vkt.RenderState()
     #rs.renderAlgo = vkt.RenderAlgo_RayMarching
     #rs.renderAlgo = vkt.RenderAlgo_ImplicitIso

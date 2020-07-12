@@ -2,6 +2,7 @@
 #include <iostream>
 #include <ostream>
 
+#include <vkt/ExecutionPolicy.hpp>
 #include <vkt/InputStream.hpp>
 #include <vkt/LookupTable.hpp>
 #include <vkt/Render.hpp>
@@ -53,6 +54,11 @@ int main(int argc, char** argv)
             };
     vkt::LookupTable lut(5,1,1,vkt::ColorFormat::RGBA32F);
     lut.setData((uint8_t*)rgba);
+
+    // Switch execution to GPU (remove those lines for CPU rendering)
+    vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
+    ep.device = vkt::ExecutionPolicy::Device::GPU;
+    vkt::SetThreadExecutionPolicy(ep);
 
     vkt::RenderState renderState;
     //renderState.renderAlgo = vkt::RenderAlgo::RayMarching;
