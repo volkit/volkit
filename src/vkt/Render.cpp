@@ -51,10 +51,10 @@ using ViewerBase = viewer_glut;
 
 
 //-------------------------------------------------------------------------------------------------
-// Visionaray viewer (CPU)
+// Visionaray viewer
 //
 
-struct ViewerCPU : ViewerBase
+struct Viewer : ViewerBase
 {
     //using RayType = basic_ray<simd::float4>;
     using RayType = basic_ray<float>;
@@ -139,7 +139,7 @@ struct ViewerCPU : ViewerBase
 
 
 
-    ViewerCPU(
+    Viewer(
         vkt::StructuredVolume& volume,
         vkt::RenderState const& renderState,
         char const* windowTitle = "",
@@ -154,7 +154,7 @@ struct ViewerCPU : ViewerBase
     void on_resize(int w, int h);
 };
 
-ViewerCPU::ViewerCPU(
+Viewer::Viewer(
         vkt::StructuredVolume& volume,
         vkt::RenderState const& renderState,
         char const* windowTitle,
@@ -213,13 +213,13 @@ ViewerCPU::ViewerCPU(
     }
 }
 
-void ViewerCPU::clearFrame()
+void Viewer::clearFrame()
 {
     std::unique_lock<std::mutex> l(displayMutex);
     frame_num = 0;
 }
 
-void ViewerCPU::on_display()
+void Viewer::on_display()
 {
     if (transfuncEditor.updated())
         clearFrame();
@@ -456,7 +456,7 @@ void ViewerCPU::on_display()
         transfuncEditor.show();
 }
 
-void ViewerCPU::on_mouse_move(visionaray::mouse_event const& event)
+void Viewer::on_mouse_move(visionaray::mouse_event const& event)
 {
     if (event.buttons() != mouse::NoButton)
         clearFrame();
@@ -464,14 +464,14 @@ void ViewerCPU::on_mouse_move(visionaray::mouse_event const& event)
     ViewerBase::on_mouse_move(event);
 }
 
-void ViewerCPU::on_space_mouse_move(visionaray::space_mouse_event const& event)
+void Viewer::on_space_mouse_move(visionaray::space_mouse_event const& event)
 {
     clearFrame();
 
     ViewerBase::on_space_mouse_move(event);
 }
 
-void ViewerCPU::on_resize(int w, int h)
+void Viewer::on_resize(int w, int h)
 {
     if (renderFuture.valid())
         renderFuture.wait();
@@ -508,7 +508,7 @@ static void Render_impl(
         vkt::RenderState* newRenderState
         )
 {
-    ViewerCPU viewer(volume, renderState);
+    Viewer viewer(volume, renderState);
 
     int argc = 1;
     char const* argv = "vktRender";
