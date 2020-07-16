@@ -6,6 +6,8 @@
 #include <cmath>
 #include <ostream>
 
+#include <vkt/linalg.hpp>
+
 #include <vkt/linalg.h>
 
 #include "macros.hpp"
