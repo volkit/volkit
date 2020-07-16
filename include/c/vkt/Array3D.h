@@ -43,6 +43,9 @@
     void vktArray3D_##Type##_Resize(vktArray3D_##Type arr,                      \
                                     vktVec3i_t dims);                           \
                                                                                 \
+    void vktArray3D_##Type##_Fill(vktArray3D_##Type arr,                        \
+                                  Type value);                                  \
+                                                                                \
     vktArray3D_##Type##_Iterator vktArray3D_##Type##_Begin(                     \
                                         vktArray3D_##Type arr);                 \
                                                                                 \
@@ -130,6 +133,12 @@
                 dims.x * sizeof(dims.y) * dims.z * sizeof(Type)                 \
                 );                                                              \
         arr->dims_ = dims;                                                      \
+    }                                                                           \
+                                                                                \
+    inline void vktArray3D_##Type##_Fill(vktArray3D_##Type arr,                 \
+                                         Type value)                            \
+    {                                                                           \
+        vktManagedBuffer_##Type##_Fill__(arr->base_, value);                    \
     }                                                                           \
                                                                                 \
     inline vktArray3D_##Type##_Iterator vktArray3D_##Type##_Begin(              \

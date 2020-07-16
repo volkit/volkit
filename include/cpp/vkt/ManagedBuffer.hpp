@@ -43,6 +43,8 @@ namespace vkt
         void allocate(std::size_t size);
         void deallocate();
         void resize(std::size_t size);
+        void fill(T& value);
+        void fill(T const& value);
         void copy(ManagedBuffer& rhs);
 
         T* data_ = nullptr;
@@ -245,6 +247,32 @@ namespace vkt
         Free(temp);
 
         size_ = newSize;
+    }
+
+    template <typename T>
+    void ManagedBuffer<T>::fill(T& value)
+    {
+        migrate();
+
+        T* buf = new T[size_];
+        for (std::size_t i = 0; i < size_; ++i)
+            buf[i] = value;
+
+        ExecutionPolicy ep = GetThreadExecutionPolicy();
+
+        CopyKind ck = ep.device == ExecutionPolicy::Device::GPU
+                        ? CopyKind::DeviceToDevice
+                        : CopyKind::HostToHost;
+
+        Memcpy(data_, buf, size_, ck);
+
+        delete[] buf;
+    }
+
+    template <typename T>
+    void ManagedBuffer<T>::fill(T const& value)
+    {
+        fill(const_cast<T&>(value));
     }
 
     template <typename T>

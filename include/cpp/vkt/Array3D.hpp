@@ -43,6 +43,16 @@ namespace vkt
             dims_ = dims;
         }
 
+        inline void fill(T& value)
+        {
+            Base::fill(value);
+        }
+
+        inline void fill(T const& value)
+        {
+            Base::fill(value);
+        }
+
         inline iterator begin()
         {
             return data();

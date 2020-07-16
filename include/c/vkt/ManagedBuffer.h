@@ -54,6 +54,9 @@
     void vktManagedBuffer_##Type##_Resize__(vktManagedBuffer_##Type buffer,     \
                                             size_t size);                       \
                                                                                 \
+    void vktManagedBuffer_##Type##_Fill__(vktManagedBuffer_##Type buffer,       \
+                                          Type value);                          \
+                                                                                \
     void vktManagedBuffer_##Type##_Copy__(vktManagedBuffer_##Type buffer,       \
                                           vktManagedBuffer_##Type rhs);
 
@@ -230,6 +233,28 @@
         vktFree(temp);                                                          \
                                                                                 \
         buffer->size_ = newSize;                                                \
+    }                                                                           \
+                                                                                \
+                                                                                \
+    inline void vktManagedBuffer_##Type##_Fill__(                               \
+                                            vktManagedBuffer_##Type buffer,     \
+                                            Type value)                         \
+    {                                                                           \
+        vktManagedBuffer_##Type##_Migrate(buffer);                              \
+                                                                                \
+        Type* buf = (Type*)calloc(buffer->size_, sizeof(Type));                 \
+        for (size_t i = 0; i < buffer->size_; ++i)                              \
+            buf[i] = value;                                                     \
+                                                                                \
+        vktExecutionPolicy_t ep = vktGetThreadExecutionPolicy();                \
+                                                                                \
+        vktCopyKind ck = ep.device == vktExecutionPolicyDeviceGPU               \
+                            ? vktCopyKindHostToDevice                           \
+                            : vktCopyKindHostToHost;                            \
+                                                                                \
+        vktMemcpy(buffer->data_, buf, buffer->size_, ck);                       \
+                                                                                \
+        free(buf);                                                              \
     }                                                                           \
                                                                                 \
     inline void vktManagedBuffer_##Type##_Copy__(                               \
