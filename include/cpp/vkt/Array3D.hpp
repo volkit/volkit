@@ -25,7 +25,7 @@ namespace vkt
         Array3D() = default;
 
         inline Array3D(Vec3i const& dims)
-            : Base(dims.x * sizeof(dims.y) * dims.z * sizeof(T))
+            : Base(dims.x * std::size_t(dims.y) * dims.z * sizeof(T))
             , dims_(dims)
         {
         }
@@ -39,7 +39,7 @@ namespace vkt
 
         inline void resize(Vec3i const& dims)
         {
-            Base::resize(dims.x * sizeof(dims.y) * dims.z * sizeof(T));
+            Base::resize(dims.x * std::size_t(dims.y) * dims.z * sizeof(T));
             dims_ = dims;
         }
 
