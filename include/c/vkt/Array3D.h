@@ -102,7 +102,7 @@
                                                                                 \
         vktManagedBuffer_##Type##_Create(                                       \
                 &(*arr)->base_,                                                 \
-                dims.x * size_t(dims.y) * dims.z * sizeof(Type)                 \
+                dims.x * (size_t)dims.y * dims.z * sizeof(Type)                 \
                 );                                                              \
         (*arr)->dims_ = dims;                                                   \
     }                                                                           \
@@ -130,7 +130,7 @@
     {                                                                           \
         vktManagedBuffer_##Type##_Resize__(                                     \
                 arr->base_,                                                     \
-                dims.x * size_t(dims.y) * dims.z * sizeof(Type)                 \
+                dims.x * (size_t)dims.y * dims.z * sizeof(Type)                 \
                 );                                                              \
         arr->dims_ = dims;                                                      \
     }                                                                           \
