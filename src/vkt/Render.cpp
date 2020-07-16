@@ -342,9 +342,13 @@ void Viewer::on_display()
                 ++frame_num;
             }
 
+            vkt::ExecutionPolicy mainThreadEP = vkt::GetThreadExecutionPolicy();
+
             renderFuture = std::async(
                 [&,this]()
                 {
+                    vkt::SetThreadExecutionPolicy(mainThreadEP);
+
                     if (useCuda)
                     {
                         pixel_sampler::jittered_type blend_params;
