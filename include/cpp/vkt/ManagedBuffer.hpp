@@ -264,7 +264,7 @@ namespace vkt
                         ? CopyKind::HostToDevice
                         : CopyKind::HostToHost;
 
-        Memcpy(data_, buf, size_, ck);
+        Memcpy(data_, buf, size_ * sizeof(T), ck);
 
         delete[] buf;
     }
