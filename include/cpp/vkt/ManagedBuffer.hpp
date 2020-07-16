@@ -261,7 +261,7 @@ namespace vkt
         ExecutionPolicy ep = GetThreadExecutionPolicy();
 
         CopyKind ck = ep.device == ExecutionPolicy::Device::GPU
-                        ? CopyKind::DeviceToDevice
+                        ? CopyKind::HostToDevice
                         : CopyKind::HostToHost;
 
         Memcpy(data_, buf, size_, ck);
