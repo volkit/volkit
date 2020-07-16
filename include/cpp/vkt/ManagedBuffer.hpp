@@ -254,19 +254,7 @@ namespace vkt
     {
         migrate();
 
-        T* buf = new T[size_];
-        for (std::size_t i = 0; i < size_; ++i)
-            buf[i] = value;
-
-        ExecutionPolicy ep = GetThreadExecutionPolicy();
-
-        CopyKind ck = ep.device == ExecutionPolicy::Device::GPU
-                        ? CopyKind::HostToDevice
-                        : CopyKind::HostToHost;
-
-        Memcpy(data_, buf, size_ * sizeof(T), ck);
-
-        delete[] buf;
+        MemsetRange(data_, &value, size_ * sizeof(T), sizeof(T));
     }
 
     template <typename T>

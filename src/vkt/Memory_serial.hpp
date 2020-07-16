@@ -20,4 +20,19 @@ namespace vkt
     {
         free(ptr);
     }
+
+    inline void MemsetRange_serial(
+            void* dst,
+            void const* src,
+            std::size_t dstSize,
+            std::size_t srcSize
+            )
+    {
+        std::size_t numElem = dstSize / srcSize;
+
+        for (std::size_t i = 0; i < numElem; ++i)
+        {
+            std::memcpy((char*)dst + i * srcSize, src, srcSize);
+        }
+    }
 } // vkt

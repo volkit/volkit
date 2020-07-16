@@ -7,6 +7,9 @@
 
 #include "common.hpp"
 
+/*! @file  Memory.h
+ * @brief  Memory manipulation functions that interoperate between CPU and GPU
+ */
 namespace vkt
 {
     enum class CopyKind
@@ -22,5 +25,8 @@ namespace vkt
     VKTAPI void Free(void* ptr);
 
     VKTAPI void Memcpy(void* dst, void const* src, std::size_t size, CopyKind ck);
+
+    //! Fill operation - not called Fill() to avoid name clashes with the volkit Fill algorithm
+    VKTAPI void MemsetRange(void* dst, void const* src, std::size_t dstSize, std::size_t srcSize);
 
 } // vkt

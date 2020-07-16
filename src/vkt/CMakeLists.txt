@@ -162,21 +162,31 @@ if(CUDA_FOUND AND VSNRAY_ENABLE_CUDA)
         Decompose_cuda.cu
         Fill_cuda.cu
         Flip_cuda.cu
+        Memory_cuda.cu
         Render.cu
+    )
+
+    vkt_add_cuda_library(volkit
+        ${HEADERS}
+        ${SOURCES}
+        ${IMGUI_HEADERS}
+        ${IMGUI_SOURCES}
+        ${CUDA_SOURCES}
     )
 else()
     set(SOURCES ${SOURCES}
+        GridAccel.cpp
         Render.cpp
+    )
+
+    vkt_add_library(volkit
+        ${HEADERS}
+        ${SOURCES}
+        ${IMGUI_HEADERS}
+        ${IMGUI_SOURCES}
     )
 endif()
 
-vkt_add_library(volkit
-    ${HEADERS}
-    ${SOURCES}
-    ${IMGUI_HEADERS}
-    ${IMGUI_SOURCES}
-    ${CUDA_SOURCES}
-)
 
 
 # Explicitly link with visionaray

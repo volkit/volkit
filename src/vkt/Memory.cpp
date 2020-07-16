@@ -69,6 +69,10 @@ namespace vkt
 #endif
     }
 
+    void MemsetRange(void* dst, void const* src, std::size_t dstSize, std::size_t srcSize)
+    {
+        VKT_CALL__(MemsetRange, dst, src, dstSize, srcSize);
+    }
 } // vkt
 
 //-------------------------------------------------------------------------------------------------
