@@ -30,6 +30,12 @@ typedef struct
     int z;
 } vktVec3i_t;
 
+typedef struct
+{
+    vktVec3i_t min;
+    vktVec3i_t max;
+} vktBox3f_t;
+
 typedef enum
 {
     vktAxisX,

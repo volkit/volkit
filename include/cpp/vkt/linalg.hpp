@@ -39,6 +39,12 @@ namespace vkt
         int z;
     };
 
+    struct Box3f
+    {
+        Vec3f min;
+        Vec3f max;
+    };
+
     struct Mat3f
     {
         Vec3f col0;

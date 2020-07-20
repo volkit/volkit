@@ -129,6 +129,14 @@ namespace vkt
         return voxelMapping_;
     }
 
+    Box3f StructuredVolume::getWorldBounds() const
+    {
+        return {
+            { 0.f, 0.f, 0.f },
+            { dims_.x * dist_.x, dims_.y * dist_.y, dims_.z * dist_.z }
+            };
+    }
+
     uint8_t* StructuredVolume::getData()
     {
         migrate();

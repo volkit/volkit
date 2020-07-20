@@ -57,6 +57,8 @@ namespace vkt
         void setVoxelMapping(Vec2f mapping);
         Vec2f getVoxelMapping() const;
 
+        Box3f getWorldBounds() const;
+
         uint8_t* getData();
 
         float sampleLinear(int32_t x, int32_t y, int32_t z);
