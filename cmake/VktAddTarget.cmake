@@ -53,7 +53,7 @@ function(vkt_add_cuda_executable name)
 
     cuda_add_executable(${name} ${ARGN})
 
-    set (CUDA_NVC_FLAGS ${nvcc_flags_old__})
+    set (CUDA_NVCC_FLAGS ${nvcc_flags_old__})
 
     target_link_libraries(${name} ${__VKT_LINK_LIBRARIES})
 
@@ -64,5 +64,25 @@ endfunction()
 
 function(vkt_add_library name)
     add_library(${name} ${ARGN})
+    target_link_libraries(${name} ${__VKT_LINK_LIBRARIES})
+endfunction()
+
+function(vkt_add_cuda_library name)
+    if(NOT CUDA_FOUND OR NOT VKT_ENABLE_CUDA)
+        return()
+    endif()
+
+    set(nvcc_flags_old__ ${CUDA_NVCC_FLAGS})
+    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "--expt-extended-lambda")
+
+    cuda_add_library(${name} ${ARGN})
+
+    if(NOT BUILD_SHARED_LIBS)
+        set_property(TARGET ${name} PROPERTY CUDA_RESOLVE_DEVICE_SYMBOLS ON)
+        set_property(TARGET ${name} PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+    endif()
+
+    set (CUDA_NVCC_FLAGS ${nvcc_flags_old__})
+
     target_link_libraries(${name} ${__VKT_LINK_LIBRARIES})
 endfunction()
