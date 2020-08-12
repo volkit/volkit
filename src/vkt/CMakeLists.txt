@@ -140,6 +140,7 @@ set(SOURCES
     Fill.cpp
     Flip.cpp
     InputStream.cpp
+    Logging.cpp
     LookupTable.cpp
     ManagedResource.cpp
     Memory.cpp
@@ -148,6 +149,7 @@ set(SOURCES
     Rotate.cpp
     Scan.cpp
     StructuredVolume.cpp
+    Timer.cpp
     TransfuncEditor.cpp
     Transform.cpp
     VirvoFile.cpp

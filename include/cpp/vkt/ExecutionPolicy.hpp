@@ -66,9 +66,17 @@ namespace vkt
             //OpenCL,
         };
 
+        //! Device to run ensuing operations on
         Device device = Device::CPU;
+
+        //! API that is used for execution on the CPU
         HostAPI hostApi = HostAPI::Serial;
+
+        //! API that is used for execution on the GPU
         DeviceAPI deviceApi = DeviceAPI::CUDA;
+
+        //! Print performance measurements to stdout
+        Bool debugPerformance = False;
     };
 
     /*! @brief  Set the execution policy of the current thread

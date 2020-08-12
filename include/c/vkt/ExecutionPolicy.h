@@ -34,6 +34,7 @@ typedef struct
     vktExecutionPolicyDevice device;
     vktExecutionPolicyHostAPI hostApi;
     vktExecutionPolicyDeviceAPI deviceApi;
+    vktBool_t debugPerformance;
 } vktExecutionPolicy_t;
 
 VKTAPI void vktSetThreadExecutionPolicy(vktExecutionPolicy_t policy);

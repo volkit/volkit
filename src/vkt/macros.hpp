@@ -3,6 +3,10 @@
 
 #include <vkt/ExecutionPolicy.hpp>
 
+#include "CudaTimer.hpp"
+#include "Logging.hpp"
+#include "Timer.hpp"
+
 #define VKT_CUDA_SAFE_CALL__(X) X                                               \
 
 //-------------------------------------------------------------------------------------------------
@@ -16,14 +20,38 @@
     {                                                                           \
         if (ep.hostApi == vkt::ExecutionPolicy::HostAPI::Serial)                \
         {                                                                       \
-            FUNC##_serial(__VA_ARGS__);                                         \
+            if (ep.debugPerformance)                                            \
+            {                                                                   \
+                vkt::Timer timer;                                               \
+                FUNC##_serial(__VA_ARGS__);                                     \
+                VKT_LOG(vkt::logging::Level::Info)                              \
+                                << "Device: CPU (serial), algorithm: "          \
+                                << #FUNC                                        \
+                                << ", time elapsed: "                           \
+                                << timer.getElapsedSeconds()                    \
+                                << " sec.";                                     \
+            }                                                                   \
+            else                                                                \
+                FUNC##_serial(__VA_ARGS__);                                     \
         }                                                                       \
     }                                                                           \
     else if (ep.device == vkt::ExecutionPolicy::Device::GPU)                    \
     {                                                                           \
         if (ep.deviceApi == vkt::ExecutionPolicy::DeviceAPI::CUDA)              \
         {                                                                       \
-            FUNC##_cuda(__VA_ARGS__);                                           \
+            if (ep.debugPerformance)                                            \
+            {                                                                   \
+                vkt::CudaTimer timer;                                           \
+                FUNC##_cuda(__VA_ARGS__);                                       \
+                VKT_LOG(vkt::logging::Level::Info)                              \
+                                << "Device: GPU (CUDA), algorithm: "            \
+                                << #FUNC                                        \
+                                << ", time elapsed: "                           \
+                                << timer.getElapsedSeconds()                    \
+                                << " sec.";                                     \
+            }                                                                   \
+            else                                                                \
+                FUNC##_cuda(__VA_ARGS__);                                       \
         }                                                                       \
     }                                                                           \
     else                                                                        \

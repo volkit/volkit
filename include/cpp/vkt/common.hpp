@@ -13,6 +13,8 @@ namespace vkt
 {
     /*! Boolean */
     typedef uint8_t Bool;
+    static constexpr Bool False = 0;
+    static constexpr Bool True  = 1;
 
     /*! Error constants */
     enum Error
