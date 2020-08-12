@@ -7,7 +7,7 @@
 
 #include "common.hpp"
 
-/*! @file  Memory.h
+/*! @file  Memory.hpp
  * @brief  Memory manipulation functions that interoperate between CPU and GPU
  */
 namespace vkt
