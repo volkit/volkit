@@ -70,6 +70,11 @@ void vktSetThreadExecutionPolicy(vktExecutionPolicy_t policy)
         break;
     }
 
+    if (policy.printPerformance == VKT_TRUE)
+        policyCPP.printPerformance = vkt::True;
+    else
+        policyCPP.printPerformance = vkt::False;
+
     vkt::SetThreadExecutionPolicy(policyCPP);
 }
 
@@ -103,6 +108,11 @@ vktExecutionPolicy_t vktGetThreadExecutionPolicy()
         policy.deviceApi = vktExecutionPolicyDeviceAPICUDA;
         break;
     }
+
+    if (policyCPP.printPerformance == vkt::True)
+        policy.printPerformance = VKT_TRUE;
+    else
+        policy.printPerformance = VKT_FALSE;
 
     return policy;
 }
