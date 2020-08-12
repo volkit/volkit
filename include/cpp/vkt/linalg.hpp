@@ -39,10 +39,30 @@ namespace vkt
         int z;
     };
 
+    struct Vec4i
+    {
+        int x;
+        int y;
+        int z;
+        int w;
+    };
+
+    struct Box2f
+    {
+        Vec2f min;
+        Vec2f max;
+    };
+
     struct Box3f
     {
         Vec3f min;
         Vec3f max;
+    };
+
+    struct Box2i
+    {
+        Vec2i min;
+        Vec2i max;
     };
 
     struct Box3i
@@ -56,6 +76,14 @@ namespace vkt
         Vec3f col0;
         Vec3f col1;
         Vec3f col2;
+    };
+
+    struct Mat4f
+    {
+        Vec4f col0;
+        Vec4f col1;
+        Vec4f col2;
+        Vec4f col3;
     };
 
     enum class Axis
