@@ -73,6 +73,16 @@ namespace vkt
         return  { a.x - b.x, a.y - b.y, a.z - b.z };
     }
 
+    VKT_FUNC inline Vec3f operator*(Vec3f const& a, Vec3f const& b)
+    {
+        return { a.x * b.x, a.y * b.y, a.z * b.z };
+    }
+
+    VKT_FUNC inline Vec3f operator/(Vec3f const& a, Vec3f const& b)
+    {
+        return { a.x / b.x, a.y / b.y, a.z / b.z };
+    }
+
     VKT_FUNC inline Vec3f operator*(float a, Vec3f const& b)
     {
         return  { a * b.x, a * b.y, a * b.z };
@@ -81,6 +91,30 @@ namespace vkt
     VKT_FUNC inline Vec3f operator/(Vec3f const& a, float b)
     {
         return { a.x / b, a.y / b, a.z / b };
+    }
+
+    VKT_FUNC inline Vec3f& operator+=(Vec3f& a, Vec3f const& b)
+    {
+        a = a + b;
+        return a;
+    }
+
+    VKT_FUNC inline Vec3f& operator-=(Vec3f& a, Vec3f const& b)
+    {
+        a = a - b;
+        return a;
+    }
+
+    VKT_FUNC inline Vec3f& operator*=(Vec3f& a, Vec3f const& b)
+    {
+        a = a * b;
+        return a;
+    }
+
+    VKT_FUNC inline Vec3f& operator/=(Vec3f& a, Vec3f const& b)
+    {
+        a = a / b;
+        return a;
     }
 
     VKT_FUNC inline float dot(Vec3f const& a, Vec3f const& b)
@@ -176,7 +210,7 @@ namespace vkt
     }
 
 
-    //--- Vec3f -------------------------------------------
+    //--- Mat3f -------------------------------------------
 
     VKT_FUNC inline Vec3f operator*(Mat3f const& a, Vec3f const& b)
     {

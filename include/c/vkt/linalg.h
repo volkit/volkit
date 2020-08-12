@@ -32,9 +32,15 @@ typedef struct
 
 typedef struct
 {
+    vktVec3f_t min;
+    vktVec3f_t max;
+} vktBox3f_t;
+
+typedef struct
+{
     vktVec3i_t min;
     vktVec3i_t max;
-} vktBox3f_t;
+} vktBox3i_t;
 
 typedef enum
 {
