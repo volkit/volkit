@@ -20,7 +20,7 @@
     {                                                                           \
         if (ep.hostApi == vkt::ExecutionPolicy::HostAPI::Serial)                \
         {                                                                       \
-            if (ep.debugPerformance)                                            \
+            if (ep.printPerformance)                                            \
             {                                                                   \
                 vkt::Timer timer;                                               \
                 FUNC##_serial(__VA_ARGS__);                                     \
@@ -39,7 +39,7 @@
     {                                                                           \
         if (ep.deviceApi == vkt::ExecutionPolicy::DeviceAPI::CUDA)              \
         {                                                                       \
-            if (ep.debugPerformance)                                            \
+            if (ep.printPerformance)                                            \
             {                                                                   \
                 vkt::CudaTimer timer;                                           \
                 FUNC##_cuda(__VA_ARGS__);                                       \

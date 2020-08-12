@@ -76,7 +76,7 @@ namespace vkt
         DeviceAPI deviceApi = DeviceAPI::CUDA;
 
         //! Print performance measurements to stdout
-        Bool debugPerformance = False;
+        Bool printPerformance = False;
     };
 
     /*! @brief  Set the execution policy of the current thread
