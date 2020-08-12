@@ -12,6 +12,24 @@
 
 namespace vkt
 {
+    /*! @class StructuredVolume
+     * @brief  Managed structured volume class
+     *
+     * This class represents a structured volume in memory. The volume is
+     * managed, i.e., where the actual data is stored (e.g., on the CPU or on
+     * the GPU) is determined by the internal memory management layer. This can
+     * be influenced by setting the active thread's execution policy via @ref
+     * vkt::SetThreadExecutionPolicy(). When the execution policy was changed
+     * so that the volume data should be present on another device, the
+     * algorithm accessing the data next will initiate for the volume to be
+     * migrated before the respective operation is performed. This happens in a
+     * deferred fashion.
+     *
+     * Structured volumes have 3D dimensions, store the size in bytes per each
+     * voxel, the distance between voxels in x,y, and z direction, as well as a
+     * linear mapping from the minimum and maximum data value to the floating
+     * point range `[lo..hi]`.
+     */
     class StructuredVolume : public ManagedBuffer<uint8_t>
     {
     public:

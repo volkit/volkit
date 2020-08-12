@@ -21,8 +21,8 @@
  * The operations are passed three volumes: the destination volume `dest`, as
  * well as two source volume `source1` and `source2`. It is generally allowable
  * that the reference to the destination volume points to the same memory as
- * the source volume (or, source volumes); however, when a destination `index
- * != 0` is specified, the behavior of the operation is undefined.
+ * the source volume (or, source volumes); however, when a destination offset
+ * `dstOffset != 0` is specified, the behavior of the operation is undefined.
  * Specifically, with a parallel execution policy, it is not guaranteed that
  * the operations are performed atomically.
  */
