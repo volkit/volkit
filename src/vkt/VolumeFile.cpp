@@ -118,6 +118,14 @@ namespace vkt
             return 0;
     }
 
+    bool VolumeFile::seek(std::size_t pos)
+    {
+        if (dataSource_ != nullptr)
+            return dataSource_->seek(pos);
+
+        return false;
+    }
+
     bool VolumeFile::good() const
     {
         return dataSource_ != nullptr;

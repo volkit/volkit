@@ -88,6 +88,16 @@ namespace vkt
         return file_ != nullptr;
     }
 
+    bool RawFile::seek(std::size_t pos)
+    {
+        if (!good())
+            return false;
+
+        int res = fseek(file_, (long)pos, SEEK_SET);
+
+        return res == 0;
+    }
+
     Vec3i RawFile::getDims() const
     {
         return dims_;

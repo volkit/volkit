@@ -19,6 +19,7 @@ namespace vkt
        ~VirvoFile();
 
         virtual std::size_t read(char* buf, std::size_t len);
+        virtual bool seek(std::size_t pos);
         virtual bool good() const;
 
         Vec3i getDims();

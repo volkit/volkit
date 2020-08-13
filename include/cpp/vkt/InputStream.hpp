@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 
 #include "common.hpp"
@@ -24,15 +25,13 @@ namespace vkt
                         int32_t firstZ,
                         int32_t lastX,
                         int32_t lastY,
-                        int32_t lastZ,
-                        int32_t dstOffsetX,
-                        int32_t dstOffsetY,
-                        int32_t dstOffsetZ);
+                        int32_t lastZ);
 
         Error readRange(StructuredVolume& dst,
                         Vec3i first,
-                        Vec3i last,
-                        Vec3i dstOffset = { 0, 0, 0});
+                        Vec3i last);
+
+        Error seek(std::size_t pos);
 
     private:
         DataSource& dataSource_;

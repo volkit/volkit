@@ -26,6 +26,7 @@ namespace vkt
        ~VolumeFile();
 
         std::size_t read(char* buf, std::size_t len);
+        bool seek(std::size_t pos);
         bool good() const;
 
         VolumeFileHeader getHeader() const;

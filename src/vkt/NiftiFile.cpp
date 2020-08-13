@@ -79,6 +79,16 @@ namespace vkt
 #endif
     }
 
+    bool NiftiFile::seek(std::size_t pos)
+    {
+#if VKT_HAVE_NIFTI
+        impl_->readOffset = pos;
+        return true;
+#else
+        return false;
+#endif
+    }
+
     bool NiftiFile::good() const
     {
 #if VKT_HAVE_NIFTI

@@ -59,6 +59,7 @@ namespace vkt
     public:
         virtual ~DataSource() {}
         virtual std::size_t read(char* buf, std::size_t len) = 0;
+        virtual bool seek(std::size_t pos) = 0;
         virtual bool good() const = 0;
 
     };

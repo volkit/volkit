@@ -43,23 +43,42 @@ namespace vkt
             int32_t firstZ,
             int32_t lastX,
             int32_t lastY,
-            int32_t lastZ,
-            int32_t dstOffsetX,
-            int32_t dstOffsetY,
-            int32_t dstOffsetZ
+            int32_t lastZ
             )
     {
+        uint16_t bpv = dst.getBytesPerVoxel();
+        std::size_t lineBytes = (lastX - firstX) * bpv;
+        Vec3i dims = dst.getDims();
+
+        std::size_t len = 0;
+
+        for (int32_t z = firstZ; z != lastZ; ++z)
+        {
+            for (int32_t y = firstY; y != lastY; ++y)
+            {
+                std::size_t offset = (z * dims.x * std::size_t(dims.y) + y * dims.x) * bpv;
+                len += dataSource_.read((char*)dst.getData() + offset, lineBytes);
+            }
+        }
+
+        if (len != (lastZ - firstZ) * (lastY - firstY) * lineBytes)
+            return ReadError;
+
         return NoError;
     }
 
-    Error InputStream::readRange(
-            StructuredVolume& dst,
-            Vec3i first,
-            Vec3i last,
-            Vec3i dstOffset
-            )
+    Error InputStream::readRange(StructuredVolume& dst, Vec3i first, Vec3i last)
     {
-        return NoError;
+        return readRange(dst, first.x, first.y, first.z, last.x, last.y, last.z);
+    }
+
+    Error InputStream::seek(std::size_t pos)
+    {
+        if (dataSource_.seek(pos))
+            return NoError;
+
+        // TODO: more specific
+        return InvalidValue;
     }
 
 } // vkt
@@ -95,25 +114,29 @@ vktError vktInputStreamReadRangeSV(
         int32_t firstZ,
         int32_t lastX,
         int32_t lastY,
-        int32_t lastZ,
-        int32_t dstOffsetX,
-        int32_t dstOffsetY,
-        int32_t dstOffsetZ
+        int32_t lastZ
         )
 {
-    /*stream->stream.readRange(
+    stream->stream.readRange(
             volume->volume,
             firstX,
             firstY,
             firstZ,
             lastX,
             lastY,
-            lastZ,
-            dstOffsetX,
-            dstOffsetY,
-            dstOffsetZ
-            );*/
+            lastZ
+            );
 
     return vktNoError;
 }
 
+vktError vktInputStreamSeek(vktInputStream stream, size_t pos)
+{
+    vkt::Error err = stream->stream.seek(pos);
+
+    if (err == vkt::NoError)
+        return vktNoError;
+
+    // TODO: more specific
+    return vktInvalidValue;
+}

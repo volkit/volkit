@@ -28,10 +28,10 @@ VKTAPI vktError vktInputStreamReadRangeSV(vktInputStream stream,
                                           int32_t firstZ,
                                           int32_t lastX,
                                           int32_t lastY,
-                                          int32_t lastZ,
-                                          int32_t dstOffsetX,
-                                          int32_t dstOffsetY,
-                                          int32_t dstOffsetZ);
+                                          int32_t lastZ);
+
+VKTAPI vktError vktInputStreamSeek(vktInputStream stream,
+                                   size_t pos);
 
 #ifdef __cplusplus
 }

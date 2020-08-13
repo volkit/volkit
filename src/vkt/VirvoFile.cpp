@@ -80,6 +80,16 @@ namespace vkt
 #endif
     }
 
+    bool VirvoFile::seek(std::size_t pos)
+    {
+#if VKT_HAVE_VIRVO
+        impl_->readOffset = pos;
+        return true;
+#else
+        return false;
+#endif
+    }
+
     bool VirvoFile::good() const
     {
 #if VKT_HAVE_VIRVO
