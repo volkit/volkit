@@ -510,7 +510,7 @@ namespace vkt
         return { 
             a.col0.x * b.x + a.col1.x * b.y + a.col2.x * b.z,
             a.col0.y * b.x + a.col1.y * b.y + a.col2.y * b.z,
-            a.col0.z * b.x + a.col1.y * b.y + a.col2.z * b.z
+            a.col0.z * b.x + a.col1.z * b.y + a.col2.z * b.z
             };
     }
 
