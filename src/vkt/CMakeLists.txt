@@ -147,6 +147,7 @@ set(SOURCES
     NiftiFile.cpp
     RawFile.cpp
     Rotate.cpp
+    Scale.cpp
     Scan.cpp
     StructuredVolume.cpp
     Timer.cpp
