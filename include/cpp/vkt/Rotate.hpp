@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include <cstdint>
-
 #include "common.hpp"
 #include "forward.hpp"
 #include "linalg.hpp"

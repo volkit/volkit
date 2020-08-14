@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include <stdint.h>
-
 #include "common.h"
 #include "forward.h"
 #include "linalg.h"
