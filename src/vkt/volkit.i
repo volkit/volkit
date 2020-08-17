@@ -23,6 +23,7 @@
 #include <vkt/RawFile.hpp>
 #include <vkt/Render.hpp>
 #include <vkt/Rotate.hpp>
+#include <vkt/Scale.hpp>
 #include <vkt/Scan.hpp>
 #include <vkt/StructuredVolume.hpp>
 #include <vkt/VirvoFile.hpp>
@@ -91,6 +92,7 @@ namespace std
 %include <vkt/InputStream.hpp>
 %include <vkt/Render.hpp>
 %include <vkt/Rotate.hpp>
+%include <vkt/Scale.hpp>
 %include <vkt/Scan.hpp>
 %apply vkt::StructuredVolume &INOUT { vkt::StructuredVolume &sv };
 %apply vkt::RenderState &INOUT { vkt::RenderState &rs };
