@@ -139,6 +139,7 @@ set(SOURCES
     ExecutionPolicy.cpp
     Fill.cpp
     Flip.cpp
+    Histogram.cpp
     InputStream.cpp
     Logging.cpp
     LookupTable.cpp
