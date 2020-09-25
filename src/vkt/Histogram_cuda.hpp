@@ -16,8 +16,6 @@ namespace vkt
             Histogram& histogram,
             Vec3i first,
             Vec3i last
-            )
-    {
-    }
+            );
 
 } // vkt

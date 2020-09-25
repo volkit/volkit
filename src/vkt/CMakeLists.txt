@@ -166,6 +166,7 @@ if(CUDA_FOUND AND VSNRAY_ENABLE_CUDA)
         Decompose_cuda.cu
         Fill_cuda.cu
         Flip_cuda.cu
+        Histogram_cuda.cu
         Memory_cuda.cu
         Render.cu
     )
