@@ -6,6 +6,7 @@
 #include <GL/glew.h>
 
 #include <vkt/ExecutionPolicy.hpp>
+#include <vkt/Histogram.hpp>
 #include <vkt/LookupTable.hpp>
 #include <vkt/ManagedResource.hpp>
 
@@ -21,6 +22,9 @@ namespace vkt
 
         //! Get an updated LUT that is a copied of the user-provided one
         LookupTable* getUpdatedLookupTable() const;
+
+        //! Optionally set a histogram that can be displayed instead of the LUT
+        void setHistogramResource(ResourceHandle handle);
 
         //! Set a zoom range to visually zoom into the LUT
         void setZoom(float min, float max);
@@ -38,6 +42,12 @@ namespace vkt
         // User-provided LUT
         LookupTable* userLookupTable_ = nullptr;
 
+        // Local histogram with normalized data (optional)
+        Histogram* normalizedHistogram_ = nullptr;
+
+        // User-provided histrogram
+        Histogram* userHistogram_ = nullptr;
+
         // Zoom min set by user
         float zoomMin_ = 0.f;
 
@@ -46,6 +56,9 @@ namespace vkt
 
         // Flag indicating that texture needs to be regenerated
         bool lutChanged_ = false;
+
+        // Flag indicating that texture needs to be regenerated
+        bool histogramChanged_ = false;
 
         // RGB texture
         GLuint texture_ = GLuint(-1);
@@ -75,6 +88,9 @@ namespace vkt
 
         // Raster LUT to image and upload with OpenGL
         void rasterTexture();
+
+        // Generate normalized from user-provided histogram
+        void normalizeHistogram();
 
         // Generate mouse event when mouse hovered over rect
         MouseEvent generateMouseEvent();

@@ -1,6 +1,7 @@
 // This file is distributed under the MIT license.
 // See the LICENSE file for details.
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <cstdint>
@@ -31,6 +32,7 @@ namespace vkt
         glDeleteTextures(1, &texture_);
 
         delete rgbaLookupTable_;
+        delete normalizedHistogram_;
     }
 
     void TransfuncEditor::setLookupTableResource(ResourceHandle handle)
@@ -43,6 +45,13 @@ namespace vkt
     LookupTable* TransfuncEditor::getUpdatedLookupTable() const
     {
         return rgbaLookupTable_;
+    }
+
+    void TransfuncEditor::setHistogramResource(ResourceHandle handle)
+    {
+        histogramChanged_ = true;
+
+        userHistogram_ = (Histogram*)GetManagedResource(handle);
     }
 
     void TransfuncEditor::setZoom(float min, float max)
@@ -84,10 +93,13 @@ namespace vkt
 
     void TransfuncEditor::rasterTexture()
     {
-        if (!lutChanged_)
+        if (!lutChanged_ && !histogramChanged_)
             return;
 
         setExecutionPolicyCPU();
+
+        if (histogramChanged_)
+            normalizeHistogram();
 
         // TODO: maybe move to a function called by user?
         if (texture_ == GLuint(-1))
@@ -164,6 +176,23 @@ namespace vkt
                     Vec3f rgb{ updated[4 * xx], updated[4 * xx + 1], updated[4 * xx + 2] };
                     float alpha = updated[4 * xx + 3];
 
+                    if (normalizedHistogram_)
+                    {
+                        float binf = x / (float)(canvasSize_.x - 1);
+                        binf *= zoomMax_ - zoomMin_;
+                        binf += zoomMin_;
+                        binf *= normalizedHistogram_->getNumBins() - 1;
+                        int bin = (int)binf;
+
+                        int yy = canvasSize_.y - y - 1;
+                        if (yy <= (int)normalizedHistogram_->getBinCounts()[bin])
+                        {
+                            float lum = .3f * rgb.x + .59f * rgb.y + .11f * rgb.z;
+
+                            rgb = { 1.f - lum, 1.f - lum, 1.f - lum };
+                        }
+                    }
+
                     float grey = .9f;
                     float a = ((canvasSize_.y - y - 1) / (float)canvasSize_.y) <= alpha ? .6f : 0.f;
 
@@ -195,6 +224,43 @@ namespace vkt
         lutChanged_ = false;
 
         resetExecutionPolicy();
+    }
+
+    void TransfuncEditor::normalizeHistogram()
+    {
+        assert(vkt::GetThreadExecutionPolicy().device == vkt::ExecutionPolicy::Device::CPU);
+        assert(userHistogram_ != nullptr);
+
+        normalizedHistogram_ = new Histogram(userHistogram_->getNumBins());
+
+        std::size_t maxBinCount = 0;
+
+        for (std::size_t i = 0; i < userHistogram_->getNumBins(); ++i)
+        {
+            maxBinCount = std::max(maxBinCount, userHistogram_->getBinCounts()[i]);
+        }
+
+        if (maxBinCount == 0)
+        {
+            std::fill(
+                normalizedHistogram_->getBinCounts(),
+                normalizedHistogram_->getBinCounts() + normalizedHistogram_->getNumBins(),
+                (size_t)0
+                );
+        }
+        else
+        {
+            for (std::size_t i = 0; i < userHistogram_->getNumBins(); ++i)
+            {
+                float countf = true
+                    ? logf((float)userHistogram_->getBinCounts()[i]) / logf((float)maxBinCount)
+                    : userHistogram_->getBinCounts()[i] / (float)maxBinCount;
+
+                normalizedHistogram_->getBinCounts()[i] = (size_t)(countf * canvasSize_.y);
+            }
+        }
+
+        histogramChanged_ = false;
     }
 
     TransfuncEditor::MouseEvent TransfuncEditor::generateMouseEvent()

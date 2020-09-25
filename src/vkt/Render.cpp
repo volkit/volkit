@@ -169,6 +169,9 @@ Viewer::Viewer(
     if (renderState.rgbaLookupTable != vkt::ResourceHandle(-1))
         transfuncEditor.setLookupTableResource(renderState.rgbaLookupTable);
 
+    if (renderState.histogram != vkt::ResourceHandle(-1))
+        transfuncEditor.setHistogramResource(renderState.histogram);
+
     vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
 
     useCuda = ep.device == vkt::ExecutionPolicy::Device::GPU

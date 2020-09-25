@@ -61,6 +61,9 @@ namespace vkt
         //! RGBA32F lookup table for absorption, emission and scattering albedo
         ResourceHandle rgbaLookupTable = ResourceHandle(-1);
 
+        //! Histogram, will be displayed in a widget inside the viewport
+        ResourceHandle histogram = ResourceHandle(-1);
+
         //! Width of the rendering viewport
         int viewportWidth = 512;
 

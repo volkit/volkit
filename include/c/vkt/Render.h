@@ -64,6 +64,9 @@ typedef struct
     //! RGBA32F lookup table for absorption, emission and scattering albedo
     vktResourceHandle rgbaLookupTable;
 
+    //! Histogram, will be displayed in a widget inside the viewport
+    vktResourceHandle histogram;
+
     //! Width of the rendering viewport
     int viewportWidth;
 
@@ -88,6 +91,7 @@ static void vktRenderStateDefaultInit(vktRenderState_t* renderState)
         1.f,
         1.f,
         vktResourceHandle(-1),
+        vktResourceHandle(-1),
         512,
         512,
         1
@@ -101,6 +105,7 @@ static void vktRenderStateDefaultInit(vktRenderState_t* renderState)
         .dtImplicitIso = 1.f,
         .majorant = 1.f,
         .rgbaLookupTable = -1,
+        .histogram = -1,
         .viewportWidth = 512,
         .viewportHeight = 512,
         .sRGB = 1
