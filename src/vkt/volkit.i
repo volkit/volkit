@@ -1,5 +1,8 @@
 %feature("autodoc","3");
 
+%ignore True;
+%ignore False;
+
 %module volkit 
 %{
 #include <vector>
