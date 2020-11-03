@@ -19,12 +19,20 @@ namespace vkt
        ~NiftiFile();
 
         virtual std::size_t read(char* buf, std::size_t len);
+        virtual std::size_t write(char const* buf, std::size_t len);
         virtual bool seek(std::size_t pos);
+        virtual bool flush();
         virtual bool good() const;
+
+        void setDims(Vec3i dims);
 
         Vec3i getDims();
 
+        void setBytesPerVoxel(uint16_t bpv);
+
         uint16_t getBytesPerVoxel();
+
+        void setVoxelMapping(Vec2f mapping);
 
         Vec2f getVoxelMapping();
 

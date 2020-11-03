@@ -20,14 +20,26 @@ namespace vkt
        ~RawFile();
 
         virtual std::size_t read(char* buf, std::size_t len);
+        virtual std::size_t write(char const* buf, std::size_t len);
         virtual bool seek(std::size_t pos);
+        virtual bool flush();
         virtual bool good() const;
+
+        /*!
+         * @brief  Set structured volume dimensions
+         */
+        void setDims(Vec3i dims);
 
         /*!
          * @brief  Structured volume dimensions parsed from file name,
          *         0 if not successful
          */
         Vec3i getDims() const;
+
+        /*!
+         * @brief  Set structured volume bytes per voxel
+         */
+        void setBytesPerVoxel(uint16_t bpv);
 
         /*!
          * @brief  Structured volume bytes per voxel parsed from file name,

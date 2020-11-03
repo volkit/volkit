@@ -83,9 +83,9 @@ namespace vkt
         return fread(buf, len, 1, file_);
     }
 
-    bool RawFile::good() const
+    std::size_t RawFile::write(char const* buf, std::size_t len)
     {
-        return file_ != nullptr;
+        return fwrite(buf, len, 1, file_);
     }
 
     bool RawFile::seek(std::size_t pos)
@@ -98,9 +98,34 @@ namespace vkt
         return res == 0;
     }
 
+    bool RawFile::flush()
+    {
+        if (!good())
+            return false;
+
+        int res = fflush(file_);
+
+        return res == 0;
+    }
+
+    bool RawFile::good() const
+    {
+        return file_ != nullptr;
+    }
+
+    void RawFile::setDims(Vec3i dims)
+    {
+        dims_ = dims;
+    }
+
     Vec3i RawFile::getDims() const
     {
         return dims_;
+    }
+
+    void RawFile::setBytesPerVoxel(uint16_t bpv)
+    {
+        bytesPerVoxel_ = bpv;
     }
 
     uint16_t RawFile::getBytesPerVoxel() const

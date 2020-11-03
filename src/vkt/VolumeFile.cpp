@@ -63,30 +63,37 @@ static FileType getFileType(char const* fileName)
 
 namespace vkt
 {
-    VolumeFile::VolumeFile(char const* fileName)
+    VolumeFile::VolumeFile(char const* fileName, OpenMode om)
+        : fileName_(fileName)
     {
-        FileType ft = getFileType(fileName);
+        FileType ft = getFileType(fileName_);
 
         if (ft == RAW)
         {
-            dataSource_ = new RawFile(fileName, "rw");
+            dataSource_ = new RawFile(fileName_, "rw");
             if (RawFile const* rf = dynamic_cast<RawFile const*>(dataSource_))
             {
                 header_.isStructured = true;
-                header_.dims = rf->getDims();
-                header_.bytesPerVoxel = rf->getBytesPerVoxel();
+                if (om == OpenMode::Read || om == OpenMode::ReadWrite)
+                {
+                    header_.dims = rf->getDims();
+                    header_.bytesPerVoxel = rf->getBytesPerVoxel();
+                }
             }
         }
 
 #if VKT_HAVE_NIFTI
         if (ft == Nifti)
         {
-            dataSource_ = new NiftiFile(fileName);
+            dataSource_ = new NiftiFile(fileName_);
             if (NiftiFile* nf = dynamic_cast<NiftiFile*>(dataSource_))
             {
                 header_.isStructured = true;
-                header_.dims = nf->getDims();
-                header_.bytesPerVoxel = nf->getBytesPerVoxel();
+                if (om == OpenMode::Read || om == OpenMode::ReadWrite)
+                {
+                    header_.dims = nf->getDims();
+                    header_.bytesPerVoxel = nf->getBytesPerVoxel();
+                }
             }
         }
 #endif
@@ -94,12 +101,15 @@ namespace vkt
 #if VKT_HAVE_VIRVO
         if (ft == Virvo)
         {
-            dataSource_ = new VirvoFile(fileName);
+            dataSource_ = new VirvoFile(fileName_);
             if (VirvoFile* vf = dynamic_cast<VirvoFile*>(dataSource_))
             {
                 header_.isStructured = true;
-                header_.dims = vf->getDims();
-                header_.bytesPerVoxel = vf->getBytesPerVoxel();
+                if (om == OpenMode::Read || om == OpenMode::ReadWrite)
+                {
+                    header_.dims = vf->getDims();
+                    header_.bytesPerVoxel = vf->getBytesPerVoxel();
+                }
             }
         }
 #endif
@@ -118,6 +128,14 @@ namespace vkt
             return 0;
     }
 
+    std::size_t VolumeFile::write(char const* buf, std::size_t len)
+    {
+        if (dataSource_ != nullptr)
+            return dataSource_->write(buf, len);
+        else
+            return 0;
+    }
+
     bool VolumeFile::seek(std::size_t pos)
     {
         if (dataSource_ != nullptr)
@@ -126,9 +144,56 @@ namespace vkt
         return false;
     }
 
+    bool VolumeFile::flush()
+    {
+        if (dataSource_ != nullptr)
+            return dataSource_->flush();
+
+        return false;
+    }
+
     bool VolumeFile::good() const
     {
         return dataSource_ != nullptr;
+    }
+
+    void VolumeFile::setHeader(VolumeFileHeader header)
+    {
+        header_ = header;
+
+        FileType ft = getFileType(fileName_);
+
+        if (ft == RAW)
+        {
+            if (RawFile* rf = dynamic_cast<RawFile*>(dataSource_))
+            {
+                rf->setDims(header_.dims);
+                rf->setBytesPerVoxel(header_.bytesPerVoxel);
+            }
+        }
+
+#if VKT_HAVE_NIFTI
+        if (ft == Nifti)
+        {
+            if (NiftiFile* nf = dynamic_cast<NiftiFile*>(dataSource_))
+            {
+                nf->setDims(header_.dims);
+                nf->setBytesPerVoxel(header_.bytesPerVoxel);
+                nf->setVoxelMapping(header_.voxelMapping);
+            }
+        }
+#endif
+
+#if VKT_HAVE_VIRVO
+        if (ft == Virvo)
+        {
+            if (VirvoFile* vf = dynamic_cast<VirvoFile*>(dataSource_))
+            {
+                vf->setDims(header_.dims);
+                vf->setBytesPerVoxel(header_.bytesPerVoxel);
+            }
+        }
+#endif
     }
 
     VolumeFileHeader VolumeFile::getHeader() const
@@ -142,11 +207,11 @@ namespace vkt
 // C API
 //
 
-VKTAPI void vktVolumeFileCreateS(vktVolumeFile* file, char const* fileName)
+VKTAPI void vktVolumeFileCreateS(vktVolumeFile* file, char const* fileName, vktOpenMode om)
 {
     assert(file != nullptr);
 
-    *file = new vktVolumeFile_impl(fileName);
+    *file = new vktVolumeFile_impl(fileName, om);
 }
 
 VKTAPI vktDataSource vktVolumeFileGetBase(vktVolumeFile file)

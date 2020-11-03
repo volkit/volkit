@@ -9,7 +9,7 @@ def main():
         print("Usage: ", sys.argv[0], "file.raw")
         return
   
-    file = vkt.VolumeFile(sys.argv[1])
+    file = vkt.VolumeFile(sys.argv[1], vkt.OpenMode_Read)
 
     hdr = file.getHeader()
 

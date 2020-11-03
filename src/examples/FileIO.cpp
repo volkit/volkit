@@ -17,7 +17,7 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    vkt::VolumeFile file(argv[1]);
+    vkt::VolumeFile file(argv[1], vkt::OpenMode::Read);
 
     vkt::VolumeFileHeader hdr = file.getHeader();
 

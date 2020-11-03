@@ -146,6 +146,7 @@ set(SOURCES
     ManagedResource.cpp
     Memory.cpp
     NiftiFile.cpp
+    OutputStream.cpp
     RawFile.cpp
     Resample.cpp
     Rotate.cpp

@@ -30,7 +30,8 @@ static void vktVolumeFileHeaderDefaultInit(vktVolumeFileHeader_t* header)
 }
 
 VKTAPI void vktVolumeFileCreateS(vktVolumeFile* file,
-                                 char const* fileName);
+                                 char const* fileName,
+                                 vktOpenMode om);
 
 VKTAPI vktDataSource vktVolumeFileGetBase(vktVolumeFile file);
 

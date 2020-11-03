@@ -28,7 +28,7 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    vktVolumeFileCreateS(&file, argv[1]);
+    vktVolumeFileCreateS(&file, argv[1], vktOpenModeRead);
 
     hdr = vktVolumeFileGetHeader(file);
 

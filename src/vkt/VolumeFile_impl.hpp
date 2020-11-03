@@ -9,10 +9,10 @@
 
 struct vktVolumeFile_impl
 {
-    vktVolumeFile_impl(char const* fileName)
+    vktVolumeFile_impl(char const* fileName, vktOpenMode om)
         : base(new vktDataSource_impl)
     {
-        base->source = new vkt::VolumeFile(fileName);
+        base->source = new vkt::VolumeFile(fileName, (vkt::OpenMode)om);
     }
 
    ~vktVolumeFile_impl()

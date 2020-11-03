@@ -21,6 +21,7 @@ typedef enum
 
     vktInvalidDataSource =  1,
     vktReadError         =  2,
+    vktWriteError        =  3,
 }  vktError;
 
 typedef enum
@@ -48,3 +49,10 @@ typedef enum
     vktColorFormatCount,
 
 } vktColorFormat;
+
+typedef enum
+{
+    vktOpenModeRead,
+    vktOpenModeWrite,
+    vktOpenModeReadWrite,
+} vktOpenMode;

@@ -9,6 +9,7 @@
 
 #include <vkt/Fill.hpp>
 #include <vkt/InputStream.hpp>
+#include <vkt/OutputStream.hpp>
 #include <vkt/Resample.hpp>
 #include <vkt/Render.hpp>
 #include <vkt/StructuredVolume.hpp>
@@ -89,6 +90,7 @@ struct
 {
     std::string command;
     std::string inputFile;
+    std::string outputFile;
     Vec3i dims { 0, 0, 0 };
     uint16_t bpv { 0 };
     Vec3f dist { 0.f, 0.f, 0.f };
@@ -191,6 +193,15 @@ struct
                 last.x = std::atoi(argv[++i]);
                 last.y = std::atoi(argv[++i]);
                 last.z = std::atoi(argv[++i]);
+            }
+            else if (opt == "-o" || opt == "--output")
+            {
+                if (i >= argc - 1)
+                {
+                    std::cerr << "Option " << opt << " requires one argument\n";
+                    return false;
+                }
+                outputFile = argv[++i];
             }
             else if (opt == "-ra" || opt == "--render-algo")
             {
@@ -384,7 +395,7 @@ int main(int argc, char** argv)
             return EXIT_FAILURE;
         }
 
-        VolumeFile file(cmdline.inputFile.c_str());
+        VolumeFile file(cmdline.inputFile.c_str(), OpenMode::Read);
 
         if (!checkStructuredVolumeFile(file))
             return EXIT_FAILURE;
@@ -483,6 +494,37 @@ int main(int argc, char** argv)
         // StructuredVolume volume;
         // std::cin >> volume;
 
+    }
+    else if (cmdline.command == "write")
+    {
+        if (cmdline.outputFile.empty())
+        {
+            std::cerr << "Output file missing\n";
+            return EXIT_FAILURE;
+        }
+
+        StructuredVolume volume;
+        std::cin >> volume;
+
+        if (!checkStructuredVolumeParams(volume.getDims(),
+                                         volume.getBytesPerVoxel(),
+                                         volume.getDist(),
+                                         volume.getVoxelMapping()))
+            return EXIT_FAILURE;
+
+        VolumeFile file(cmdline.outputFile.c_str(), OpenMode::Write);
+
+        VolumeFileHeader hdr;
+        hdr.isStructured = true;
+        hdr.dims = volume.getDims();
+        hdr.bytesPerVoxel = volume.getBytesPerVoxel();
+        hdr.dist = volume.getDist();
+        hdr.voxelMapping = volume.getVoxelMapping();
+        file.setHeader(hdr);
+
+        OutputStream os(file);
+        os.write(volume);
+        os.flush();
     }
 
     return EXIT_SUCCESS;

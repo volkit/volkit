@@ -79,6 +79,12 @@ namespace vkt
 #endif
     }
 
+    std::size_t NiftiFile::write(char const* buf, std::size_t len)
+    {
+        // Not implemented yet
+        return 0;
+    }
+
     bool NiftiFile::seek(std::size_t pos)
     {
 #if VKT_HAVE_NIFTI
@@ -89,6 +95,12 @@ namespace vkt
 #endif
     }
 
+    bool NiftiFile::flush()
+    {
+        // Not implemented yet
+        return false;
+    }
+
     bool NiftiFile::good() const
     {
 #if VKT_HAVE_NIFTI
@@ -96,6 +108,11 @@ namespace vkt
 #else
         return false;
 #endif
+    }
+
+    void NiftiFile::setDims(Vec3i dims)
+    {
+        // Not implemented yet
     }
 
     Vec3i NiftiFile::getDims()
@@ -109,6 +126,11 @@ namespace vkt
 #else
         return {};
 #endif
+    }
+
+    void NiftiFile::setBytesPerVoxel(uint16_t bvp)
+    {
+        // Not implemented yet
     }
 
     uint16_t NiftiFile::getBytesPerVoxel()
@@ -136,6 +158,11 @@ namespace vkt
 #else
         return 0;
 #endif
+    }
+
+    void NiftiFile::setVoxelMapping(Vec2f mapping)
+    {
+        // Not implemented yet
     }
 
     Vec2f NiftiFile::getVoxelMapping()
