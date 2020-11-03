@@ -147,6 +147,7 @@ set(SOURCES
     Memory.cpp
     NiftiFile.cpp
     RawFile.cpp
+    Resample.cpp
     Rotate.cpp
     Scale.cpp
     Scan.cpp

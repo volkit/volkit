@@ -1,7 +1,7 @@
 volkit
 ======
 
-Volkit is a volume manipulation library with interfaces for ANSI C99, C++03, and Python 3. Volkit provides a set of algorithms that are performed on volumes. These algorithms can be used like this:
+Volkit is a volume manipulation library with interfaces for ANSI C99, C++03, Python 3, and posix-compatible shells. Volkit provides a set of algorithms that are performed on volumes. These algorithms can be used like this:
 
 ### C99
 ```
@@ -48,14 +48,9 @@ volume2 = vkt.StructuredVolume(16,16,16,
                                1.,1.,1.,
                                0.,1.);
 
-# Fill the volume
-vkt.Fill(volume1, .02)
-
-# Fill corner [ (0,0,0), (4,4,4) ) with .1
-vkt.FillRange(volume1, 0,0,0, 4,4,4, .1)
-
-# Compute 3D prefix sum and store result in volume2
-vkt.Scan(volume2, volume1)
+### Command Line Interface
+```
+vkt read -i /home/user/file.raw | vkt resample --bytes-per-voxel 2 -dims 16 16 16 | vkt render
 ```
 
 Rendering
@@ -149,14 +144,14 @@ Transform Algorithms
 Implementation Status
 ---------------------
 
-| Algorithm        | C++ API                 | C API                   | Python API              |  Serial version          |  GPU version             |
-| ---------------- |:-----------------------:|:-----------------------:|:-----------------------:| :-----------------------:| :-----------------------:|
-| ComputeHistogram | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> |  <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
-| Copy             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
-| Crop             | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> |  <ul><li> [ ] </li></ul> |  <ul><li> [ ] </li></ul> |
-| Delete           | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> |  <ul><li> [ ] </li></ul> |  <ul><li> [ ] </li></ul> |
-| Fill             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
-| Flip             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
-| Rotate           | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |  <ul><li> [ ] </li></ul> |
-| Scan             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |  <ul><li> [ ] </li></ul> |
-| Transform        | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |  <ul><li> [ ] </li></ul> |
+| Algorithm        | C++ API                 | C API                   | Python API              | CLI                     |Serial version          |  GPU version             |
+| ---------------- |:-----------------------:|:-----------------------:|:-----------------------:|:-----------------------:|-----------------------:| :-----------------------:|
+| ComputeHistogram | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
+| Copy             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
+| Crop             | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [ ] </li></ul> |  <ul><li> [ ] </li></ul> |
+| Delete           | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [ ] </li></ul> |  <ul><li> [ ] </li></ul> |
+| Fill             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
+| Flip             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
+| Rotate           | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [ ] </li></ul> |
+| Scan             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [ ] </li></ul> |
+| Transform        | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [ ] </li></ul> |
