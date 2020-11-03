@@ -152,14 +152,14 @@ Transform Algorithms
 Implementation Status
 ---------------------
 
-| Algorithm        | C++ API                 | C API                   | Python API              | CLI                     |Serial version          |  GPU version             |
-| ---------------- |:-----------------------:|:-----------------------:|:-----------------------:|:-----------------------:|-----------------------:| :-----------------------:|
-| ComputeHistogram | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
-| Copy             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
-| Crop             | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [ ] </li></ul> |  <ul><li> [ ] </li></ul> |
-| Delete           | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [ ] </li></ul> |  <ul><li> [ ] </li></ul> |
-| Fill             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
-| Flip             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
-| Rotate           | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [ ] </li></ul> |
-| Scan             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [ ] </li></ul> |
-| Transform        | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [ ] </li></ul> |
+| Algorithm        | C++ API                 | C API                   | Python API              | CLI                     | Serial version          | GPU version             |
+| ---------------- |:-----------------------:|:-----------------------:|:-----------------------:|:-----------------------:|:-----------------------:|:-----------------------:|
+| ComputeHistogram | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |
+| Copy             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |
+| Crop             | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> |
+| Delete           | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> |
+| Fill             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |
+| Flip             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |
+| Rotate           | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |
+| Scan             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |
+| Transform        | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |
