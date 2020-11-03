@@ -47,6 +47,7 @@ volume2 = vkt.StructuredVolume(16,16,16,
                                2,
                                1.,1.,1.,
                                0.,1.);
+```
 
 ### Command Line Interface
 ```
