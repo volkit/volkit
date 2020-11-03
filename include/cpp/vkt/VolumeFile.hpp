@@ -16,6 +16,8 @@ namespace vkt
         bool isStructured = false;
         Vec3i dims = { 0, 0, 0 };
         uint16_t bytesPerVoxel = 0;
+        Vec3f dist = { 1.f, 1.f, 1.f };
+        Vec2f voxelMapping = { 0.f, 1.f };
     };
 
     class VolumeFile : public DataSource
