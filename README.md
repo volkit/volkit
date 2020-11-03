@@ -145,3 +145,18 @@ Transform Algorithms
 ### Flip
 
 ### Rotate
+
+Implementation Status
+---------------------
+
+| Algorithm        | C++ API | C API | Python API |
+| ---------------- |:-------:|:-----:|:----------:|
+| ComputeHistogram |   [x]   |  [ ]  |     [ ]    |
+| Copy             |   [x]   |  [x]  |     [x]    |
+| Crop             |   [ ]   |  [ ]  |     [ ]    |
+| Delete           |   [ ]   |  [ ]  |     [ ]    |
+| Fill             |   [x]   |  [x]  |     [x]    |
+| Flip             |   [x]   |  [x]  |     [x]    |
+| Rotate           |   [x]   |  [x]  |     [x]    |
+| Scan             |   [x]   |  [x]  |     [x]    |
+| Transform        |   [x]   |  [x]  |     [x]    |
