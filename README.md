@@ -154,16 +154,16 @@ Implementation Status
 
 | Algorithm                   | C++ API            | C API              | Python API         | CLI                | Serial version     | GPU version        |
 | --------------------------- |:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|
-| ComputeHistogram            | :heavy_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Copy                        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Crop                        | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Delete                      | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| ComputeHistogram            | :heavy_check_mark: | :x:                | :x:                | :x:                | :heavy_check_mark: | :heavy_check_mark: |
+| Copy                        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :heavy_check_mark: |
+| Crop                        | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
+| Delete                      | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
 | Fill                        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Flip                        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Nifti I/O<sup>[1](#1)</sup> | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: | :white_check_mark: | n/a                | n/a                |
-| Rotate                      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: | :white_check_mark: |
-| Scan                        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: | :white_check_mark: |
-| Transform                   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: | :white_check_mark: |
-| Virvo I/O<sup>[1](#1)</sup> | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: | :white_check_mark: | n/a                | n/a                |
+| Flip                        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :heavy_check_mark: |
+| Nifti I/O<sup>[1](#1)</sup> | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                | n/a                | n/a                |
+| Rotate                      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                |
+| Scan                        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                |
+| Transform                   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                |
+| Virvo I/O<sup>[1](#1)</sup> | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                | n/a                | n/a                |
 
 <a name="1"><sup>1</sup></a>Specific file I/O can however be used via Volume I/O (`class vkt::VolumeFile`), which is also available in C and Python.
