@@ -152,18 +152,18 @@ Transform Algorithms
 Implementation Status
 ---------------------
 
-| Algorithm                   | C++ API                 | C API                   | Python API              | CLI                     | Serial version          | GPU version             |
-| --------------------------- |:-----------------------:|:-----------------------:|:-----------------------:|:-----------------------:|:-----------------------:|:-----------------------:|
-| ComputeHistogram            | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |
-| Copy                        | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |
-| Crop                        | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> |
-| Delete                      | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> |
-| Fill                        | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |
-| Flip                        | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |
-| Nifti I/O<sup>[1](#1)</sup> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | n/a                     | n/a                     |
-| Rotate                      | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |
-| Scan                        | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |
-| Transform                   | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |
-| Virvo I/O<sup>[1](#1)</sup> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> | n/a                     | n/a                     |
+| Algorithm                   | C++ API            | C API              | Python API         | CLI                | Serial version     | GPU version        |
+| --------------------------- |:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|
+| ComputeHistogram            | :heavy_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Copy                        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Crop                        | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Delete                      | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Fill                        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Flip                        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Nifti I/O<sup>[1](#1)</sup> | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: | :white_check_mark: | n/a                | n/a                |
+| Rotate                      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: | :white_check_mark: |
+| Scan                        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: | :white_check_mark: |
+| Transform                   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: | :white_check_mark: |
+| Virvo I/O<sup>[1](#1)</sup> | :heavy_check_mark: | :white_check_mark: | :heavy_check_mark: | :white_check_mark: | n/a                | n/a                |
 
 <a name="1"><sup>1</sup></a>Specific file I/O can however be used via Volume I/O (`class vkt::VolumeFile`), which is also available in C and Python.
