@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <istream>
+#include <iomanip>
 #include <iostream>
 #include <ostream>
 #include <sstream>
@@ -111,6 +112,7 @@ struct
         // Find out which command we're running
         std::string cmd(argv[1]);
         if (cmd == "declare-sv" ||
+            cmd == "dump"       ||
             cmd == "fill"       ||
             cmd == "fill-range" ||
             cmd == "read"       ||
@@ -347,10 +349,79 @@ int main(int argc, char** argv)
 
         std::cout << stream.str();
     }
+    else if (cmdline.command == "dump")
+    {
+        // Dump either reads from stdin _or_ from an input file passed via
+        // option "-i | --input"
+        StructuredVolume volume;
+        if (cmdline.inputFile.empty())
+        {
+            std::cin >> volume;
+        }
+        else
+        {
+            VolumeFile file(cmdline.inputFile.c_str(), OpenMode::Read);
+
+            VolumeFileHeader hdr = file.getHeader();
+
+            volume = StructuredVolume(hdr.dims.x, hdr.dims.y, hdr.dims.z,
+                                      hdr.bytesPerVoxel,
+                                      hdr.dist.x, hdr.dist.y, hdr.dist.z,
+                                      hdr.voxelMapping.x, hdr.voxelMapping.y);
+            InputStream is(file);
+            is.read(volume);
+        }
+
+        // Store cout state
+        std::ios prevCoutState(nullptr);
+        prevCoutState.copyfmt(std::cout);
+
+        std::cout << std::setprecision(1);
+        std::cout << std::fixed;
+
+        std::cout << "Object: StructuredVolume\n";
+        std::cout << "  dims: " << volume.getDims() << '\n';
+        std::cout << "  bytesPerVoxel: " << volume.getBytesPerVoxel() << '\n';
+        std::cout << "  dist: " << volume.getDist() << '\n';
+        std::cout << "  voxelMapping: " << volume.getVoxelMapping() << '\n';
+
+        std::cout << "data:\n";
+
+        for (int32_t z = 0; z < volume.getDims().z; ++z)
+        {
+            std::cout << '[' << z << "]\n";
+            std::cout << "{\n";
+
+            for (int32_t y = 0; y < volume.getDims().y; ++y)
+            {
+                std::cout << "  [" << y << "] {";
+                for (int32_t x = 0; x < volume.getDims().x; ++x)
+                {
+                    std::cout << volume.getValue(x,y,z);
+                    if (x != volume.getDims().x - 1)
+                        std::cout << ", ";
+                }
+                std::cout << "}\n";
+            }
+
+            std::cout << "}\n";
+            if (z != volume.getDims().z - 1)
+                std::cout << '\n';
+        }
+
+        // Restore previous cout state
+        std::cout.copyfmt(prevCoutState);
+    }
     else if (cmdline.command == "fill" || cmdline.command == "fill-range")
     {
         StructuredVolume volume;
         std::cin >> volume;
+
+        if (!checkStructuredVolumeParams(volume.getDims(),
+                                         volume.getBytesPerVoxel(),
+                                         volume.getDist(),
+                                         volume.getVoxelMapping()))
+            return EXIT_FAILURE;
 
         if (cmdline.command == "fill")
             Fill(volume, cmdline.value);

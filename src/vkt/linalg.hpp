@@ -109,6 +109,12 @@ namespace vkt
         return a;
     }
 
+    inline std::ostream& operator<<(std::ostream& out, Vec2f const& v)
+    {
+        out << '(' << v.x << ',' << v.y << ')';
+        return out;
+    }
+
 
     //--- Vec3f -------------------------------------------
 
