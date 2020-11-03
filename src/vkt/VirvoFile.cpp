@@ -32,6 +32,9 @@ namespace vkt
 
        ~Impl()
         {
+            if (needFlush)
+                flush();
+
             delete vd;
         }
 
@@ -58,6 +61,7 @@ namespace vkt
         bool flush()
         {
 #if VKT_HAVE_VIRVO
+            needFlush = false;
             vvFileIO fileio;
             return fileio.saveVolumeData(vd, true/*overwrite existing*/) == vvFileIO::OK;
 #endif
@@ -80,6 +84,7 @@ namespace vkt
             }
         }
 
+        bool needFlush = false;
         std::size_t readOffset = 0;
         std::size_t writeOffset = 0;
     };
@@ -124,6 +129,8 @@ namespace vkt
         std::memcpy(raw + impl_->writeOffset, buf, len);
 
         impl_->writeOffset += len;
+
+        impl_->needFlush = true;
 
         return len;
 #else
