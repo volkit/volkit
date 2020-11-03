@@ -93,9 +93,10 @@ struct
     uint16_t bpv { 0 };
     Vec3f dist { 0.f, 0.f, 0.f };
     Vec2f mapping { 0.f, 0.f };
-    float value { 0.f };
     Vec3i first { 0, 0, 0 };
     Vec3i last { 0, 0, 0 };
+    float value { 0.f };
+    std::string renderAlgo;
 
     bool parse(int argc, char** argv)
     {
@@ -190,6 +191,15 @@ struct
                 last.x = std::atoi(argv[++i]);
                 last.y = std::atoi(argv[++i]);
                 last.z = std::atoi(argv[++i]);
+            }
+            else if (opt == "-ra" || opt == "--render-algo")
+            {
+                if (i >= argc - 1)
+                {
+                    std::cerr << "Option " << opt << " requires one argument\n";
+                    return false;
+                }
+                renderAlgo = argv[++i];
             }
             else if (opt == "-val" || opt == "--value")
             {
@@ -405,6 +415,26 @@ int main(int argc, char** argv)
             return EXIT_FAILURE;
 
         RenderState renderState;
+        if (!cmdline.renderAlgo.empty())
+        {
+            if (cmdline.renderAlgo == "ray-marching")
+            {
+                renderState.renderAlgo = RenderAlgo::RayMarching;
+            }
+            else if (cmdline.renderAlgo == "implicit-iso")
+            {
+                renderState.renderAlgo = RenderAlgo::ImplicitIso;
+            }
+            else if (cmdline.renderAlgo == "multi-scattering")
+            {
+                renderState.renderAlgo = RenderAlgo::MultiScattering;
+            }
+            else
+            {
+                std::cerr << "Unknown rendering algorithm\n";
+                return EXIT_FAILURE;
+            }
+        }
         Render(volume, renderState);
     }
     else if (cmdline.command == "resample")
