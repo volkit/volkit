@@ -19,6 +19,9 @@ include_directories(${PROJECT_SOURCE_DIR}/include/c)
 include_directories(${PROJECT_SOURCE_DIR}/include/cpp)
 include_directories(${PROJECT_SOURCE_DIR}/include/shared)
 
+# also use internal headers
+include_directories(${PROJECT_SOURCE_DIR}/src/vkt)
+
 vkt_link_libraries(volkit)
 
 vkt_add_executable(vkt main.cpp)

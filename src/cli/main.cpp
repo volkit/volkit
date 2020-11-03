@@ -7,11 +7,14 @@
 #include <ostream>
 #include <sstream>
 
+#include <vkt/Fill.hpp>
 #include <vkt/InputStream.hpp>
 #include <vkt/Resample.hpp>
 #include <vkt/Render.hpp>
 #include <vkt/StructuredVolume.hpp>
 #include <vkt/VolumeFile.hpp>
+
+#include "linalg.hpp"
 
 using namespace vkt;
 
@@ -90,6 +93,9 @@ struct
     uint16_t bpv { 0 };
     Vec3f dist { 0.f, 0.f, 0.f };
     Vec2f mapping { 0.f, 0.f };
+    float value { 0.f };
+    Vec3i first { 0, 0, 0 };
+    Vec3i last { 0, 0, 0 };
 
     bool parse(int argc, char** argv)
     {
@@ -101,10 +107,12 @@ struct
 
         // Find out which command we're running
         std::string cmd(argv[1]);
-        if (cmd == "fill" ||
-            cmd == "read" ||
-            cmd == "render" ||
-            cmd == "resample" ||
+        if (cmd == "declare-sv" ||
+            cmd == "fill"       ||
+            cmd == "fill-range" ||
+            cmd == "read"       ||
+            cmd == "render"     ||
+            cmd == "resample"   ||
             cmd == "set-header" ||
             cmd == "write")
         {
@@ -152,6 +160,17 @@ struct
                 dist.y = (float)std::atof(argv[++i]);
                 dist.z = (float)std::atof(argv[++i]);
             }
+            else if (opt == "-first" || opt == "--first")
+            {
+                if (i >= argc - 3)
+                {
+                    std::cerr << "Option " << opt << " requires three arguments\n";
+                    return false;
+                }
+                first.x = std::atoi(argv[++i]);
+                first.y = std::atoi(argv[++i]);
+                first.z = std::atoi(argv[++i]);
+            }
             else if (opt == "-i" || opt == "--input")
             {
                 if (i >= argc - 1)
@@ -160,6 +179,26 @@ struct
                     return false;
                 }
                 inputFile = argv[++i];
+            }
+            else if (opt == "-last" || opt == "--last")
+            {
+                if (i >= argc - 3)
+                {
+                    std::cerr << "Option " << opt << " requires three arguments\n";
+                    return false;
+                }
+                last.x = std::atoi(argv[++i]);
+                last.y = std::atoi(argv[++i]);
+                last.z = std::atoi(argv[++i]);
+            }
+            else if (opt == "-val" || opt == "--value")
+            {
+                if (i >= argc - 1)
+                {
+                    std::cerr << "Option " << opt << " requires one argument\n";
+                    return false;
+                }
+                value = (float)std::atof(argv[++i]);
             }
             else if (opt == "-vm" || opt == "--voxel-mapping")
             {
@@ -246,7 +285,88 @@ int main(int argc, char** argv)
     if (!cmdline.parse(argc, argv))
         return EXIT_FAILURE;
 
-    if (cmdline.command == "read")
+    if (cmdline.command == "declare-sv")
+    {
+        Vec3i dims;
+        if (cmdline.dims.x * cmdline.dims.y * cmdline.dims.z <= 0.f)
+        {
+            std::cerr << "Dims required\n";
+            return EXIT_FAILURE;
+        }
+
+        dims = cmdline.dims;
+
+        uint16_t bpv;
+        if (cmdline.bpv == 0)
+        {
+            std::cerr << "Bytes per voxel required\n";
+            return EXIT_FAILURE;
+        }
+
+        bpv = cmdline.bpv;
+
+        Vec3f dist;
+        if (cmdline.dist.x * cmdline.dist.y * cmdline.dist.z <= 0.f)
+            dist = { 1.f, 1.f, 1.f };
+        else
+            dist = cmdline.dist;
+
+        Vec2f mapping;
+        if (cmdline.mapping.y - cmdline.mapping.x <= 0.f)
+            mapping = { 0.f, 1.f };
+        else
+            mapping = cmdline.mapping;
+
+        StructuredVolume volume(dims.x, dims.y, dims.z, bpv,
+                                dist.x, dist.y, dist.z,
+                                mapping.x, mapping.y);
+
+        std::ostringstream stream;
+        write(stream, volume);
+
+        std::cout << stream.str();
+    }
+    else if (cmdline.command == "fill" || cmdline.command == "fill-range")
+    {
+        StructuredVolume volume;
+        std::cin >> volume;
+
+        if (cmdline.command == "fill")
+            Fill(volume, cmdline.value);
+        else if (cmdline.command == "fill-range")
+        {
+            Vec3i size = cmdline.last - cmdline.first;
+            if (size.x * size.y * size.z <= 0)
+            {
+                std::cerr << "Invalid range\n";
+                return EXIT_FAILURE;
+            }
+
+            if (cmdline.first.x < 0 ||
+                cmdline.first.y < 0 ||
+                cmdline.first.z < 0)
+            {
+                std::cerr << "Range underflow\n";
+                return EXIT_FAILURE;
+            }
+
+            if (cmdline.last.x > volume.getDims().x ||
+                cmdline.last.y > volume.getDims().y ||
+                cmdline.last.z > volume.getDims().z)
+            {
+                std::cerr << "Range overflow\n";
+                return EXIT_FAILURE;
+            }
+
+            FillRange(volume, cmdline.first, cmdline.last, cmdline.value);
+        }
+
+        std::ostringstream stream;
+        write(stream, volume);
+
+        std::cout << stream.str();
+    }
+    else if (cmdline.command == "read")
     {
         if (cmdline.inputFile.empty())
         {
@@ -304,17 +424,17 @@ int main(int argc, char** argv)
         else
             bpv = cmdline.bpv;
 
-        Vec2f mapping;
-        if (cmdline.mapping.y - cmdline.mapping.x <= 0.f)
-            mapping = src.getVoxelMapping();
-        else
-            mapping = cmdline.mapping;
-
         Vec3f dist;
         if (cmdline.dist.x * cmdline.dist.y * cmdline.dist.z <= 0.f)
             dist = src.getDist();
         else
             dist = cmdline.dist;
+
+        Vec2f mapping;
+        if (cmdline.mapping.y - cmdline.mapping.x <= 0.f)
+            mapping = src.getVoxelMapping();
+        else
+            mapping = cmdline.mapping;
 
         StructuredVolume dst(dims.x, dims.y, dims.z, bpv,
                              dist.x, dist.y, dist.z,

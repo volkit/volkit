@@ -50,7 +50,14 @@ volume2 = vkt.StructuredVolume(16,16,16,
 
 ### Command Line Interface
 ```
+# Load, resample and render a structured volume
 vkt read -i /home/user/file.raw | vkt resample --bytes-per-voxel 2 -dims 16 16 16 | vkt render
+
+# Declare a structured volume, fill with 1's, and render
+vkt declare-sv --dims 32 32 32 -bpv 1 | vkt fill --value 1 | vkt render
+
+# Similar to before, but with range fill
+vkt declare-sv --dims 32 32 32 -bpv 1 | vkt fill --value 0.05 | vkt fill-range --value 1 --first 0 0 0 --last 8 8 8 | vkt render
 ```
 
 Rendering
@@ -150,7 +157,7 @@ Implementation Status
 | Copy             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
 | Crop             | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [ ] </li></ul> |  <ul><li> [ ] </li></ul> |
 | Delete           | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [ ] </li></ul> |  <ul><li> [ ] </li></ul> |
-| Fill             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
+| Fill             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
 | Flip             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
 | Rotate           | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [ ] </li></ul> |
 | Scan             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [ ] </li></ul> |<ul><li> [x] </li></ul> |  <ul><li> [ ] </li></ul> |
