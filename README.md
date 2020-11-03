@@ -155,7 +155,7 @@ Implementation Status
 | Copy             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
 | Crop             | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> |  <ul><li> [ ] </li></ul> |  <ul><li> [ ] </li></ul> |
 | Delete           | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> | <ul><li> [ ] </li></ul> |  <ul><li> [ ] </li></ul> |  <ul><li> [ ] </li></ul> |
-| Fill             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |  <ul><li> [ ] </li></ul> |
+| Fill             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
 | Flip             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |
 | Rotate           | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |  <ul><li> [ ] </li></ul> |
 | Scan             | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> | <ul><li> [x] </li></ul> |  <ul><li> [x] </li></ul> |  <ul><li> [ ] </li></ul> |
