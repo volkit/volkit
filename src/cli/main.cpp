@@ -113,6 +113,7 @@ struct
         std::string cmd(argv[1]);
         if (cmd == "declare-sv" ||
             cmd == "dump"       ||
+            cmd == "dump-range" ||
             cmd == "fill"       ||
             cmd == "fill-range" ||
             cmd == "read"       ||
@@ -349,7 +350,7 @@ int main(int argc, char** argv)
 
         std::cout << stream.str();
     }
-    else if (cmdline.command == "dump")
+    else if (cmdline.command == "dump" || cmdline.command == "dump-range")
     {
         // Dump either reads from stdin _or_ from an input file passed via
         // option "-i | --input"
@@ -372,6 +373,13 @@ int main(int argc, char** argv)
             is.read(volume);
         }
 
+        Vec3i range = cmdline.last - cmdline.first;
+        if (cmdline.command == "dump-range" && range.x * range.y * range.z <= 0)
+        {
+            std::cerr << "Invalid range\n";
+            return EXIT_FAILURE;
+        }
+
         // Store cout state
         std::ios prevCoutState(nullptr);
         prevCoutState.copyfmt(std::cout);
@@ -387,25 +395,33 @@ int main(int argc, char** argv)
 
         std::cout << "data:\n";
 
-        for (int32_t z = 0; z < volume.getDims().z; ++z)
+        Vec3i first{ 0, 0, 0 };
+        Vec3i last = volume.getDims();
+        if (range.x * range.y * range.z > 0)
+        {
+            first = cmdline.first;
+            last = cmdline.last;
+        }
+
+        for (int32_t z = first.z; z != last.z; ++z)
         {
             std::cout << '[' << z << "]\n";
             std::cout << "{\n";
 
-            for (int32_t y = 0; y < volume.getDims().y; ++y)
+            for (int32_t y = first.y; y != last.y; ++y)
             {
                 std::cout << "  [" << y << "] {";
-                for (int32_t x = 0; x < volume.getDims().x; ++x)
+                for (int32_t x = first.x; x != last.x; ++x)
                 {
                     std::cout << volume.getValue(x,y,z);
-                    if (x != volume.getDims().x - 1)
+                    if (x != last.x - 1)
                         std::cout << ", ";
                 }
                 std::cout << "}\n";
             }
 
             std::cout << "}\n";
-            if (z != volume.getDims().z - 1)
+            if (z != last.z - 1)
                 std::cout << '\n';
         }
 
@@ -427,16 +443,16 @@ int main(int argc, char** argv)
         {
             // In this mode, also support range fill,
             // but only if range is valid
-            Vec3i size = cmdline.last - cmdline.first;
-            if (size.x * size.y * size.z > 0)
+            Vec3i range = cmdline.last - cmdline.first;
+            if (range.x * range.y * range.z > 0)
                 FillRange(volume, cmdline.first, cmdline.last, cmdline.value);
             else
                 Fill(volume, cmdline.value);
         }
         else if (cmdline.command == "fill-range")
         {
-            Vec3i size = cmdline.last - cmdline.first;
-            if (size.x * size.y * size.z <= 0)
+            Vec3i range = cmdline.last - cmdline.first;
+            if (range.x * range.y * range.z <= 0)
             {
                 std::cerr << "Invalid range\n";
                 return EXIT_FAILURE;
