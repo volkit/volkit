@@ -424,7 +424,15 @@ int main(int argc, char** argv)
             return EXIT_FAILURE;
 
         if (cmdline.command == "fill")
-            Fill(volume, cmdline.value);
+        {
+            // In this mode, also support range fill,
+            // but only if range is valid
+            Vec3i size = cmdline.last - cmdline.first;
+            if (size.x * size.y * size.z > 0)
+                FillRange(volume, cmdline.first, cmdline.last, cmdline.value);
+            else
+                Fill(volume, cmdline.value);
+        }
         else if (cmdline.command == "fill-range")
         {
             Vec3i size = cmdline.last - cmdline.first;
