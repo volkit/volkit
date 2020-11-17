@@ -35,7 +35,9 @@ namespace vkt
             if (needFlush)
                 flush();
 
+#if VKT_HAVE_VIRVO
             delete vd;
+#endif
         }
 
         bool initialized() const
@@ -69,6 +71,7 @@ namespace vkt
 
         void resetVD()
         {
+#if VKT_HAVE_VIRVO
             vd->setChan(1);
             if (vd->getFrameBytes() > 0)
             {
@@ -82,6 +85,7 @@ namespace vkt
                                    1, bpc, 1, &data,
                                    vvVolDesc::ARRAY_DELETE);
             }
+#endif
         }
 
         bool needFlush = false;
