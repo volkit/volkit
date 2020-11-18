@@ -62,7 +62,7 @@ namespace std
         std::vector<float> floats(doubles.size());
         for (std::size_t i = 0; i < doubles.size(); ++i)
             floats[i] = static_cast<float>(doubles[i]);
-        std::memcpy(self->getData(), (uint8_t*)floats.data(), self->getSizeInBytes());
+        memcpy(self->getData(), (uint8_t*)floats.data(), self->getSizeInBytes());
     }
 }
 %include <vkt/ManagedResource.hpp>
