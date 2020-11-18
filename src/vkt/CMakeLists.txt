@@ -26,8 +26,14 @@ endif()
 
 if(SWIG_FOUND)
     include(${SWIG_USE_FILE})
-    find_package(Python3 3.6 COMPONENTS Interpreter Development REQUIRED)
-    include_directories(SYSTEM ${Python3_INCLUDE_DIRS})
+    if(${CMAKE_VERSION} VERSION_LESS "3.12.0")
+        find_package(PythonInterp 3.6 REQUIRED)
+        find_package(PythonLibs 3.6 REQUIRED)
+        include_directories(${PYTHON_INCLUDE_DIRS})
+    else()
+        find_package(Python3 3.6 COMPONENTS Interpreter Development REQUIRED)
+        include_directories(SYSTEM ${Python3_INCLUDE_DIRS})
+    endif()
 endif()
 
 #---------------------------------------------------------------------------------------------------
