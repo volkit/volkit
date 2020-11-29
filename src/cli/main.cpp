@@ -9,6 +9,7 @@
 #include <sstream>
 
 #include <vkt/Fill.hpp>
+#include <vkt/Flip.hpp>
 #include <vkt/InputStream.hpp>
 #include <vkt/OutputStream.hpp>
 #include <vkt/Resample.hpp>
@@ -99,6 +100,7 @@ struct
     Vec3i first { 0, 0, 0 };
     Vec3i last { 0, 0, 0 };
     float value { 0.f };
+    Axis axis { Axis::X };
     std::string renderAlgo;
 
     bool parse(int argc, char** argv)
@@ -116,6 +118,8 @@ struct
             cmd == "dump-range" ||
             cmd == "fill"       ||
             cmd == "fill-range" ||
+            cmd == "flip"       ||
+            cmd == "flip-range" ||
             cmd == "read"       ||
             cmd == "render"     ||
             cmd == "resample"   ||
@@ -223,6 +227,34 @@ struct
                     return false;
                 }
                 value = (float)std::atof(argv[++i]);
+            }
+            else if (opt == "-ax" || opt == "--axis")
+            {
+                if (i >= argc - 1)
+                {
+                    std::cerr << "Option " << opt << " requires one argument\n";
+                    return false;
+                }
+
+                i++;
+
+                if (strlen(argv[i]) > 1)
+                {
+                    std::cerr << "Invalid argument: " << argv[i] << '\n';
+                    return false;
+                }
+
+                if (std::tolower(*argv[i]) == 'x')
+                    axis = Axis::X;
+                else if (std::tolower(*argv[i]) == 'y')
+                    axis = Axis::Y;
+                else if (std::tolower(*argv[i]) == 'z')
+                    axis = Axis::Z;
+                else
+                {
+                    std::cerr << "Invalid argument: " << argv[i] << '\n';
+                    return false;
+                }
             }
             else if (opt == "-vm" || opt == "--voxel-mapping")
             {
@@ -479,6 +511,62 @@ int main(int argc, char** argv)
 
         std::ostringstream stream;
         write(stream, volume);
+
+        std::cout << stream.str();
+    }
+    else if (cmdline.command == "flip" || cmdline.command == "flip-range")
+    {
+        StructuredVolume source;
+        std::cin >> source;
+
+        if (!checkStructuredVolumeParams(source.getDims(),
+                                         source.getBytesPerVoxel(),
+                                         source.getDist(),
+                                         source.getVoxelMapping()))
+            return EXIT_FAILURE;
+
+        StructuredVolume dest(source);
+
+        if (cmdline.command == "flip")
+        {
+            // In this mode, also support range fill,
+            // but only if range is valid
+            Vec3i range = cmdline.last - cmdline.first;
+            if (range.x * range.y * range.z > 0)
+                FlipRange(dest, source, cmdline.axis, cmdline.first, cmdline.last);
+            else
+                Flip(dest, source, cmdline.axis);
+        }
+        else if (cmdline.command == "flip-range")
+        {
+            Vec3i range = cmdline.last - cmdline.first;
+            if (range.x * range.y * range.z <= 0)
+            {
+                std::cerr << "Invalid range\n";
+                return EXIT_FAILURE;
+            }
+
+            if (cmdline.first.x < 0 ||
+                cmdline.first.y < 0 ||
+                cmdline.first.z < 0)
+            {
+                std::cerr << "Range underflow\n";
+                return EXIT_FAILURE;
+            }
+
+            if (cmdline.last.x > source.getDims().x ||
+                cmdline.last.y > source.getDims().y ||
+                cmdline.last.z > source.getDims().z)
+            {
+                std::cerr << "Range overflow\n";
+                return EXIT_FAILURE;
+            }
+
+            FlipRange(dest, source, cmdline.axis, cmdline.first, cmdline.last);
+        }
+
+        std::ostringstream stream;
+        write(stream, dest);
 
         std::cout << stream.str();
     }
