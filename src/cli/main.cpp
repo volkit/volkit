@@ -533,7 +533,7 @@ int main(int argc, char** argv)
             // but only if range is valid
             Vec3i range = cmdline.last - cmdline.first;
             if (range.x * range.y * range.z > 0)
-                FlipRange(dest, source, cmdline.axis, cmdline.first, cmdline.last);
+                FlipRange(dest, source, cmdline.first, cmdline.last, cmdline.axis);
             else
                 Flip(dest, source, cmdline.axis);
         }
@@ -562,7 +562,7 @@ int main(int argc, char** argv)
                 return EXIT_FAILURE;
             }
 
-            FlipRange(dest, source, cmdline.axis, cmdline.first, cmdline.last);
+            FlipRange(dest, source, cmdline.first, cmdline.last, cmdline.axis);
         }
 
         std::ostringstream stream;

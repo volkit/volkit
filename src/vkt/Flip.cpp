@@ -24,10 +24,10 @@ namespace vkt
             FlipRange,
             dest,
             source,
-            axis,
             { 0, 0, 0 },
             dest.getDims(),
-            { 0, 0, 0 }
+            { 0, 0, 0 },
+            axis
             );
 
         return NoError;
@@ -36,7 +36,31 @@ namespace vkt
     Error FlipRange(
             StructuredVolume& dest,
             StructuredVolume& source,
-            Axis axis,
+            int32_t firstX,
+            int32_t firstY,
+            int32_t firstZ,
+            int32_t lastX,
+            int32_t lastY,
+            int32_t lastZ,
+            Axis axis
+            )
+    {
+        VKT_CALL__(
+            FlipRange,
+            dest,
+            source,
+            { firstX, firstY, firstZ },
+            { lastX, lastY, lastZ },
+            { 0, 0, 0 },
+            axis
+            );
+
+        return NoError;
+    }
+
+    Error FlipRange(
+            StructuredVolume& dest,
+            StructuredVolume& source,
             int32_t firstX,
             int32_t firstY,
             int32_t firstZ,
@@ -45,17 +69,18 @@ namespace vkt
             int32_t lastZ,
             int32_t dstOffsetX,
             int32_t dstOffsetY,
-            int32_t dstOffsetZ
+            int32_t dstOffsetZ,
+            Axis axis
             )
     {
         VKT_CALL__(
             FlipRange,
             dest,
             source,
-            axis,
             { firstX, firstY, firstZ },
             { lastX, lastY, lastZ },
-            { dstOffsetX, dstOffsetY, dstOffsetZ }
+            { dstOffsetX, dstOffsetY, dstOffsetZ },
+            axis
             );
 
         return NoError;
@@ -64,13 +89,26 @@ namespace vkt
     Error FlipRange(
             StructuredVolume& dest,
             StructuredVolume& source,
-            Axis axis,
             Vec3i first,
             Vec3i last,
-            Vec3i dstOffset
+            Vec3i dstOffset,
+            Axis axis
             )
     {
-        VKT_CALL__(FlipRange, dest, source, axis, first, last, dstOffset);
+        VKT_CALL__(FlipRange, dest, source, first, last, dstOffset, axis);
+
+        return NoError;
+    }
+
+    Error FlipRange(
+            StructuredVolume& dest,
+            StructuredVolume& source,
+            Vec3i first,
+            Vec3i last,
+            Axis axis
+            )
+    {
+        VKT_CALL__(FlipRange, dest, source, first, last, { 0, 0, 0 }, axis);
 
         return NoError;
     }
@@ -87,10 +125,10 @@ vktError vktFlipSV(vktStructuredVolume dest, vktStructuredVolume source, vktAxis
         FlipRange,
         dest->volume,
         source->volume,
-        (vkt::Axis)axis,
         { 0, 0, 0 },
         dest->volume.getDims(),
-        { 0, 0, 0 }
+        { 0, 0, 0 },
+        (vkt::Axis)axis
         );
 
     return vktNoError;
@@ -99,7 +137,6 @@ vktError vktFlipSV(vktStructuredVolume dest, vktStructuredVolume source, vktAxis
 vktError vktFlipRangeSV(
         vktStructuredVolume dest,
         vktStructuredVolume source,
-        vktAxis axis,
         int32_t firstX,
         int32_t firstY,
         int32_t firstZ,
@@ -108,17 +145,18 @@ vktError vktFlipRangeSV(
         int32_t lastZ,
         int32_t dstOffsetX,
         int32_t dstOffsetY,
-        int32_t dstOffsetZ
+        int32_t dstOffsetZ,
+        vktAxis axis
         )
 {
     VKT_CALL__(
         FlipRange,
         dest->volume,
         source->volume,
-        (vkt::Axis)axis,
         { firstX, firstY, firstZ },
         { lastX, lastY, lastZ },
-        { dstOffsetX, dstOffsetY, dstOffsetZ }
+        { dstOffsetX, dstOffsetY, dstOffsetZ },
+        (vkt::Axis)axis
         );
 
     return vktNoError;

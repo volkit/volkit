@@ -11,10 +11,10 @@ namespace vkt
     inline void FlipRange_serial(
             StructuredVolume& dest,
             StructuredVolume& source,
-            Axis axis,
             Vec3i first,
             Vec3i last,
-            Vec3i dstOffset
+            Vec3i dstOffset,
+            Axis axis
             )
     {
         int32_t rangeX = last.x - first.x;

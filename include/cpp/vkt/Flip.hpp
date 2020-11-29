@@ -30,23 +30,41 @@ namespace vkt
     //! Flip the range `[firstXXX..lastXXX)` along a cartesian axis
     VKTAPI Error FlipRange(StructuredVolume& dest,
                            StructuredVolume& source,
-                           Axis axis,
                            int32_t firstX,
                            int32_t firstY,
                            int32_t firstZ,
                            int32_t lastX,
                            int32_t lastY,
                            int32_t lastZ,
-                           int32_t dstOffsetX = 0,
-                           int32_t dstOffsetY = 0,
-                           int32_t dstOffsetZ = 0);
+                           Axis axis);
+
+    //! Flip the range `[firstXXX..lastXXX)` along a cartesian axis
+    VKTAPI Error FlipRange(StructuredVolume& dest,
+                           StructuredVolume& source,
+                           int32_t firstX,
+                           int32_t firstY,
+                           int32_t firstZ,
+                           int32_t lastX,
+                           int32_t lastY,
+                           int32_t lastZ,
+                           int32_t dstOffsetX,
+                           int32_t dstOffsetY,
+                           int32_t dstOffsetZ,
+                           Axis axis);
 
     //! Flip the range `[first..last)` along a cartesian axis
     VKTAPI Error FlipRange(StructuredVolume& dest,
                            StructuredVolume& source,
-                           Axis axis,
                            Vec3i first,
                            Vec3i last,
-                           Vec3i dstOffset = { 0, 0, 0 });
+                           Axis axis);
+
+    //! Flip the range `[first..last)` along a cartesian axis
+    VKTAPI Error FlipRange(StructuredVolume& dest,
+                           StructuredVolume& source,
+                           Vec3i first,
+                           Vec3i last,
+                           Vec3i dstOffset,
+                           Axis axis);
 
 } // vkt

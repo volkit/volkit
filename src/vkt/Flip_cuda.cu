@@ -11,10 +11,10 @@ namespace vkt
     __global__ void Flip_kernel(
             StructuredVolumeView dest,
             StructuredVolumeView source,
-            Axis axis,
             Vec3i first,
             Vec3i last,
-            Vec3i dstOffset
+            Vec3i dstOffset,
+            Axis axis
             )
     {
         int nx = last.x - first.x;
@@ -46,10 +46,10 @@ namespace vkt
     void FlipRange_cuda(
             StructuredVolume& dest,
             StructuredVolume& source,
-            Axis axis,
             Vec3i first,
             Vec3i last,
-            Vec3i dstOffset
+            Vec3i dstOffset,
+            Axis axis
             )
     {
         unsigned nx = last.x - first.x;
@@ -66,10 +66,10 @@ namespace vkt
         Flip_kernel<<<gridSize, blockSize>>>(
                 StructuredVolumeView(dest),
                 StructuredVolumeView(source),
-                axis,
                 first,
                 last,
-                dstOffset
+                dstOffset,
+                axis
                 );
     }
 
