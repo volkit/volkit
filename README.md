@@ -159,7 +159,7 @@ Implementation Status
 
 | Algorithm                      | C++ API            | C API              | Python API         | CLI                | Serial version     | GPU version        |
 | ------------------------------ |:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|
-| BrickDecompose                 | :heavy_check_mark: | :x:                | :x:                | :x:                | :heavy_check_mark: | :x:                |
+| BrickDecompose                 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                |
 | ComputeHistogram               | :heavy_check_mark: | :x:                | :x:                | :x:                | :heavy_check_mark: | :heavy_check_mark: |
 | Copy                           | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :heavy_check_mark: |
 | Crop                           | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
