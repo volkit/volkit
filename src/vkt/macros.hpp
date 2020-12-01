@@ -10,6 +10,34 @@
 #define VKT_CUDA_SAFE_CALL__(X) X                                               \
 
 //-------------------------------------------------------------------------------------------------
+// VKT_CALL_TIMER_
+//
+
+#define VKT_CALL_TIMER_(FUNC, ...)                                              \
+    vkt::Timer timer;                                                           \
+    FUNC(__VA_ARGS__);                                                          \
+    VKT_LOG(vkt::logging::Level::Info)                                          \
+            << "Device: CPU (serial), algorithm: "                              \
+            << #FUNC                                                            \
+            << ", time elapsed: "                                               \
+            << timer.getElapsedSeconds()                                        \
+            << " sec.";                                                         \
+
+//-------------------------------------------------------------------------------------------------
+// VKT_CALL_CUDA_TIMER_
+//
+
+#define VKT_CALL_CUDA_TIMER_(FUNC, ...)                                         \
+    vkt::CudaTimer timer;                                                       \
+    FUNC(__VA_ARGS__);                                                          \
+    VKT_LOG(vkt::logging::Level::Info)                                          \
+            << "Device: GPU (CUDA), algorithm: "                                \
+            << #FUNC                                                            \
+            << ", time elapsed: "                                               \
+            << timer.getElapsedSeconds()                                        \
+            << " sec.";                                                         \
+
+//-------------------------------------------------------------------------------------------------
 // VKT_CALL__
 //
 
@@ -22,14 +50,7 @@
         {                                                                       \
             if (ep.printPerformance)                                            \
             {                                                                   \
-                vkt::Timer timer;                                               \
-                FUNC##_serial(__VA_ARGS__);                                     \
-                VKT_LOG(vkt::logging::Level::Info)                              \
-                                << "Device: CPU (serial), algorithm: "          \
-                                << #FUNC                                        \
-                                << ", time elapsed: "                           \
-                                << timer.getElapsedSeconds()                    \
-                                << " sec.";                                     \
+                VKT_CALL_TIMER_(FUNC##_serial, __VA_ARGS__)                     \
             }                                                                   \
             else                                                                \
                 FUNC##_serial(__VA_ARGS__);                                     \
@@ -41,14 +62,7 @@
         {                                                                       \
             if (ep.printPerformance)                                            \
             {                                                                   \
-                vkt::CudaTimer timer;                                           \
-                FUNC##_cuda(__VA_ARGS__);                                       \
-                VKT_LOG(vkt::logging::Level::Info)                              \
-                                << "Device: GPU (CUDA), algorithm: "            \
-                                << #FUNC                                        \
-                                << ", time elapsed: "                           \
-                                << timer.getElapsedSeconds()                    \
-                                << " sec.";                                     \
+                VKT_CALL_CUDA_TIMER_(FUNC##_cuda, __VA_ARGS__)                  \
             }                                                                   \
             else                                                                \
                 FUNC##_cuda(__VA_ARGS__);                                       \
