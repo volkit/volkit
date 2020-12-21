@@ -188,7 +188,6 @@ if(CUDA_FOUND AND VSNRAY_ENABLE_CUDA)
     )
 else()
     set(SOURCES ${SOURCES}
-        GridAccel.cpp
         Render.cpp
     )
 
