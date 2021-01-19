@@ -29,9 +29,11 @@ namespace vkt
         Stream::~Stream()
         {
             if (level_ == Level::Info)
-            {
                 std::cout << VKT_TERMINAL_GREEN << stream_.str() << VKT_TERMINAL_RESET << '\n';
-            }
+            else if (level_ == Level::Warning)
+                std::cout << VKT_TERMINAL_YELLOW << stream_.str() << VKT_TERMINAL_RESET << '\n';
+            else if (level_ == Level::Error)
+                std::cout << VKT_TERMINAL_RED << stream_.str() << VKT_TERMINAL_RESET << '\n';
         }
     } // logging
 } // vkt
