@@ -360,7 +360,7 @@ void Viewer::on_display()
             vkt::ExecutionPolicy mainThreadEP = vkt::GetThreadExecutionPolicy();
 
             renderFuture = std::async(
-                [&,this]()
+                [&,mainThreadEP,this]()
                 {
                     vkt::SetThreadExecutionPolicy(mainThreadEP);
 
