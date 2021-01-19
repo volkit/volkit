@@ -1,11 +1,15 @@
 // This file is distributed under the MIT license.
 // See the LICENSE file for details.
 
+#include <vkt/config.h>
 #include <vkt/ExecutionPolicy.hpp>
 
-#include "CudaTimer.hpp"
 #include "Logging.hpp"
 #include "Timer.hpp"
+
+#if VKT_HAVE_CUDA
+#include "CudaTimer.hpp"
+#endif
 
 #define VKT_CUDA_SAFE_CALL__(X) X                                               \
 
@@ -27,6 +31,7 @@
 // VKT_CALL_CUDA_TIMER_
 //
 
+#if VKT_HAVE_CUDA
 #define VKT_CALL_CUDA_TIMER_(FUNC, ...)                                         \
     vkt::CudaTimer timer;                                                       \
     FUNC(__VA_ARGS__);                                                          \
@@ -35,7 +40,14 @@
             << #FUNC                                                            \
             << ", time elapsed: "                                               \
             << timer.getElapsedSeconds()                                        \
-            << " sec.";                                                         \
+            << " sec.";
+#else
+#define VKT_CALL_CUDA_TIMER_(FUNC, ...)                                         \
+    VKT_LOG(vkt::logging::Level::Error)                                         \
+            << "When calling algorithm: "                                       \
+            << #FUNC                                                            \
+            << "CUDA backend unavailable.";
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // VKT_CALL__

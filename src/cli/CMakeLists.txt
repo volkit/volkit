@@ -21,6 +21,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include/shared)
 
 # also use internal headers
 include_directories(${PROJECT_SOURCE_DIR}/src/vkt)
+include_directories(${__VKT_CONFIG_DIR})
 
 vkt_link_libraries(volkit)
 

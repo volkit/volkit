@@ -16,6 +16,11 @@ namespace vkt
             Histogram& histogram,
             Vec3i first,
             Vec3i last
-            );
+            )
+#if VKT_HAVE_CUDA
+    ;
+#else
+    {}
+#endif
 
 } // vkt

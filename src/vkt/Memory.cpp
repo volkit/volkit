@@ -65,8 +65,10 @@ namespace vkt
             }
 
             VKT_CUDA_SAFE_CALL__(cudaMemcpy(dst, src, size, cck));
-        }
+#else
+            VKT_LOG(vkt::logging::Level::Error) << " CopyKind not supported by backend";
 #endif
+        }
     }
 
     void MemsetRange(void* dst, void const* src, std::size_t dstSize, std::size_t srcSize)

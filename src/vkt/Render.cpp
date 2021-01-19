@@ -1,6 +1,8 @@
 // This file is distributed under the MIT license.
 // See the LICENSE file for details.
 
+#include <vkt/config.h>
+
 #include <cstring>
 #include <future>
 #include <memory>
@@ -12,9 +14,12 @@
 #include <visionaray/math/ray.h>
 #include <visionaray/texture/texture.h>
 #include <visionaray/cpu_buffer_rt.h>
-#include <visionaray/gpu_buffer_rt.h>
 #include <visionaray/scheduler.h>
 #include <visionaray/thin_lens_camera.h>
+
+#if VKT_HAVE_CUDA
+#include <visionaray/gpu_buffer_rt.h>
+#endif
 
 // Private visionaray_common includes!
 #include <common/config.h>
@@ -37,6 +42,7 @@
 #include <vkt/Render.h>
 #include <vkt/StructuredVolume.h>
 
+#include "Logging.hpp"
 #include "Render_kernel.hpp"
 #include "StructuredVolume_impl.hpp"
 #include "TransfuncEditor.hpp"
@@ -80,6 +86,7 @@ struct Viewer : ViewerBase
     tiled_sched<RayType>                      host_sched;
     std::vector<vec4>                         host_accumBuffer;
 
+#if VKT_HAVE_CUDA
     // Two render targets for double buffering
     gpu_buffer_rt<PF_RGBA32F, PF_UNSPECIFIED> device_rt[2];
     cuda_sched<RayType>                       device_sched;
@@ -135,7 +142,8 @@ struct Viewer : ViewerBase
         }
         else
             return cuda_texture_ref<vec4, 1>();
-    };
+    }
+#endif
 
 
 
@@ -180,6 +188,7 @@ Viewer::Viewer(
     // Initialize device textures
     if (useCuda)
     {
+#if VKT_HAVE_CUDA
         switch (volume.getBytesPerVoxel())
         {
         case 1:
@@ -213,6 +222,9 @@ Viewer::Viewer(
                 );
             break;
         }
+#else
+        VKT_LOG(vkt::logging::Level::Error) << " CopyKind not supported by backend";
+#endif
     }
 }
 
@@ -354,6 +366,7 @@ void Viewer::on_display()
 
                     if (useCuda)
                     {
+#if VKT_HAVE_CUDA
                         pixel_sampler::jittered_type blend_params;
                         auto sparams = make_sched_params(
                                 blend_params,
@@ -388,6 +401,10 @@ void Viewer::on_display()
                                     );
                             device_sched.frame(kernel, sparams);
                         }
+#else
+                        VKT_LOG(vkt::logging::Level::Error)
+                                << " CopyKind not supported by backend";
+#endif
                     }
                     else
                     {
@@ -454,7 +471,13 @@ void Viewer::on_display()
     {
         std::unique_lock<std::mutex> l(displayMutex);
         if (useCuda)
+        {
+#if VKT_HAVE_CUDA
             device_rt[frontBufferIndex].display_color_buffer();
+#else
+            VKT_LOG(vkt::logging::Level::Error) << " CopyKind not supported by backend";
+#endif
+        }
         else
             host_rt[frontBufferIndex].display_color_buffer();
     }
@@ -494,9 +517,11 @@ void Viewer::on_resize(int w, int h)
         host_rt[0].resize(w, h);
         host_rt[1].resize(w, h);
 
+#if VKT_HAVE_CUDA
         device_accumBuffer.resize(w * h);
         device_rt[0].resize(w, h);
         device_rt[1].resize(w, h);
+#endif
     }
 
     clearFrame();

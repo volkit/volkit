@@ -140,7 +140,6 @@ set(SOURCES
     Aggregates.cpp
     Arithmetic.cpp
     Copy.cpp
-    CudaTimer.cpp
     Decompose.cpp
     ExecutionPolicy.cpp
     Fill.cpp
@@ -177,6 +176,10 @@ if(CUDA_FOUND AND VSNRAY_ENABLE_CUDA)
         Histogram_cuda.cu
         Memory_cuda.cu
         Render.cu
+    )
+
+    set(SOURCES ${SOURCES}
+        CudaTimer.cpp
     )
 
     vkt_add_cuda_library(volkit

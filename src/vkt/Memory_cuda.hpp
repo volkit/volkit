@@ -36,6 +36,11 @@ namespace vkt
             void const* src,
             std::size_t dstSize,
             std::size_t srcSize
-            );
+            )
+#if VKT_HAVE_CUDA
+    ;
+#else
+    {}
+#endif
 
 } // vkt
