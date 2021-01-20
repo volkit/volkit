@@ -2,6 +2,7 @@
 // See the LICENSE file for details.
 
 #include <cstdlib>
+#include <cstring>
 #include <istream>
 #include <iomanip>
 #include <iostream>

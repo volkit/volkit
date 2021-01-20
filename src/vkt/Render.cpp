@@ -7,6 +7,10 @@
 #include <future>
 #include <memory>
 
+#if VKT_HAVE_CUDA
+#include <thrust/device_vector.h>
+#endif
+
 #include <GL/glew.h>
 
 #include <visionaray/math/simd/simd.h>
