@@ -1,16 +1,21 @@
 // This file is distributed under the MIT license.
 // See the LICENSE file for details.
 
+#include <vkt/config.h>
+
 #include <vkt/Fill.hpp>
 #include <vkt/StructuredVolume.hpp>
 
 #include <vkt/Fill.h>
 #include <vkt/StructuredVolume.h>
 
-#include "Fill_cuda.hpp"
 #include "Fill_serial.hpp"
 #include "macros.hpp"
 #include "StructuredVolume_impl.hpp"
+
+#if VKT_HAVE_CUDA
+#include "Fill_cuda.hpp"
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // C++ API

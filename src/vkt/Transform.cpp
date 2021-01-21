@@ -1,6 +1,8 @@
 // This file is distributed under the MIT license.
 // See the LICENSE file for details.
 
+#include <vkt/config.h>
+
 #include <vkt/Transform.hpp>
 #include <vkt/StructuredVolume.hpp>
 
@@ -9,8 +11,11 @@
 
 #include "macros.hpp"
 #include "StructuredVolume_impl.hpp"
-#include "Transform_cuda.hpp"
 #include "Transform_serial.hpp"
+
+#if VKT_HAVE_CUDA
+#include "Transform_cuda.hpp"
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // C++ API

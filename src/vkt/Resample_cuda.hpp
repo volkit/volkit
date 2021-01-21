@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include <vkt/config.h>
-
 #include <vkt/Resample.hpp>
 #include <vkt/StructuredVolume.hpp>
 
@@ -14,11 +12,6 @@ namespace vkt
             StructuredVolume& dst,
             StructuredVolume& src,
             Filter filter
-            )
-#if 0//VKT_HAVE_CUDA
-    ;
-#else
-    {}
-#endif
+            );
 
 } // vkt

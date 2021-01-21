@@ -1,6 +1,8 @@
 // This file is distributed under the MIT license.
 // See the LICENSE file for details.
 
+#include <vkt/config.h>
+
 #include <vkt/Scan.hpp>
 #include <vkt/StructuredVolume.hpp>
 
@@ -8,9 +10,12 @@
 #include <vkt/StructuredVolume.h>
 
 #include "macros.hpp"
-#include "Scan_cuda.hpp"
 #include "Scan_serial.hpp"
 #include "StructuredVolume_impl.hpp"
+
+#if VKT_HAVE_CUDA
+#include "Scan_cuda.hpp"
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // C++ API

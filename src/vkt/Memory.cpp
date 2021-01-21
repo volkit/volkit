@@ -15,8 +15,11 @@
 #include <vkt/Memory.h>
 
 #include "macros.hpp"
-#include "Memory_cuda.hpp"
 #include "Memory_serial.hpp"
+
+#if VKT_HAVE_CUDA
+#include "Memory_cuda.hpp"
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // C++ API

@@ -1,13 +1,18 @@
 // This file is distributed under the MIT license.
 // See the LICENSE file for details.
 
+#include <vkt/config.h>
+
 #include <vkt/Histogram.hpp>
 #include <vkt/StructuredVolume.hpp>
 
-#include "Histogram_cuda.hpp"
 #include "Histogram_serial.hpp"
 #include "macros.hpp"
 #include "StructuredVolume_impl.hpp"
+
+#if VKT_HAVE_CUDA
+#include "Histogram_cuda.hpp"
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // C++ API

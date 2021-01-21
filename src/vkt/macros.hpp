@@ -50,6 +50,21 @@
 #endif
 
 //-------------------------------------------------------------------------------------------------
+// VKT_CALL_CUDA_ (w/o timer)
+//
+
+#if VKT_HAVE_CUDA
+#define VKT_CALL_CUDA_(FUNC, ...)                                               \
+    FUNC(__VA_ARGS__);
+#else
+#define VKT_CALL_CUDA_(FUNC, ...)                                               \
+    VKT_LOG(vkt::logging::Level::Error)                                         \
+            << "When calling algorithm: "                                       \
+            << #FUNC                                                            \
+            << "CUDA backend unavailable.";
+#endif
+
+//-------------------------------------------------------------------------------------------------
 // VKT_CALL__
 //
 
@@ -77,7 +92,9 @@
                 VKT_CALL_CUDA_TIMER_(FUNC##_cuda, __VA_ARGS__)                  \
             }                                                                   \
             else                                                                \
-                FUNC##_cuda(__VA_ARGS__);                                       \
+            {                                                                   \
+                VKT_CALL_CUDA_(FUNC##_cuda, __VA_ARGS__)                        \
+            }                                                                   \
         }                                                                       \
     }                                                                           \
     else                                                                        \

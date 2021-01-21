@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include <vkt/config.h>
-
 #include <vkt/linalg.hpp>
 #include <vkt/StructuredVolume.hpp>
 

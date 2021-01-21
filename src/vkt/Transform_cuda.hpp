@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include <vkt/config.h>
-
 #include <vkt/linalg.hpp>
 #include <vkt/StructuredVolume.hpp>
 
@@ -17,11 +15,8 @@ namespace vkt
             Vec3i last,
             TransformUnaryOp unaryOp
             )
-#if 0//VKT_HAVE_CUDA
-    ;
-#else
-    {}
-#endif
+    {
+    }
 
     // Binary op
     void TransformRange_cuda(
@@ -31,9 +26,7 @@ namespace vkt
             Vec3i last,
             TransformBinaryOp binaryOp
             )
-#if 0//VKT_HAVE_CUDA
-    ;
-#else
-    {}
-#endif
+    {
+    }
+
 } // vkt

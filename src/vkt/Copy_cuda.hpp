@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include <vkt/config.h>
-
 #include <vkt/linalg.hpp>
 #include <vkt/StructuredVolume.hpp>
 
@@ -16,11 +14,6 @@ namespace vkt
             Vec3i first,
             Vec3i last,
             Vec3i dstOffset
-            )
-#if VKT_HAVE_CUDA
-    ;
-#else
-    {}
-#endif
+            );
 
 } // vkt

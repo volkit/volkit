@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include <vkt/config.h>
-
 #include <vkt/Histogram.hpp>
 #include <vkt/linalg.hpp>
 #include <vkt/StructuredVolume.hpp>
@@ -16,11 +14,6 @@ namespace vkt
             Histogram& histogram,
             Vec3i first,
             Vec3i last
-            )
-#if VKT_HAVE_CUDA
-    ;
-#else
-    {}
-#endif
+            );
 
 } // vkt

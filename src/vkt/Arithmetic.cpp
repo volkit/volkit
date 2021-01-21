@@ -1,16 +1,21 @@
 // This file is distributed under the MIT license.
 // See the LICENSE file for details.
 
+#include <vkt/config.h>
+
 #include <vkt/Arithmetic.hpp>
 #include <vkt/StructuredVolume.hpp>
 
 #include <vkt/Arithmetic.h>
 #include <vkt/StructuredVolume.h>
 
-#include "Arithmetic_cuda.hpp"
 #include "Arithmetic_serial.hpp"
 #include "macros.hpp"
 #include "StructuredVolume_impl.hpp"
+
+#if VKT_HAVE_CUDA
+#include "Arithmetic_cuda.hpp"
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // C++ API
