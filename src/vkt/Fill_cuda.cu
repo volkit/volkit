@@ -6,6 +6,7 @@
 
 #include <vkt/Voxel.hpp>
 
+#include "DataFormatInfo.hpp"
 #include "Fill_cuda.hpp"
 #include "linalg.hpp"
 #include "macros.hpp"
@@ -17,7 +18,7 @@ namespace vkt
     __global__ void Fill_kernel(
             uint8_t* data,
             Vec3i dims,
-            uint16_t bytesPerVoxel,
+            DataFormat dataFormat,
             Vec3i first,
             Vec3i last
             )
@@ -30,6 +31,8 @@ namespace vkt
         int y = (blockIdx.y * blockDim.y + threadIdx.y) - first.y;
         int z = (blockIdx.z * blockDim.z + threadIdx.z) - first.z;
 
+        std::size_t bytesPerVoxel = getSizeInBytes(dataFormat);
+
         if (x < nx && y < ny && z < nz)
         {
             std::size_t linearIndex = z * static_cast<std::size_t>(dims.x) * dims.y
@@ -37,7 +40,7 @@ namespace vkt
                                     + x;
             linearIndex *= bytesPerVoxel;
 
-            for (uint16_t i = 0; i < bytesPerVoxel; ++i)
+            for (std::size_t i = 0; i < bytesPerVoxel; ++i)
                 data[linearIndex + i] = deviceMappedVoxel[i];
         }
     }
@@ -48,7 +51,7 @@ namespace vkt
         MapVoxel(
             mappedVoxel,
             value,
-            volume.getBytesPerVoxel(),
+            volume.getDataFormat(),
             volume.getVoxelMapping().x,
             volume.getVoxelMapping().y
             );
@@ -75,7 +78,7 @@ namespace vkt
         Fill_kernel<<<gridSize, blockSize>>>(
                 volume.getData(),
                 volume.getDims(),
-                volume.getBytesPerVoxel(),
+                volume.getDataFormat(),
                 first,
                 last
                 );

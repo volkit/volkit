@@ -15,7 +15,7 @@ namespace vkt
         MapVoxel(
             mappedVoxel,
             value,
-            volume.getBytesPerVoxel(),
+            volume.getDataFormat(),
             volume.getVoxelMapping().x,
             volume.getVoxelMapping().y
             );

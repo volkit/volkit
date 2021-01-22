@@ -31,7 +31,7 @@ VKTAPI vktBool_t vktVirvoFileGood(vktVirvoFile file);
 
 VKTAPI vktVec3i_t vktVirvoFileGetDims3iv(vktVirvoFile file);
 
-VKTAPI uint16_t vktVirvoFileGetBytesPerVoxel(vktVirvoFile file);
+VKTAPI vktDataFormat vktVirvoFileGetDataFormat(vktVirvoFile file);
 
 #ifdef __cplusplus
 }

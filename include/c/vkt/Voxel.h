@@ -18,7 +18,7 @@ extern "C"
 typedef struct
 {
     uint8_t* bytes;
-    uint16_t bytesPerVoxel;
+    vktDataFormat dataFormat;
     float mappingLo;
     float mappingHi;
 } vktVoxelView_t;
@@ -28,7 +28,7 @@ typedef struct
  */
 VKTAPI vktError vktMapVoxel(uint8_t* dst,
                             float value,
-                            uint16_t bytesPerVoxel,
+                            vktDataFormat dataFormat,
                             float mappingLo,
                             float mappingHi);
 
@@ -37,7 +37,7 @@ VKTAPI vktError vktMapVoxel(uint8_t* dst,
  */
 VKTAPI vktError vktUnmapVoxel(float* value,
                               uint8_t const* src,
-                              uint16_t bytesPerVoxel,
+                              vktDataFormat dataFormat,
                               float mappingLo,
                               float mappingHi);
 

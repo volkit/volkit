@@ -10,10 +10,10 @@ def main():
     dims.y = 128
     dims.z = 100
 
-    bpv = 1
+    dataFormat = vkt.DataFormat_UInt8
     volume = vkt.StructuredVolume(
             dims.x, dims.y, dims.z,
-            bpv,
+            dataFormat,
             1., 1., 1., # dist
             0., 1. # mapping
             )
@@ -30,7 +30,7 @@ def main():
     # Destination volume; has the same size as the original one
     rotatedVolume = vkt.StructuredVolume(
             dims.x, dims.y, dims.z,
-            bpv,
+            dataFormat,
             1., 1., 1.,
             0., 1.
             )

@@ -189,9 +189,9 @@ Viewer::Viewer(
     if (useCuda)
     {
 #if VKT_HAVE_CUDA
-        switch (volume.getBytesPerVoxel())
+        switch (volume.getDataFormat())
         {
-        case 1:
+        case vkt::DataFormat::UInt8:
             device_volumeUint8 = cuda_texture<uint8_t, 3>(
                 (uint8_t*)volume.getData(),
                 volume.getDims().x,
@@ -201,7 +201,7 @@ Viewer::Viewer(
                 Nearest
                 );
             break;
-        case 2:
+        case vkt::DataFormat::UInt16:
             device_volumeUint16 = cuda_texture<uint16_t, 3>(
                 (uint16_t*)volume.getData(),
                 volume.getDims().x,
@@ -211,7 +211,7 @@ Viewer::Viewer(
                 Nearest
                 );
             break;
-        case 4:
+        case vkt::DataFormat::UInt32:
             device_volumeUint32 = cuda_texture<uint32_t, 3>(
                 (uint32_t*)volume.getData(),
                 volume.getDims().x,
@@ -447,17 +447,17 @@ void Viewer::on_display()
         }
     };
 
-    switch (volume.getBytesPerVoxel())
+    switch (volume.getDataFormat())
     {
-    case 1:
+    case vkt::DataFormat::UInt8:
         callKernel(uint8_t{});
         break;
 
-    case 2:
+    case vkt::DataFormat::UInt16:
         callKernel(uint16_t{});
         break;
 
-    case 4:
+    case vkt::DataFormat::UInt32:
         callKernel(uint32_t{});
         break;
     }

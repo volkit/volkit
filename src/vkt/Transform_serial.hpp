@@ -37,7 +37,7 @@ namespace vkt
 
                     VoxelView voxel;
                     voxel.bytes = bytes;
-                    voxel.bytesPerVoxel = volume.getBytesPerVoxel();
+                    voxel.dataFormat = volume.getDataFormat();
                     voxel.mappingLo = volume.getVoxelMapping().x;
                     voxel.mappingHi = volume.getVoxelMapping().y;
 
@@ -83,13 +83,13 @@ namespace vkt
 
                     VoxelView voxel1;
                     voxel1.bytes = bytes1;
-                    voxel1.bytesPerVoxel = volume1.getBytesPerVoxel();
+                    voxel1.dataFormat = volume1.getDataFormat();
                     voxel1.mappingLo = volume1.getVoxelMapping().x;
                     voxel1.mappingHi = volume1.getVoxelMapping().y;
 
                     VoxelView voxel2;
                     voxel2.bytes = bytes2;
-                    voxel2.bytesPerVoxel = volume2.getBytesPerVoxel();
+                    voxel2.dataFormat = volume2.getDataFormat();
                     voxel2.mappingLo = volume2.getVoxelMapping().x;
                     voxel2.mappingHi = volume2.getVoxelMapping().y;
 

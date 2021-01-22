@@ -23,7 +23,7 @@ VKTAPI void vktStructuredVolumeCreate(vktStructuredVolume* volume,
                                       int32_t dimX,
                                       int32_t dimY,
                                       int32_t dimZ,
-                                      uint16_t bytesPerVoxel,
+                                      vktDataFormat dataFormat,
                                       float distX,
                                       float distY,
                                       float distZ,
@@ -50,10 +50,10 @@ VKTAPI void vktStructuredVolumeSetDims3iv(vktStructuredVolume volume,
 
 VKTAPI vktVec3i_t vktStructuredVolumeGetDims3iv(vktStructuredVolume volume);
 
-VKTAPI void vktStructuredVolumeSetBytesPerVoxel(vktStructuredVolume volume,
-                                                uint16_t bpv);
+VKTAPI void vktStructuredVolumeSetDataFormat(vktStructuredVolume volume,
+                                             vktDataFormat dataFormat);
 
-VKTAPI uint16_t vktStructuredVolumeGetBytesPerVoxel(vktStructuredVolume volume);
+VKTAPI vktDataFormat vktStructuredVolumeGetDataFormat(vktStructuredVolume volume);
 
 VKTAPI void vktStructuredVolumeSetDist3f(vktStructuredVolume volume,
                                          float distX,

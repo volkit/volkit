@@ -14,7 +14,7 @@ int main(int argc, char** argv)
     vktVolumeFile file;
     vktVolumeFileHeader_t hdr;
     vktVec3i_t dims;
-    uint16_t bpv;
+    vktDataFormat dataFormat;
     vktStructuredVolume volume;
     vktInputStream is;
     float rgba[20];
@@ -45,14 +45,14 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    bpv = hdr.bytesPerVoxel;
-    if (bpv == 0)
+    dataFormat = hdr.dataFormat;
+    if (dataFormat == vktDataFormatUnspecified)
     {
-        fprintf(stderr, "%s", "Cannot parse bytes per voxel from file name, guessing 1...\n");
-        bpv = 1;
+        fprintf(stderr, "%s", "Cannot parse data format from file name, guessing uint8...\n");
+        dataFormat = vktDataFormatUInt8;
     }
 
-    vktStructuredVolumeCreate(&volume, dims.x, dims.y, dims.z, bpv, 1.f, 1.f, 1.f, 0.f, 1.f);
+    vktStructuredVolumeCreate(&volume, dims.x, dims.y, dims.z, dataFormat, 1.f, 1.f, 1.f, 0.f, 1.f);
     vktInputStreamCreate(&is, vktVolumeFileGetBase(file));
     vktInputStreamReadSV(is, volume);
 

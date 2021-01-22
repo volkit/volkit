@@ -7,8 +7,8 @@
 
 int main()
 {
-    // Bytes per voxel
-    int bpv = 1;
+    // Data format
+    vkt::DataFormat dataFormat = vkt::DataFormat::UInt8;
 
     // Mapping for highest/lowest voxel value
     float mappingLo = 0.f;
@@ -23,7 +23,7 @@ int main()
     //--- Create a volume ---------------------------------
 
     vkt::StructuredVolume volume(8, 8, 8,
-                                 bpv,
+                                 dataFormat,
                                  distX,
                                  distY,
                                  distZ,

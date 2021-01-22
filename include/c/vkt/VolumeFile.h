@@ -21,7 +21,7 @@ typedef struct
 {
     vktBool_t isStructured;
     vktVec3i_t dims;
-    uint8_t bytesPerVoxel;
+    vktDataFormat dataFormat;
 } vktVolumeFileHeader_t;
 
 static void vktVolumeFileHeaderDefaultInit(vktVolumeFileHeader_t* header)

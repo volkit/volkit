@@ -16,6 +16,8 @@
 
 //#include <vkt/NiftiFile.h>
 
+#include "DataFormatInfo.hpp"
+
 namespace vkt
 {
     struct NiftiFile::Impl
@@ -60,7 +62,7 @@ namespace vkt
         // Remap to internal data type
         if (impl_->header->datatype == NIFTI_TYPE_INT16)
         {
-            uint16_t bpv = getBytesPerVoxel();
+            uint8_t bpv = getSizeInBytes(getDataFormat());
 
             for (std::size_t i = 0; i < len; i += bpv)
             {
@@ -128,35 +130,38 @@ namespace vkt
 #endif
     }
 
-    void NiftiFile::setBytesPerVoxel(uint16_t bvp)
+    void NiftiFile::setDataFormat(DataFormat dataFormat)
     {
         // Not implemented yet
     }
 
-    uint16_t NiftiFile::getBytesPerVoxel()
+    DataFormat NiftiFile::getDataFormat()
     {
 #if VKT_HAVE_NIFTI
         switch (impl_->header->datatype)
         {
         case NIFTI_TYPE_INT8:
-        case NIFTI_TYPE_UINT8:
-            return 1;
-
+            return DataFormat::Int8;
         case NIFTI_TYPE_INT16:
-        case NIFTI_TYPE_UINT16:
-            return 2;
-
+            return DataFormat::Int16;
         case NIFTI_TYPE_INT32:
+            return DataFormat::Int32;
+
+        case NIFTI_TYPE_UINT8:
+            return DataFormat::UInt8;
+        case NIFTI_TYPE_UINT16:
+            return DataFormat::UInt16;
         case NIFTI_TYPE_UINT32:
+            return DataFormat::UInt32;
+
         case NIFTI_TYPE_FLOAT32:
-            return 4;
+            return DataFormat::Float32;
 
         default:
-            // unsupported
-            return 0;
+            return DataFormat::Unspecified;
         }
 #else
-        return 0;
+        return DataFormat::Unspecified;
 #endif
     }
 

@@ -15,7 +15,7 @@ namespace vkt
     struct VoxelView
     {
         uint8_t* bytes;
-        uint16_t bytesPerVoxel;
+        DataFormat dataFormat;
         float mappingLo;
         float mappingHi;
     };
@@ -25,7 +25,7 @@ namespace vkt
      */
     VKTAPI Error MapVoxel(uint8_t* dst,
                           float value,
-                          uint16_t bytesPerVoxel,
+                          DataFormat dataFormat,
                           float mappingLo,
                           float mappingHi);
 
@@ -34,7 +34,7 @@ namespace vkt
      */
     VKTAPI Error UnmapVoxel(float& value,
                             uint8_t const* src,
-                            uint16_t bytesPerVoxel,
+                            DataFormat dataFormat,
                             float mappingLo,
                             float mappingHi);
 

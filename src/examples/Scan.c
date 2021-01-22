@@ -12,8 +12,8 @@ int main(void)
     vktStructuredVolume volume;
     vktRenderState_t renderState;
 
-    // Bytes per voxel
-    int bpv;
+    // Data format
+    vktDataFormat dataFormat;
 
     // Mapping for highest/lowest voxel value
     float mappingLo;
@@ -27,7 +27,7 @@ int main(void)
 
     //--- Create a volume ---------------------------------
 
-    bpv = 1;
+    dataFormat = vktDataFormatUInt8;
     mappingLo = 0.f;
     mappingHi = 1.f;
     distX = 1.f;
@@ -36,7 +36,7 @@ int main(void)
 
     VKT_SAFE_CALL(vktStructuredVolumeCreate(&volume,
                                             8, 8, 8,
-                                            bpv,
+                                            dataFormat,
                                             distX,
                                             distY,
                                             distZ,

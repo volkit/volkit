@@ -21,11 +21,11 @@ vktStructuredVolumeDestroy(volume);
 ```
 vkt::RawFile file("/home/user/file.raw", "r");
 vkt::Vec3i dims = file.getDims();
-uint16_t bpv = file.getBytesPerVoxel();
+vkt::DataFormat dataFormat = file.getDataFormat();
 
 vkt::InputStream is(file);
 
-vkt::StructuredVolume volume(dims.x, dims.y, dims.z, bpv);
+vkt::StructuredVolume volume(dims.x, dims.y, dims.z, dataFormat);
 is.read(volume);
 
 vkt::StructuredVolume volume2(32,32,32,1);
@@ -52,13 +52,13 @@ volume2 = vkt.StructuredVolume(16,16,16,
 ### Command Line Interface
 ```
 # Load, resample and render a structured volume
-vkt read -i /home/user/file.raw | vkt resample --bytes-per-voxel 2 -dims 16 16 16 | vkt render
+vkt read -i /home/user/file.raw | vkt resample --data-format uint16 -dims 16 16 16 | vkt render
 
 # Declare a structured volume, fill with 1's, and render
-vkt declare-sv --dims 32 32 32 -bpv 1 | vkt fill --value 1 | vkt render
+vkt declare-sv --dims 32 32 32 --data-format uint8 | vkt fill --value 1 | vkt render
 
 # Similar to before, but with range fill
-vkt declare-sv --dims 32 32 32 -bpv 1 | vkt fill --value 0.05 | vkt fill-range --value 1 --first 0 0 0 --last 8 8 8 | vkt render
+vkt declare-sv --dims 32 32 32 --data-format uint8 | vkt fill --value 0.05 | vkt fill-range --value 1 --first 0 0 0 --last 8 8 8 | vkt render
 ```
 
 Rendering

@@ -86,7 +86,7 @@ namespace vkt
                 div_up(nz, blockSize.z)
                 );
 
-        if (dest.getBytesPerVoxel() == source.getBytesPerVoxel()
+        if (dest.getDataFormat() == source.getDataFormat()
           && dest.getVoxelMapping() == source.getVoxelMapping())
         {
             CopyBytewise_kernel<<<gridSize, blockSize>>>(

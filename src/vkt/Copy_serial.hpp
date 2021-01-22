@@ -5,6 +5,7 @@
 
 #include <vkt/StructuredVolume.hpp>
 
+#include "DataFormatInfo.hpp"
 #include "linalg.hpp"
 
 namespace vkt
@@ -17,10 +18,12 @@ namespace vkt
             Vec3i dstOffset
             )
     {
-        if (dst.getBytesPerVoxel() == src.getBytesPerVoxel()
+        if (dst.getDataFormat() == src.getDataFormat()
           && dst.getVoxelMapping() == src.getVoxelMapping())
         {
             uint8_t voxel[StructuredVolume::GetMaxBytesPerVoxel()];
+
+            std::size_t bytesPerVoxel = vkt::getSizeInBytes(dst.getDataFormat());
 
             for (int32_t z = first.z; z != last.z; ++z)
             {
@@ -28,7 +31,7 @@ namespace vkt
                 {
                     for (int32_t x = first.x; x != last.x; ++x)
                     {
-                        for (uint16_t i = 0; i < dst.getBytesPerVoxel(); ++i)
+                        for (uint16_t i = 0; i < bytesPerVoxel; ++i)
                         {
                             Vec3i dims = src.getDims();
 
@@ -49,13 +52,15 @@ namespace vkt
         }
         else
         {
+            std::size_t bytesPerVoxel = vkt::getSizeInBytes(dst.getDataFormat());
+
             for (int32_t z = first.z; z != last.z; ++z)
             {
                 for (int32_t y = first.y; y != last.y; ++y)
                 {
                     for (int32_t x = first.x; x != last.x; ++x)
                     {
-                        for (uint16_t i = 0; i < dst.getBytesPerVoxel(); ++i)
+                        for (uint16_t i = 0; i < bytesPerVoxel; ++i)
                         {
                             Vec3i dims = src.getDims();
 

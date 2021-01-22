@@ -25,7 +25,7 @@ def main():
     haloSizePos.y = 1
     haloSizePos.z = 1
 
-    bpv = 1
+    dataFormat = vkt.DataFormat_UInt8
 
     mappingLo = 0.
     mappingHi = 1.
@@ -38,7 +38,7 @@ def main():
             dims.x,
             dims.y,
             dims.z,
-            bpv,
+            dataFormat,
             distX,
             distY,
             distZ,

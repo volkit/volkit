@@ -8,8 +8,8 @@ def main():
     dims.y = 32
     dims.z = 32
 
-    bpv = 1
-    volume1 = vkt.StructuredVolume(dims.x, dims.y, dims.z, bpv)
+    dataFormat = vkt.DataFormat_UInt8
+    volume1 = vkt.StructuredVolume(dims.x, dims.y, dims.z, dataFormat)
 
     # CPU rendering
     renderState = vkt.RenderState()

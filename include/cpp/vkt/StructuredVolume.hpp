@@ -8,6 +8,7 @@
 
 #include <vkt/ManagedBuffer.hpp>
 
+#include "common.hpp"
 #include "linalg.hpp"
 
 namespace vkt
@@ -25,10 +26,10 @@ namespace vkt
      * migrated before the respective operation is performed. This happens in a
      * deferred fashion.
      *
-     * Structured volumes have 3D dimensions, store the size in bytes per each
-     * voxel, the distance between voxels in x,y, and z direction, as well as a
-     * linear mapping from the minimum and maximum data value to the floating
-     * point range `[lo..hi]`.
+     * Structured volumes have 3D dimensions, store the data format, the
+     * distance between voxels in x,y, and z direction, as well as a linear
+     * mapping from the minimum and maximum data value to the floating point
+     * range `[lo..hi]`.
      */
     class StructuredVolume : public ManagedBuffer<uint8_t>
     {
@@ -41,7 +42,7 @@ namespace vkt
                 int32_t dimX,
                 int32_t dimY,
                 int32_t dimZ,
-                uint16_t bytesPerVoxel,
+                DataFormat dataFormat,
                 float distX = 1.f,
                 float distY = 1.f,
                 float distZ = 1.f,
@@ -60,8 +61,8 @@ namespace vkt
         void setDims(Vec3i dims);
         Vec3i getDims() const;
 
-        void setBytesPerVoxel(uint16_t bpv);
-        uint16_t getBytesPerVoxel() const;
+        void setDataFormat(DataFormat dataFormat);
+        DataFormat getDataFormat() const;
 
         void setDist(float distX, float distY, float distZ);
         void getDist(float& distX, float& distY, float& distZ);
@@ -95,11 +96,12 @@ namespace vkt
         void setBytes(Vec3i index, uint8_t const* data);
         void getBytes(Vec3i index, uint8_t* data);
 
+        uint8_t getBytesPerVoxel() const;
         std::size_t getSizeInBytes() const;
 
     private:
         Vec3i dims_;
-        uint16_t bytesPerVoxel_;
+        DataFormat dataFormat_;
         Vec3f dist_;
         Vec2f voxelMapping_;
 

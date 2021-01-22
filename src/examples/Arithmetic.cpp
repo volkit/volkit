@@ -25,18 +25,18 @@ int main()
 {
     vkt::Vec3i dims = { 32, 32, 32 };
 
-    int bpv = 1;
-    vkt::StructuredVolume volume1(dims.x, dims.y, dims.z, bpv);
+    vkt::DataFormat dataFormat = vkt::DataFormat::UInt8;
+    vkt::StructuredVolume volume1(dims.x, dims.y, dims.z, dataFormat);
     vkt::Transform(volume1, MakeCheckered<3>);
 
-    vkt::StructuredVolume volume2(dims.x, dims.y, dims.z, bpv);
+    vkt::StructuredVolume volume2(dims.x, dims.y, dims.z, dataFormat);
     vkt::Transform(volume2, MakeCheckered<2>);
 
-    vkt::StructuredVolume volume3(dims.x, dims.y, dims.z, bpv);
+    vkt::StructuredVolume volume3(dims.x, dims.y, dims.z, dataFormat);
     // Compute sum on the CPU
     vkt::Sum(volume3, volume1, volume2);
 
-    vkt::StructuredVolume volume4(dims.x, dims.y, dims.z, bpv);
+    vkt::StructuredVolume volume4(dims.x, dims.y, dims.z, dataFormat);
 
     // Change execution policy in main thread to GPU
     vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();

@@ -59,11 +59,49 @@ namespace vkt
 
             res = sscanf(str.c_str(), "int%hu", &bpv);
             if (res == 1)
-                bytesPerVoxel_ = bpv / 8;
+            {
+                switch (bpv)
+                {
+                case 8:
+                    dataFormat_ = DataFormat::Int8;
+                    break;
+
+                case 16:
+                    dataFormat_ = DataFormat::Int16;
+                    break;
+
+                case 32:
+                    dataFormat_ = DataFormat::Int32;
+                    break;
+
+                default:
+                    dataFormat_ = DataFormat::Unspecified;
+                    break;
+                }
+            }
 
             res = sscanf(str.c_str(), "uint%hu", &bpv);
             if (res == 1)
-                bytesPerVoxel_ = bpv / 8;
+            {
+                switch (bpv)
+                {
+                case 8:
+                    dataFormat_ = DataFormat::UInt8;
+                    break;
+
+                case 16:
+                    dataFormat_ = DataFormat::UInt16;
+                    break;
+
+                case 32:
+                    dataFormat_ = DataFormat::UInt32;
+                    break;
+
+                default:
+                    dataFormat_ = DataFormat::Unspecified;
+                    break;
+                }
+            }
         }
     }
 
@@ -123,14 +161,14 @@ namespace vkt
         return dims_;
     }
 
-    void RawFile::setBytesPerVoxel(uint16_t bpv)
+    void RawFile::setDataFormat(DataFormat dataFormat)
     {
-        bytesPerVoxel_ = bpv;
+        dataFormat_ = dataFormat;
     }
 
-    uint16_t RawFile::getBytesPerVoxel() const
+    DataFormat RawFile::getDataFormat() const
     {
-        return bytesPerVoxel_;
+        return dataFormat_;
     }
 
 } // vkt
@@ -183,10 +221,10 @@ vktVec3i_t vktRawFileGetDims3iv(vktRawFile file)
     return { dims.x, dims.y, dims.z };
 }
 
-uint16_t vktRawFileGetBytesPerVoxel(vktRawFile file)
+vktDataFormat vktRawFileGetDataFormat(vktRawFile file)
 {
     vkt::RawFile* rf = dynamic_cast<vkt::RawFile*>(file->base->source);
     assert(rf);
 
-    return rf->getBytesPerVoxel();
+    return (vktDataFormat)rf->getDataFormat();
 }

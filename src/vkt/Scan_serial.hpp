@@ -9,6 +9,7 @@
 #include <vkt/Copy.hpp>
 #include <vkt/StructuredVolume.hpp>
 
+#include "DataFormatInfo.hpp"
 #include "IntegralVoxel.hpp"
 #include "linalg.hpp"
 
@@ -40,7 +41,7 @@ namespace vkt
         auto set = [&](int32_t x, int32_t y, int32_t z, accum_t ac)
         {
             uint8_t data[StructuredVolume::GetMaxBytesPerVoxel()];
-            std::memcpy(data, &ac, dst.getBytesPerVoxel());
+            std::memcpy(data, &ac, getSizeInBytes(dst.getDataFormat()));
             dst.setBytes(x, y, z, data);
         };
 
