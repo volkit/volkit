@@ -32,7 +32,7 @@ namespace vkt
             int32_t dimZ,
             ColorFormat format
             )
-        : ManagedBuffer(dimX * size_t(dimY) * dimZ * ColorFormatInfoTable[(int)format].size)
+        : ManagedBuffer(dimX * size_t(dimY) * dimZ * ColorFormatInfoTable[(int)format].sizeInBytes)
         , dims_{dimX, dimY, dimZ}
         , format_(format)
     {
@@ -108,7 +108,7 @@ namespace vkt
         // TODO: interpolate between different formats
         assert(sourceFormat == format_);
 
-        unsigned bpv = ColorFormatInfoTable[(int)format_].size;
+        unsigned bpv = ColorFormatInfoTable[(int)format_].sizeInBytes;
 
         for (int iz = 0; iz < dims_.z; ++iz)
         {
@@ -141,7 +141,7 @@ namespace vkt
 
     std::size_t LookupTable::getSizeInBytes() const
     {
-        return dims_.x * size_t(dims_.y) * dims_.z * ColorFormatInfoTable[(int)format_].size;
+        return dims_.x * size_t(dims_.y) * dims_.z * ColorFormatInfoTable[(int)format_].sizeInBytes;
     }
 
 

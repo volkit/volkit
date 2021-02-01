@@ -19,7 +19,7 @@ namespace vkt
     {
         ColorFormat colorFormat;
         uint8_t components;
-        uint8_t size;
+        uint8_t sizeInBytes;
     };
 
     static ColorFormatInfo ColorFormatInfoTable[(int)ColorFormat::Count] = {
