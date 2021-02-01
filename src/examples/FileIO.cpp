@@ -35,7 +35,7 @@ int main(int argc, char** argv)
     }
 
     vkt::DataFormat dataFormat = hdr.dataFormat;
-    if (dataFormat == vkt::DataFormat::UInt8)
+    if (dataFormat == vkt::DataFormat::Unspecified)
     {
         std::cerr << "Cannot parse data format from file name, guessing uint8...\n";
         dataFormat = vkt::DataFormat::UInt8;
