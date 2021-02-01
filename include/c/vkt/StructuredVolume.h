@@ -17,7 +17,7 @@ extern "C"
 {
 #endif
 
-VKTAPI uint16_t vktStructuredVolumeGetMaxBytesPerVoxel();
+VKTAPI uint8_t vktStructuredVolumeGetMaxBytesPerVoxel();
 
 VKTAPI void vktStructuredVolumeCreate(vktStructuredVolume* volume,
                                       int32_t dimX,

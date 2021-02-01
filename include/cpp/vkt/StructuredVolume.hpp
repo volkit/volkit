@@ -34,7 +34,7 @@ namespace vkt
     class StructuredVolume : public ManagedBuffer<uint8_t>
     {
     public:
-        constexpr static uint16_t GetMaxBytesPerVoxel() { return 8; }
+        constexpr static uint8_t GetMaxBytesPerVoxel() { return 8; }
     
     public:
         StructuredVolume();

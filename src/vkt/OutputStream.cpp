@@ -43,7 +43,7 @@ namespace vkt
             int32_t lastZ
             )
     {
-        uint16_t bpv = getSizeInBytes(dst.getDataFormat());
+        uint8_t bpv = getSizeInBytes(dst.getDataFormat());
         std::size_t lineBytes = (lastX - firstX) * bpv;
         Vec3i dims = dst.getDims();
 

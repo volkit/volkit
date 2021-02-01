@@ -19,7 +19,7 @@ namespace vkt
     class StructuredVolumeView
     {
     public:
-        VKT_FUNC constexpr static uint16_t GetMaxBytesPerVoxel() { return 8; }
+        VKT_FUNC constexpr static uint8_t GetMaxBytesPerVoxel() { return 8; }
 
     public:
         StructuredVolumeView() = default;
@@ -142,7 +142,7 @@ namespace vkt
         {
             std::size_t index = linearIndex(x, y, z);
 
-            for (uint16_t i = 0; i < vkt::getSizeInBytes(dataFormat_); ++i)
+            for (uint8_t i = 0; i < vkt::getSizeInBytes(dataFormat_); ++i)
                 data_[index + i] = data[i];
         }
 
@@ -150,7 +150,7 @@ namespace vkt
         {
             std::size_t index = linearIndex(x, y, z);
 
-            for (uint16_t i = 0; i < vkt::getSizeInBytes(dataFormat_); ++i)
+            for (uint8_t i = 0; i < vkt::getSizeInBytes(dataFormat_); ++i)
                 data[i] = data_[index + i];
         }
 
@@ -158,7 +158,7 @@ namespace vkt
         {
             std::size_t lindex = linearIndex(index);
 
-            for (uint16_t i = 0; i < vkt::getSizeInBytes(dataFormat_); ++i)
+            for (uint8_t i = 0; i < vkt::getSizeInBytes(dataFormat_); ++i)
                 data_[lindex + i] = data[i];
         }
 
@@ -166,7 +166,7 @@ namespace vkt
         {
             std::size_t lindex = linearIndex(index);
 
-            for (uint16_t i = 0; i < vkt::getSizeInBytes(dataFormat_); ++i)
+            for (uint8_t i = 0; i < vkt::getSizeInBytes(dataFormat_); ++i)
                 data[i] = data[lindex + i];
         }
 

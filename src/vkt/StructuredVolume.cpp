@@ -357,7 +357,7 @@ namespace vkt
 // C API
 //
 
-uint16_t vktStructuredVolumeGetMaxBytesPerVoxel()
+uint8_t vktStructuredVolumeGetMaxBytesPerVoxel()
 {
     return vkt::StructuredVolume::GetMaxBytesPerVoxel();
 }
