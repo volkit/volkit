@@ -176,6 +176,7 @@ if(CUDA_FOUND AND VSNRAY_ENABLE_CUDA)
         Histogram_cuda.cu
         Memory_cuda.cu
         Render.cu
+        Resample_cuda.cu
     )
 
     set(SOURCES ${SOURCES}
