@@ -6,7 +6,7 @@ def main():
 
     #--- Create a volume ----------------------------------
 
-    bpv = 1
+    dataFormat = vkt.DataFormat_UInt8
     mappingLo = 0.
     mappingHi = 1.
     distX = 1.
@@ -14,7 +14,7 @@ def main():
     distZ = 1.
 
     volume = vkt.StructuredVolume(8, 8, 8,
-                                  bpv,
+                                  dataFormat,
                                   distX,
                                   distY,
                                   distZ,

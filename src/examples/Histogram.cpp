@@ -35,14 +35,14 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    uint16_t bpv = hdr.bytesPerVoxel;
-    if (bpv == 0)
+    vkt::DataFormat dataFormat = hdr.dataFormat;
+    if (dataFormat == vkt::DataFormat::Unspecified)
     {
-        std::cerr << "Cannot parse bytes per voxel from file name, guessing 1...\n";
-        bpv = 1;
+        std::cerr << "Cannot parse data format from file name, guessing uint8...\n";
+        dataFormat = vkt::DataFormat::UInt8;
     }
 
-    vkt::StructuredVolume volume(dims.x, dims.y, dims.z, bpv);
+    vkt::StructuredVolume volume(dims.x, dims.y, dims.z, dataFormat);
     vkt::InputStream is(file);
     is.read(volume);
 

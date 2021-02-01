@@ -10,6 +10,7 @@
 #include <vkt/linalg.hpp>
 #include <vkt/StructuredVolume.hpp>
 
+#include "DataFormatInfo.hpp"
 #include "macros.hpp"
 #include "VoxelMapping.hpp"
 
@@ -25,7 +26,7 @@ namespace vkt
         VKT_FUNC StructuredVolumeView(StructuredVolume& volume)
             : data_(volume.getData())
             , dims_(volume.getDims())
-            , bytesPerVoxel_(volume.getBytesPerVoxel())
+            , dataFormat_(volume.getDataFormat())
             , dist_(volume.getDist())
             , voxelMapping_(volume.getVoxelMapping())
         {
@@ -43,9 +44,9 @@ namespace vkt
             return dims_;
         }
 
-        VKT_FUNC uint16_t getBytesPerVoxel() const
+        VKT_FUNC DataFormat getDataFormat() const
         {
-            return bytesPerVoxel_;
+            return dataFormat_;
         }
 
         VKT_FUNC void getDist(float& distX, float& distY, float& distZ)
@@ -83,7 +84,7 @@ namespace vkt
             MapVoxelImpl(
                 data_ + index,
                 value,
-                bytesPerVoxel_,
+                dataFormat_,
                 voxelMapping_.x,
                 voxelMapping_.y
                 );
@@ -96,7 +97,7 @@ namespace vkt
             UnmapVoxelImpl(
                 value,
                 data_ + index,
-                bytesPerVoxel_,
+                dataFormat_,
                 voxelMapping_.x,
                 voxelMapping_.y
                 );
@@ -118,7 +119,7 @@ namespace vkt
             MapVoxelImpl(
                 data_ + lindex,
                 value,
-                bytesPerVoxel_,
+                dataFormat_,
                 voxelMapping_.x,
                 voxelMapping_.y
                 );
@@ -131,7 +132,7 @@ namespace vkt
             UnmapVoxelImpl(
                 value,
                 data_ + lindex,
-                bytesPerVoxel_,
+                dataFormat_,
                 voxelMapping_.x,
                 voxelMapping_.y
                 );
@@ -141,7 +142,7 @@ namespace vkt
         {
             std::size_t index = linearIndex(x, y, z);
 
-            for (uint16_t i = 0; i < bytesPerVoxel_; ++i)
+            for (uint16_t i = 0; i < vkt::getSizeInBytes(dataFormat_); ++i)
                 data_[index + i] = data[i];
         }
 
@@ -149,7 +150,7 @@ namespace vkt
         {
             std::size_t index = linearIndex(x, y, z);
 
-            for (uint16_t i = 0; i < bytesPerVoxel_; ++i)
+            for (uint16_t i = 0; i < vkt::getSizeInBytes(dataFormat_); ++i)
                 data[i] = data_[index + i];
         }
 
@@ -157,7 +158,7 @@ namespace vkt
         {
             std::size_t lindex = linearIndex(index);
 
-            for (uint16_t i = 0; i < bytesPerVoxel_; ++i)
+            for (uint16_t i = 0; i < vkt::getSizeInBytes(dataFormat_); ++i)
                 data_[lindex + i] = data[i];
         }
 
@@ -165,14 +166,14 @@ namespace vkt
         {
             std::size_t lindex = linearIndex(index);
 
-            for (uint16_t i = 0; i < bytesPerVoxel_; ++i)
+            for (uint16_t i = 0; i < vkt::getSizeInBytes(dataFormat_); ++i)
                 data[i] = data[lindex + i];
         }
 
     private:
         uint8_t* data_;
         Vec3i dims_;
-        uint16_t bytesPerVoxel_;
+        DataFormat dataFormat_;
         Vec3f dist_;
         Vec2f voxelMapping_;
 
@@ -182,7 +183,7 @@ namespace vkt
             size_t index = z * dims_.x * std::size_t(dims_.y)
                          + y * dims_.x
                          + x;
-            return index * bytesPerVoxel_;
+            return index * vkt::getSizeInBytes(dataFormat_);
         }
 
         VKT_FUNC std::size_t linearIndex(Vec3i index) const

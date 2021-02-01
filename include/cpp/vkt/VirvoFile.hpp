@@ -28,9 +28,9 @@ namespace vkt
 
         Vec3i getDims();
 
-        void setBytesPerVoxel(uint16_t bpv);
+        void setDataFormat(DataFormat dataFormat);
 
-        uint16_t getBytesPerVoxel();
+        DataFormat getDataFormat();
 
     private:
         struct Impl;

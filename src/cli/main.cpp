@@ -1,6 +1,7 @@
 // This file is distributed under the MIT license.
 // See the LICENSE file for details.
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <istream>
@@ -52,14 +53,14 @@ std::istream& operator>>(std::istream& in, StructuredVolume& volume)
     }
 
     Vec3i dims;
-    uint16_t bpv;
+    uint32_t dataFormat;
     Vec3f dist;
     Vec2f mapping;
     in.read((char*)&dims, sizeof(dims));
-    in.read((char*)&bpv, sizeof(bpv));
+    in.read((char*)&dataFormat, sizeof(dataFormat));
     in.read((char*)&dist, sizeof(dist));
     in.read((char*)&mapping, sizeof(mapping));
-    volume = StructuredVolume(dims.x, dims.y, dims.x, bpv,
+    volume = StructuredVolume(dims.x, dims.y, dims.x, (DataFormat)dataFormat,
                               dist.x, dist.y, dist.z,
                               mapping.x, mapping.y);
     in.read((char*)volume.getData(), volume.getSizeInBytes());
@@ -72,13 +73,13 @@ void write(std::ostringstream& out, StructuredVolume& volume)
     uint32_t magicToken = VKT_SERIALIZATION_MAGIC_TOKEN;
     uint32_t assetType = VKT_SERIALIZATION_ASSET_TYPE_SV;
     Vec3i dims = volume.getDims();
-    uint16_t bpv = volume.getBytesPerVoxel();
+    uint32_t dataFormat = (uint32_t)volume.getDataFormat();
     Vec3f dist = volume.getDist();
     Vec2f mapping = volume.getVoxelMapping();
     out.write((const char*)&magicToken, sizeof(magicToken));
     out.write((const char*)&assetType, sizeof(assetType));
     out.write((const char*)&dims, sizeof(dims));
-    out.write((const char*)&bpv, sizeof(bpv));
+    out.write((const char*)&dataFormat, sizeof(dataFormat));
     out.write((const char*)&dist, sizeof(dist));
     out.write((const char*)&mapping, sizeof(mapping));
     out.write((const char*)volume.getData(), volume.getSizeInBytes());
@@ -95,7 +96,7 @@ struct
     std::string inputFile;
     std::string outputFile;
     Vec3i dims { 0, 0, 0 };
-    uint16_t bpv { 0 };
+    DataFormat dataFormat { DataFormat::Unspecified };
     Vec3f dist { 0.f, 0.f, 0.f };
     Vec2f mapping { 0.f, 0.f };
     Vec3i first { 0, 0, 0 };
@@ -140,14 +141,32 @@ struct
         {
             std::string opt = argv[i];
 
-            if (opt == "-bpv" || opt == "--bytes-per-voxel")
+            if (opt == "-df" || opt == "--data-format")
             {
                 if (i >= argc - 1)
                 {
                     std::cerr << "Option " << opt << " requires one argument\n";
                     return false;
                 }
-                bpv = (uint16_t)std::atoi(argv[++i]);
+
+                std::string arg(argv[++i]);
+                std::transform(arg.begin(), arg.end(), arg.begin(),
+                    [](unsigned char c){ return std::tolower(c); });
+
+                if (arg == "int8")
+                    dataFormat = DataFormat::Int8;
+                else if (arg == "int16")
+                    dataFormat = DataFormat::Int16;
+                else if (arg == "int16")
+                    dataFormat = DataFormat::Int32;
+                else if (arg == "uint8")
+                    dataFormat = DataFormat::UInt8;
+                else if (arg == "uint16")
+                    dataFormat = DataFormat::UInt16;
+                else if (arg == "uint32")
+                    dataFormat = DataFormat::UInt32;
+                else if (arg == "float32")
+                    dataFormat = DataFormat::Float32;
             }
             else if (opt == "-dims" || opt == "--dims")
             {
@@ -283,7 +302,7 @@ struct
 // Error checking
 //
 
-bool checkStructuredVolumeParams(Vec3i dims, uint16_t bpv, Vec3f dist, Vec2f mapping)
+bool checkStructuredVolumeParams(Vec3i dims, DataFormat dataFormat, Vec3f dist, Vec2f mapping)
 {
     if (dims.x * dims.y * dims.z < 1)
     {
@@ -291,9 +310,9 @@ bool checkStructuredVolumeParams(Vec3i dims, uint16_t bpv, Vec3f dist, Vec2f map
         return false;
     }
 
-    if (bpv == 0)
+    if (dataFormat == DataFormat::Unspecified)
     {
-        std::cerr << "Invalid bytes per voxel: " << cmdline.inputFile << '\n';
+        std::cerr << "Invalid data format: " << cmdline.inputFile << '\n';
         return false;
     }
 
@@ -328,7 +347,7 @@ bool checkStructuredVolumeFile(VolumeFile& file)
         return false;
     }
 
-    return checkStructuredVolumeParams(hdr.dims, hdr.bytesPerVoxel,
+    return checkStructuredVolumeParams(hdr.dims, hdr.dataFormat,
                                        hdr.dist, hdr.voxelMapping);
 }
 
@@ -353,14 +372,14 @@ int main(int argc, char** argv)
 
         dims = cmdline.dims;
 
-        uint16_t bpv;
-        if (cmdline.bpv == 0)
+        DataFormat dataFormat;
+        if (cmdline.dataFormat == DataFormat::Unspecified)
         {
-            std::cerr << "Bytes per voxel required\n";
+            std::cerr << "Data format required\n";
             return EXIT_FAILURE;
         }
 
-        bpv = cmdline.bpv;
+        dataFormat = cmdline.dataFormat;
 
         Vec3f dist;
         if (cmdline.dist.x * cmdline.dist.y * cmdline.dist.z <= 0.f)
@@ -374,7 +393,7 @@ int main(int argc, char** argv)
         else
             mapping = cmdline.mapping;
 
-        StructuredVolume volume(dims.x, dims.y, dims.z, bpv,
+        StructuredVolume volume(dims.x, dims.y, dims.z, dataFormat,
                                 dist.x, dist.y, dist.z,
                                 mapping.x, mapping.y);
 
@@ -399,7 +418,7 @@ int main(int argc, char** argv)
             VolumeFileHeader hdr = file.getHeader();
 
             volume = StructuredVolume(hdr.dims.x, hdr.dims.y, hdr.dims.z,
-                                      hdr.bytesPerVoxel,
+                                      hdr.dataFormat,
                                       hdr.dist.x, hdr.dist.y, hdr.dist.z,
                                       hdr.voxelMapping.x, hdr.voxelMapping.y);
             InputStream is(file);
@@ -422,7 +441,7 @@ int main(int argc, char** argv)
 
         std::cout << "Object: StructuredVolume\n";
         std::cout << "  dims: " << volume.getDims() << '\n';
-        std::cout << "  bytesPerVoxel: " << volume.getBytesPerVoxel() << '\n';
+        std::cout << "  dataFormat: " << (int)volume.getDataFormat() << '\n';
         std::cout << "  dist: " << volume.getDist() << '\n';
         std::cout << "  voxelMapping: " << volume.getVoxelMapping() << '\n';
 
@@ -467,7 +486,7 @@ int main(int argc, char** argv)
         std::cin >> volume;
 
         if (!checkStructuredVolumeParams(volume.getDims(),
-                                         volume.getBytesPerVoxel(),
+                                         volume.getDataFormat(),
                                          volume.getDist(),
                                          volume.getVoxelMapping()))
             return EXIT_FAILURE;
@@ -521,7 +540,7 @@ int main(int argc, char** argv)
         std::cin >> source;
 
         if (!checkStructuredVolumeParams(source.getDims(),
-                                         source.getBytesPerVoxel(),
+                                         source.getDataFormat(),
                                          source.getDist(),
                                          source.getVoxelMapping()))
             return EXIT_FAILURE;
@@ -587,7 +606,7 @@ int main(int argc, char** argv)
         VolumeFileHeader hdr = file.getHeader();
 
         StructuredVolume volume(hdr.dims.x, hdr.dims.y, hdr.dims.z,
-                                hdr.bytesPerVoxel,
+                                hdr.dataFormat,
                                 hdr.dist.x, hdr.dist.y, hdr.dist.z,
                                 hdr.voxelMapping.x, hdr.voxelMapping.y);
         InputStream is(file);
@@ -604,7 +623,7 @@ int main(int argc, char** argv)
         std::cin >> volume;
 
         if (!checkStructuredVolumeParams(volume.getDims(),
-                                         volume.getBytesPerVoxel(),
+                                         volume.getDataFormat(),
                                          volume.getDist(),
                                          volume.getVoxelMapping()))
             return EXIT_FAILURE;
@@ -643,11 +662,11 @@ int main(int argc, char** argv)
         else
             dims = cmdline.dims;
 
-        uint16_t bpv;
-        if (cmdline.bpv == 0)
-            bpv = src.getBytesPerVoxel();
+        DataFormat dataFormat;
+        if (cmdline.dataFormat == DataFormat::Unspecified)
+            dataFormat = src.getDataFormat();
         else
-            bpv = cmdline.bpv;
+            dataFormat = cmdline.dataFormat;
 
         Vec3f dist;
         if (cmdline.dist.x * cmdline.dist.y * cmdline.dist.z <= 0.f)
@@ -661,7 +680,7 @@ int main(int argc, char** argv)
         else
             mapping = cmdline.mapping;
 
-        StructuredVolume dst(dims.x, dims.y, dims.z, bpv,
+        StructuredVolume dst(dims.x, dims.y, dims.z, dataFormat,
                              dist.x, dist.y, dist.z,
                              mapping.x, mapping.y);
 
@@ -691,7 +710,7 @@ int main(int argc, char** argv)
         std::cin >> volume;
 
         if (!checkStructuredVolumeParams(volume.getDims(),
-                                         volume.getBytesPerVoxel(),
+                                         volume.getDataFormat(),
                                          volume.getDist(),
                                          volume.getVoxelMapping()))
             return EXIT_FAILURE;
@@ -701,7 +720,7 @@ int main(int argc, char** argv)
         VolumeFileHeader hdr;
         hdr.isStructured = true;
         hdr.dims = volume.getDims();
-        hdr.bytesPerVoxel = volume.getBytesPerVoxel();
+        hdr.dataFormat = volume.getDataFormat();
         hdr.dist = volume.getDist();
         hdr.voxelMapping = volume.getVoxelMapping();
         file.setHeader(hdr);

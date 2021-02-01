@@ -16,7 +16,7 @@ int main(void)
     vktVec3i_t haloSizeNeg = { .x=1, .y=1, .z=1 };
     vktVec3i_t haloSizePos = { .x=1, .y=1, .z=1 };
 
-    int bpv = 1;
+    vktDataFormat dataFormat = vktDataFormatUInt8;
 
     float mappingLo = 0.f;
     float mappingHi = 1.f;
@@ -35,7 +35,7 @@ int main(void)
             dims.x,
             dims.y,
             dims.z,
-            bpv,
+            dataFormat,
             distX,
             distY,
             distZ,

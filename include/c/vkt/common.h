@@ -52,6 +52,23 @@ typedef enum
 
 typedef enum
 {
+    vktDataFormatUnspecified,
+
+    vktDataFormatInt8,
+    vktDataFormatInt16,
+    vktDataFormatInt32,
+    vktDataFormatUInt8,
+    vktDataFormatUInt16,
+    vktDataFormatUInt32,
+    vktDataFormatFloat32,
+
+    // Keep last!
+    vktVoxelFormatCount,
+
+} vktDataFormat;
+
+typedef enum
+{
     vktOpenModeRead,
     vktOpenModeWrite,
     vktOpenModeReadWrite,

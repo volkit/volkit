@@ -11,10 +11,10 @@ int main()
     // Create a structured volume
     vkt::Vec3i dims = { 256,128,100 };
 
-    int bpv = 1;
+    vkt::DataFormat dataFormat = vkt::DataFormat::UInt8;
     vkt::StructuredVolume volume(
             dims.x, dims.y, dims.z,
-            bpv,
+            dataFormat,
             1.f, 1.f, 1.f, // dist
             0.f, 1.f // mapping
             );
@@ -31,7 +31,7 @@ int main()
     // Destination volume; has the same size as the original one
     vkt::StructuredVolume rotatedVolume(
             dims.x, dims.y, dims.z,
-            bpv,
+            dataFormat,
             1.f, 1.f, 1.f,
             0.f, 1.f
             );

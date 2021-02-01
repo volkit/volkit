@@ -77,7 +77,7 @@ namespace vkt
                 if (om == OpenMode::Read || om == OpenMode::ReadWrite)
                 {
                     header_.dims = rf->getDims();
-                    header_.bytesPerVoxel = rf->getBytesPerVoxel();
+                    header_.dataFormat = rf->getDataFormat();
                 }
             }
         }
@@ -92,7 +92,7 @@ namespace vkt
                 if (om == OpenMode::Read || om == OpenMode::ReadWrite)
                 {
                     header_.dims = nf->getDims();
-                    header_.bytesPerVoxel = nf->getBytesPerVoxel();
+                    header_.dataFormat = nf->getDataFormat();
                 }
             }
         }
@@ -108,7 +108,7 @@ namespace vkt
                 if (om == OpenMode::Read || om == OpenMode::ReadWrite)
                 {
                     header_.dims = vf->getDims();
-                    header_.bytesPerVoxel = vf->getBytesPerVoxel();
+                    header_.dataFormat = vf->getDataFormat();
                 }
             }
         }
@@ -168,7 +168,7 @@ namespace vkt
             if (RawFile* rf = dynamic_cast<RawFile*>(dataSource_))
             {
                 rf->setDims(header_.dims);
-                rf->setBytesPerVoxel(header_.bytesPerVoxel);
+                rf->setDataFormat(header_.dataFormat);
             }
         }
 
@@ -178,7 +178,7 @@ namespace vkt
             if (NiftiFile* nf = dynamic_cast<NiftiFile*>(dataSource_))
             {
                 nf->setDims(header_.dims);
-                nf->setBytesPerVoxel(header_.bytesPerVoxel);
+                nf->setDataFormat(header_.dataFormat);
                 nf->setVoxelMapping(header_.voxelMapping);
             }
         }
@@ -190,7 +190,7 @@ namespace vkt
             if (VirvoFile* vf = dynamic_cast<VirvoFile*>(dataSource_))
             {
                 vf->setDims(header_.dims);
-                vf->setBytesPerVoxel(header_.bytesPerVoxel);
+                vf->setDataFormat(header_.dataFormat);
             }
         }
 #endif
@@ -254,7 +254,7 @@ vktVolumeFileHeader_t vktVolumeFileGetHeader(vktVolumeFile file)
     vkt::Vec3i dims = hdr.dims;
     chdr.dims = { dims.x, dims.y, dims.z };
 
-    chdr.bytesPerVoxel = hdr.bytesPerVoxel;
+    chdr.dataFormat = (vktDataFormat)hdr.dataFormat;
 
     return chdr;
 }

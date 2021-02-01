@@ -33,12 +33,12 @@ def main():
         print("Cannot parse dimensions from file name")
         return
 
-    bpv = file.getBytesPerVoxel()
-    if bpv == 0:
-        print("Cannot parse bytes per voxel from file name, guessing 1...")
-        bpv = 1
+    dataFormat = file.getDataFormat()
+    if dataFormat == vkt.DataFormat_Unspecified:
+        print("Cannot parse data format from file name, guessing uint8...")
+        dataFormat = vkt.DataFormat_UInt8
 
-    volume = vkt.StructuredVolume(dims.x, dims.y, dims.z, bpv)
+    volume = vkt.StructuredVolume(dims.x, dims.y, dims.z, dataFormat)
     ips = vkt.InputStream(file)
     ips.read(volume)
 

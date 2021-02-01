@@ -35,7 +35,7 @@ VKTAPI vktBool_t vktRawFileGood(vktRawFile file);
 
 VKTAPI vktVec3i_t vktRawFileGetDims3iv(vktRawFile file);
 
-VKTAPI uint16_t vktRawFileGetBytesPerVoxel(vktRawFile file);
+VKTAPI vktDataFormat vktRawFileGetDataFormat(vktRawFile file);
 
 #ifdef __cplusplus
 }

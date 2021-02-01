@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 {
     vktRawFile file;
     vktVec3i_t dims;
-    uint16_t bpv;
+    vktDataFormat dataFormat;
     vktStructuredVolume volume;
     vktInputStream is;
     vktVec3i_t brickSize;
@@ -54,14 +54,14 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    bpv = vktRawFileGetBytesPerVoxel(file);
-    if (bpv == 0)
+    dataFormat = vktRawFileGetDataFormat(file);
+    if (dataFormat == vktDataFormatUnspecified)
     {
-        fprintf(stderr, "%s", "Cannot parse bytes per voxel from file name, guessing 1...\n");
-        bpv = 1;
+        fprintf(stderr, "%s", "Cannot parse data format from file name, guessing uint8...\n");
+        dataFormat = vktDataFormatUInt8;
     }
 
-    vktStructuredVolumeCreate(&volume, dims.x, dims.y, dims.z, bpv, 1.f, 1.f, 1.f, 0.f, 1.f);
+    vktStructuredVolumeCreate(&volume, dims.x, dims.y, dims.z, dataFormat, 1.f, 1.f, 1.f, 0.f, 1.f);
     vktInputStreamCreate(&is, vktRawFileGetBase(file));
     vktInputStreamReadSV(is, volume);
 

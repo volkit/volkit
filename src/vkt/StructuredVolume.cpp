@@ -10,6 +10,7 @@
 #include <vkt/StructuredVolume.h>
 #include <vkt/System.h>
 
+#include "DataFormatInfo.hpp"
 #include "linalg.hpp"
 #include "StructuredVolume_impl.hpp"
 #include "VoxelMapping.hpp"
@@ -23,7 +24,7 @@ namespace vkt
     StructuredVolume::StructuredVolume()
         : ManagedBuffer(0)
         , dims_{0, 0 , 0}
-        , bytesPerVoxel_(1)
+        , dataFormat_(DataFormat::UInt8)
         , dist_{1.f, 1.f, 1.f}
         , voxelMapping_{0.f, 1.f}
     {
@@ -33,16 +34,16 @@ namespace vkt
             int32_t dimX,
             int32_t dimY,
             int32_t dimZ,
-            uint16_t bytesPerVoxel,
+            DataFormat dataFormat,
             float distX,
             float distY,
             float distZ,
             float mappingLo,
             float mappingHi
             )
-        : ManagedBuffer(dimX * size_t(dimY) * dimZ * bytesPerVoxel)
+        : ManagedBuffer(dimX * size_t(dimY) * dimZ * vkt::getSizeInBytes(dataFormat))
         , dims_{dimX, dimY, dimZ}
-        , bytesPerVoxel_(bytesPerVoxel)
+        , dataFormat_(dataFormat)
         , dist_{distX, distY, distZ}
         , voxelMapping_{mappingLo, mappingHi}
     {
@@ -73,17 +74,17 @@ namespace vkt
         return dims_;
     }
 
-    void StructuredVolume::setBytesPerVoxel(uint16_t bpv)
+    void StructuredVolume::setDataFormat(DataFormat dataFormat)
     {
-        bytesPerVoxel_ = bpv;
+        dataFormat_ = dataFormat;
         std::size_t newSize = getSizeInBytes();
 
         resize(newSize);
     }
 
-    uint16_t StructuredVolume::getBytesPerVoxel() const
+    DataFormat StructuredVolume::getDataFormat() const
     {
-        return bytesPerVoxel_;
+        return dataFormat_;
     }
 
     void StructuredVolume::setDist(float distX, float distY, float distZ)
@@ -194,7 +195,7 @@ namespace vkt
         MapVoxelImpl(
             ManagedBuffer::data_ + index,
             value,
-            bytesPerVoxel_,
+            dataFormat_,
             voxelMapping_.x,
             voxelMapping_.y
             );
@@ -209,7 +210,7 @@ namespace vkt
         UnmapVoxelImpl(
             value,
             ManagedBuffer::data_ + index,
-            bytesPerVoxel_,
+            dataFormat_,
             voxelMapping_.x,
             voxelMapping_.y
             );
@@ -226,7 +227,7 @@ namespace vkt
         UnmapVoxelImpl(
             value,
             ManagedBuffer::data_ + index,
-            bytesPerVoxel_,
+            dataFormat_,
             voxelMapping_.x,
             voxelMapping_.y
             );
@@ -243,7 +244,7 @@ namespace vkt
         MapVoxelImpl(
             ManagedBuffer::data_ + lindex,
             value,
-            bytesPerVoxel_,
+            dataFormat_,
             voxelMapping_.x,
             voxelMapping_.y
             );
@@ -258,7 +259,7 @@ namespace vkt
         UnmapVoxelImpl(
             value,
             ManagedBuffer::data_ + lindex,
-            bytesPerVoxel_,
+            dataFormat_,
             voxelMapping_.x,
             voxelMapping_.y
             );
@@ -275,7 +276,7 @@ namespace vkt
         UnmapVoxelImpl(
             value,
             ManagedBuffer::data_ + lindex,
-            bytesPerVoxel_,
+            dataFormat_,
             voxelMapping_.x,
             voxelMapping_.y
             );
@@ -287,9 +288,9 @@ namespace vkt
     {
         migrate();
 
-        size_t index = linearIndex(x, y, z);
+        std::size_t index = linearIndex(x, y, z);
 
-        for (uint16_t i = 0; i < bytesPerVoxel_; ++i)
+        for (uint8_t i = 0; i < getBytesPerVoxel(); ++i)
             ManagedBuffer::data_[index + i] = data[i];
     }
 
@@ -297,9 +298,9 @@ namespace vkt
     {
         migrate();
 
-        size_t index = linearIndex(x, y, z);
+        std::size_t index = linearIndex(x, y, z);
 
-        for (uint16_t i = 0; i < bytesPerVoxel_; ++i)
+        for (uint8_t i = 0; i < getBytesPerVoxel(); ++i)
             data[i] = ManagedBuffer::data_[index + i];
     }
 
@@ -307,9 +308,9 @@ namespace vkt
     {
         migrate();
 
-        size_t lindex = linearIndex(index);
+        std::size_t lindex = linearIndex(index);
 
-        for (uint16_t i = 0; i < bytesPerVoxel_; ++i)
+        for (uint8_t i = 0; i < getBytesPerVoxel(); ++i)
             ManagedBuffer::data_[lindex + i] = data[i];
     }
 
@@ -317,15 +318,20 @@ namespace vkt
     {
         migrate();
 
-        size_t lindex = linearIndex(index);
+        std::size_t lindex = linearIndex(index);
 
-        for (uint16_t i = 0; i < bytesPerVoxel_; ++i)
+        for (uint8_t i = 0; i < getBytesPerVoxel(); ++i)
             data[i] = ManagedBuffer::data_[lindex + i];
+    }
+
+    uint8_t StructuredVolume::getBytesPerVoxel() const
+    {
+        return vkt::getSizeInBytes(dataFormat_);
     }
 
     std::size_t StructuredVolume::getSizeInBytes() const
     {
-        return dims_.x * std::size_t(dims_.y) * dims_.z * bytesPerVoxel_;
+        return dims_.x * std::size_t(dims_.y) * dims_.z * getBytesPerVoxel();
     }
 
 
@@ -336,7 +342,7 @@ namespace vkt
         size_t index = z * dims_.x * std::size_t(dims_.y)
                      + y * dims_.x
                      + x;
-        return index * bytesPerVoxel_;
+        return index * getBytesPerVoxel();
     }
 
     std::size_t StructuredVolume::linearIndex(Vec3i index) const
@@ -361,7 +367,7 @@ void vktStructuredVolumeCreate(
         int32_t dimX,
         int32_t dimY,
         int32_t dimZ,
-        uint16_t bytesPerVoxel,
+        vktDataFormat dataFormat,
         float distX,
         float distY,
         float distZ,
@@ -375,7 +381,7 @@ void vktStructuredVolumeCreate(
             dimX,
             dimY,
             dimZ,
-            bytesPerVoxel,
+            (vkt::DataFormat)dataFormat,
             distX,
             distY,
             distZ,

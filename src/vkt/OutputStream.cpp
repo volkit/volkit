@@ -6,6 +6,7 @@
 #include <vkt/OutputStream.hpp>
 #include <vkt/StructuredVolume.hpp>
 
+#include "DataFormatInfo.hpp"
 #include "StructuredVolume_impl.hpp"
 
 //-------------------------------------------------------------------------------------------------
@@ -42,7 +43,7 @@ namespace vkt
             int32_t lastZ
             )
     {
-        uint16_t bpv = dst.getBytesPerVoxel();
+        uint16_t bpv = getSizeInBytes(dst.getDataFormat());
         std::size_t lineBytes = (lastX - firstX) * bpv;
         Vec3i dims = dst.getDims();
 

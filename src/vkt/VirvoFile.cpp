@@ -16,6 +16,8 @@
 
 #include <vkt/VirvoFile.h>
 
+#include "DataFormatInfo.hpp"
+
 namespace vkt
 {
     struct VirvoFile::Impl
@@ -197,23 +199,30 @@ namespace vkt
 #endif
     }
 
-    void VirvoFile::setBytesPerVoxel(uint16_t bpv)
+    void VirvoFile::setDataFormat(DataFormat dataFormat)
     {
 #if VKT_HAVE_VIRVO
-        impl_->vd->bpc = bpv;
+        impl_->vd->bpc = getSizeInBytes(dataFormat);
         impl_->resetVD();
 #endif
     }
 
-    uint16_t VirvoFile::getBytesPerVoxel()
+    DataFormat VirvoFile::getDataFormat()
     {
 #if VKT_HAVE_VIRVO
         if (!impl_->initialized() && !impl_->load())
-            return 0;
+            return DataFormat::Unspecified;
 
-        return (uint16_t)impl_->vd->bpc;
+        if (impl_->vd->bpc == 1)
+            return DataFormat::UInt8;
+        else if (impl_->vd->bpc == 2)
+            return DataFormat::UInt16;
+        else if (impl_->vd->bpc == 4)
+            return DataFormat::Float32;
+        else
+            return DataFormat::Unspecified;
 #else
-        return 0;
+        return DataFormat::Unspecified;
 #endif
     }
 

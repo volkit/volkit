@@ -37,15 +37,14 @@ namespace vkt
         Vec3i getDims() const;
 
         /*!
-         * @brief  Set structured volume bytes per voxel
+         * @brief  Set structured volume data format
          */
-        void setBytesPerVoxel(uint16_t bpv);
+        void setDataFormat(DataFormat dataFormat);
 
         /*!
-         * @brief  Structured volume bytes per voxel parsed from file name,
-         *         0 if not successful
+         * @brief  Get structured volume data format
          */
-        uint16_t getBytesPerVoxel() const;
+        DataFormat getDataFormat() const;
 
     private:
         char const* fileName_ = 0;
@@ -53,7 +52,7 @@ namespace vkt
         FILE* file_ = 0;
 
         Vec3i dims_ = { 0, 0, 0 };
-        uint16_t bytesPerVoxel_ = 0;
+        DataFormat dataFormat_ = DataFormat::UInt8;
 
     };
 

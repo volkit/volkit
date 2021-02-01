@@ -32,8 +32,8 @@ int main(void)
     vktStructuredVolume volume3;
     vktRenderState_t renderState;
 
-    // Bytes per voxel
-    int bpv;
+    // Data format
+    vktDataFormat dataFormat;
 
     // Mapping for highest/lowest voxel value
     float mappingLo;
@@ -47,7 +47,7 @@ int main(void)
 
     //--- Create a volume ---------------------------------
 
-    bpv = 1;
+    dataFormat = vktDataFormatUInt8;
     mappingLo = 0.f;
     mappingHi = 1.f;
     distX = 1.f;
@@ -56,7 +56,7 @@ int main(void)
 
     VKT_SAFE_CALL(vktStructuredVolumeCreate(&volume1,
                                             64, 64, 64,
-                                            bpv,
+                                            dataFormat,
                                             distX,
                                             distY,
                                             distZ,
@@ -78,7 +78,7 @@ int main(void)
     // Create a 2nd volume
     VKT_SAFE_CALL(vktStructuredVolumeCreate(&volume2,
                                             24, 24, 24,
-                                            bpv,
+                                            dataFormat,
                                             distX,
                                             distY,
                                             distZ,
@@ -101,7 +101,7 @@ int main(void)
                                        TransformOp1));
 
     // Create a copy; copy construction can be used to
-    // copy volumes if all parameters (bpv, dims, etc.)
+    // copy volumes if all parameters (format, dims, etc.)
     // of the two volumes match exactly
     VKT_SAFE_CALL(vktStructuredVolumeCreateCopy(&volume3,
                                                 volume2));

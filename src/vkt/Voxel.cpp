@@ -1,6 +1,7 @@
 // This file is distributed under the MIT license.
 // See the LICENSE file for details.
 
+#include <vkt/common.hpp>
 #include <vkt/linalg.hpp>
 #include <vkt/Voxel.hpp>
 
@@ -18,12 +19,12 @@ namespace vkt
     Error MapVoxel(
             uint8_t* dst,
             float value,
-            uint16_t bytesPerVoxel,
+            DataFormat dataFormat,
             float mappingLo,
             float mappingHi
             )
     {
-        MapVoxelImpl(dst, value, bytesPerVoxel, mappingLo, mappingHi);
+        MapVoxelImpl(dst, value, dataFormat, mappingLo, mappingHi);
 
         return NoError;
     }
@@ -31,12 +32,12 @@ namespace vkt
     Error UnmapVoxel(
             float& value,
             uint8_t const* src,
-            uint16_t bytesPerVoxel,
+            DataFormat dataFormat,
             float mappingLo,
             float mappingHi
             )
     {
-        UnmapVoxelImpl(value, src, bytesPerVoxel, mappingLo, mappingHi);
+        UnmapVoxelImpl(value, src, dataFormat, mappingLo, mappingHi);
 
         return NoError;
     }
@@ -50,21 +51,21 @@ namespace vkt
 vktError vktMapVoxel(
         uint8_t* dst,
         float value,
-        uint16_t bytesPerVoxel,
+        vktDataFormat dataFormat,
         float mappingLo,
         float mappingHi
         )
 {
-    return (vktError)vkt::MapVoxel(dst, value, bytesPerVoxel, mappingLo, mappingHi);
+    return (vktError)vkt::MapVoxel(dst, value, (vkt::DataFormat)dataFormat, mappingLo, mappingHi);
 }
 
 vktError vktUnmapVoxel(
         float* value,
         uint8_t const* src,
-        uint16_t bytesPerVoxel,
+        vktDataFormat dataFormat,
         float mappingLo,
         float mappingHi
         )
 {
-    return (vktError)vkt::UnmapVoxel(*value, src, bytesPerVoxel, mappingLo, mappingHi);
+    return (vktError)vkt::UnmapVoxel(*value, src, (vkt::DataFormat)dataFormat, mappingLo, mappingHi);
 }

@@ -27,7 +27,7 @@ MAKE_CHECKERED_INIT(3)
 int main(void)
 {
     vktVec3i_t dims;
-    int bpv;
+    vktDataFormat dataFormat;
     vktStructuredVolume volume1;
     vktStructuredVolume volume2;
     vktStructuredVolume volume3;
@@ -38,22 +38,22 @@ int main(void)
     dims.x = 32;
     dims.y = 32;
     dims.z = 32;
-    bpv = 1;
+    dataFormat = vktDataFormatUInt8;
 
-    vktStructuredVolumeCreate(&volume1, dims.x, dims.y, dims.z, bpv,
+    vktStructuredVolumeCreate(&volume1, dims.x, dims.y, dims.z, dataFormat,
                               1.f, 1.f, 1.f, 0.f, 1.f);
     vktTransformSV1(volume1, MakeCheckered3);
 
-    vktStructuredVolumeCreate(&volume2, dims.x, dims.y, dims.z, bpv,
+    vktStructuredVolumeCreate(&volume2, dims.x, dims.y, dims.z, dataFormat,
                               1.f, 1.f, 1.f, 0.f, 1.f);
     vktTransformSV1(volume2, MakeCheckered2);
 
-    vktStructuredVolumeCreate(&volume3, dims.x, dims.y, dims.z, bpv,
+    vktStructuredVolumeCreate(&volume3, dims.x, dims.y, dims.z, dataFormat,
                               1.f, 1.f, 1.f, 0.f, 1.f);
     // Compute sum on the CPU
     vktSumSV(volume3, volume1, volume2);
 
-    vktStructuredVolumeCreate(&volume4, dims.x, dims.y, dims.z, bpv,
+    vktStructuredVolumeCreate(&volume4, dims.x, dims.y, dims.z, dataFormat,
                               1.f, 1.f, 1.f, 0.f, 1.f);
 
     // Change execution policy in main thread to GPU

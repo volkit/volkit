@@ -11,7 +11,7 @@ int main(void)
     // Create a structured volume
     vktVec3i_t dims = { .x=256,.y=128,.z=100 };
 
-    int bpv = 1;
+    vktDataFormat dataFormat = vktDataFormatUInt8;
     vktStructuredVolume volume, rotatedVolume;
 
     vktVec3f_t axis = { .x=1.f,.y=.3f,.z=0.f };
@@ -24,7 +24,7 @@ int main(void)
     vktStructuredVolumeCreate(
             &volume,
             dims.x, dims.y, dims.z,
-            bpv,
+            dataFormat,
             1.f, 1.f, 1.f, // dist
             0.f, 1.f // mapping
             );
@@ -42,7 +42,7 @@ int main(void)
     vktStructuredVolumeCreate(
             &rotatedVolume,
             dims.x, dims.y, dims.z,
-            bpv,
+            dataFormat,
             1.f, 1.f, 1.f,
             0.f, 1.f
             );

@@ -3,6 +3,8 @@
 
 #include <cstdint>
 
+#include <vkt/common.hpp>
+
 #include "macros.hpp"
 #include "linalg.hpp"
 
@@ -11,7 +13,7 @@ namespace vkt
     VKT_FUNC inline void MapVoxelImpl(
             uint8_t* dst,
             float value,
-            uint16_t bytesPerVoxel,
+            DataFormat dataFormat,
             float mappingLo,
             float mappingHi
             )
@@ -19,16 +21,16 @@ namespace vkt
         value -= mappingLo;
         value /= mappingHi - mappingLo;
 
-        switch (bytesPerVoxel)
+        switch (dataFormat)
         {
-            case 1:
+            case DataFormat::UInt8:
             {
                 uint8_t ival = value * 255.999f;
                 dst[0] = ival;
                 break;
             }
 
-            case 2:
+            case DataFormat::UInt16:
             {
                 uint16_t ival = value * 65535.999f;
 #ifdef VKT_LITTLE_ENDIAN
@@ -41,7 +43,7 @@ namespace vkt
                 break;
             }
 
-            case 4:
+            case DataFormat::UInt32:
             {
                 uint32_t ival = value * 4294967295.999f;
 #ifdef VKT_LITTLE_ENDIAN
@@ -63,14 +65,14 @@ namespace vkt
     VKT_FUNC inline void UnmapVoxelImpl(
             float& value,
             uint8_t const* src,
-            uint16_t bytesPerVoxel,
+            DataFormat dataFormat,
             float mappingLo,
             float mappingHi
             )
     {
-        switch (bytesPerVoxel)
+        switch (dataFormat)
         {
-            case 1:
+            case DataFormat::UInt8:
             {
                 uint8_t ival = src[0];
                 float fval = static_cast<float>(ival);
@@ -78,7 +80,7 @@ namespace vkt
                 break;
             }
 
-            case 2:
+            case DataFormat::UInt16:
             {
 #ifdef VKT_LITTLE_ENDIAN
                 uint16_t ival = static_cast<uint16_t>(src[0])
@@ -92,7 +94,7 @@ namespace vkt
                 break;
             }
 
-            case 4:
+            case DataFormat::UInt32:
             {
 #ifdef VKT_LITTLE_ENDIAN
                 uint32_t ival = static_cast<uint32_t>(src[0])
