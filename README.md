@@ -7,13 +7,13 @@ Volkit is a volume manipulation library with interfaces for ANSI C99, C++03, Pyt
 ```
 vktStructuredVolume volume;
 vktStructuredVolumeCreate(&volume,
-                          64,64,64,    /* dimensions */
-                          vktDataFormatUInt8,
-                          1.f,1.f,1.f, /* x/y/z voxel size / slice distance */
-                          0.f,         /* float val that min. value is mapped to */
-                          1.f)         /* float val that min. value is mapped to */
+                          64,64,64,           /* dimensions */
+                          vktDataFormatUInt8, /* 8 bit per voxel */
+                          1.f,1.f,1.f,        /* x/y/z voxel size / slice distance */
+                          0.f,                /* float val that min. value is mapped to */
+                          1.f)                /* float val that min. value is mapped to */
 
-vktFillSV(volume, .1f);                /* fill structured volume (SV) */
+vktFillSV(volume, .1f);                       /* fill structured volume (SV) */
 vktStructuredVolumeDestroy(volume);
 ```
 
