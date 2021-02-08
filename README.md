@@ -8,7 +8,7 @@ Volkit is a volume manipulation library with interfaces for ANSI C99, C++03, Pyt
 vktStructuredVolume volume;
 vktStructuredVolumeCreate(&volume,
                           64,64,64,    /* dimensions */
-                          1,           /* bytes per voxel */
+                          vktDataFormatUInt8,
                           1.f,1.f,1.f, /* x/y/z voxel size / slice distance */
                           0.f,         /* float val that min. value is mapped to */
                           1.f)         /* float val that min. value is mapped to */
@@ -28,7 +28,7 @@ vkt::InputStream is(file);
 vkt::StructuredVolume volume(dims.x, dims.y, dims.z, dataFormat);
 is.read(volume);
 
-vkt::StructuredVolume volume2(32,32,32,1);
+vkt::StructuredVolume volume2(32,32,32,vkt::DataFormat::UInt8);
 vkt::CopyRange(volume,      // copy to volume
                volume2,     // ... from volume2
                2,2,2,       // from voxel position (2,2,2)
@@ -39,12 +39,12 @@ vkt::CopyRange(volume,      // copy to volume
 ### Python 3
 ```
 volume1 = vkt.StructuredVolume(16,16,16,
-                               2,           # 16 bit volume
+                               vkt.Dataformat_UInt16, # 16 bit volume
                                1.,1.,1.,
                                0.,1.);
 
 volume2 = vkt.StructuredVolume(16,16,16,
-                               2,
+                               vkt.Dataformat_UInt16,
                                1.,1.,1.,
                                0.,1.);
 ```
