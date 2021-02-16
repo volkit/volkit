@@ -6,8 +6,8 @@
 #include <cstddef>
 #include <cstdint>
 
-/*! VKTAPI */
-#define VKTAPI
+// Shared header for VKTAPI
+#include <vkt/Compiler.h>
 
 namespace vkt
 {

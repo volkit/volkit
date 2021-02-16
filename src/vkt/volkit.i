@@ -3,6 +3,11 @@
 %ignore True;
 %ignore False;
 
+#ifdef VKTAPI
+#undef VKTAPI
+#endif
+#define VKTAPI
+
 %module volkit 
 %{
 #include <vector>
