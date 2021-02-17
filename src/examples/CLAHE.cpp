@@ -19,6 +19,11 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
+    // Switch performance debugging on
+    vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
+    ep.printPerformance = vkt::True;
+    vkt::SetThreadExecutionPolicy(ep);
+
     vkt::VolumeFile file(argv[1], vkt::OpenMode::Read);
 
     vkt::VolumeFileHeader header = file.getHeader();
@@ -49,7 +54,7 @@ int main(int argc, char** argv)
 
     // Resample using contrast limited adaptive histogram equalization
     // Source volume is also dest volume
-    vkt::ResampleCLAHE(volume, volume);
+    //vkt::ResampleCLAHE(volume, volume);
 
     float rgba[] = {
             1.f, 1.f, 1.f, .005f,
@@ -61,18 +66,13 @@ int main(int argc, char** argv)
     vkt::LookupTable lut(5,1,1,vkt::ColorFormat::RGBA32F);
     lut.setData((uint8_t*)rgba);
 
-    // Switch execution to GPU (remove those lines for CPU rendering)
-    // vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
-    // ep.device = vkt::ExecutionPolicy::Device::GPU;
-    // vkt::SetThreadExecutionPolicy(ep);
-
     // Compute histogram
     vkt::Histogram histogram(256);
     vkt::ComputeHistogram(volume, histogram);
 
     vkt::RenderState renderState;
     //renderState.renderAlgo = vkt::RenderAlgo::RayMarching;
-    //renderState.renderAlgo = vkt::RenderAlgo::ImplicitIso;
+    renderState.renderAlgo = vkt::RenderAlgo::ImplicitIso;
     renderState.renderAlgo = vkt::RenderAlgo::MultiScattering;
     renderState.rgbaLookupTable = lut.getResourceHandle();
     // Set handle to histogram to make visible in renderer
