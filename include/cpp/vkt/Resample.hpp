@@ -7,7 +7,7 @@
 #include "forward.hpp"
 
 /*! @file  Resample.hpp
- * @brief  Resample volumes in space and regarding their value ranges
+ * @brief  Resample volumes in space and regarding their data format
  */
 namespace vkt
 {
@@ -17,7 +17,12 @@ namespace vkt
         Linear,
     };
 
+    //! Resample in space and/or regarding data format
     VKTAPI Error Resample(StructuredVolume& dst,
                           StructuredVolume& src,
                           Filter filter);
+
+    //! Resample using contrast limited adaptive histogram equalization
+    VKTAPI Error ResampleCLAHE(StructuredVolume& dst,
+                               StructuredVolume& src);
 } // vkt
