@@ -83,7 +83,7 @@ if(VKT_ENABLE_IMGUI)
 
 
     # ImGui is compiled directly into the library
-    set(IMGUI_DIR ${PROJECT_SOURCE_DIR}/src/3rdparty/imgui)
+    set(IMGUI_DIR ${VSNRAY_DIR}/src/3rdparty/imgui)
     set(IMGUI_INCLUDE_DIR ${IMGUI_DIR})
 
     include_directories(${IMGUI_INCLUDE_DIR})
