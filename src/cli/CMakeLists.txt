@@ -25,4 +25,9 @@ include_directories(${__VKT_CONFIG_DIR})
 
 vkt_link_libraries(volkit)
 
+set(VKT_MACOSX_BUNDLE_OLD ${VKT_MACOSX_BUNDLE})
+set(VKT_MACOSX_BUNDLE FALSE)
+
 vkt_add_executable(vkt main.cpp)
+
+set(VKT_MACOSX_BUNDLE ${VKT_MACOSX_BUNDLE_OLD})
