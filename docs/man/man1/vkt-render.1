@@ -1,0 +1,21 @@
+.\" Manpage for the vkt-render command.
+.\" Author: Stefan Zellmann (info@szellmann.de).
+.TH VKT-RENDER 1 "February 18 2021" "1.0" "Volkit CLI Manuel"
+.SH NAME
+vkt-render \- render volume data from stdin
+.SH SYNOPSIS
+vkt commit [--render-algo | --rgba-lookup-table] [-ra | -lut]
+.SH DESCRIPTION
+The vkt program provides the command line interface (CLI) of the volkit library.
+.SH OPTIONS
+.TP
+.BR \-ra ", " \-\-render-algo =\fIALGO\fR
+    Set the rendering algorithm.
+.TP
+.BR \-lut ", " \-\-rgba-lookup-table =\fILIST\fR
+    Set the rgba lookup table.
+
+.SH SEE ALSO
+vkt(1), vkt-resample(1)
+.SH AUTHOR
+Stefan Zellmann (info@szellmann.de)
