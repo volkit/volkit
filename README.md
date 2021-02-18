@@ -59,6 +59,9 @@ vkt declare-sv --dims 32 32 32 --data-format uint8 | vkt fill --value 1 | vkt re
 
 # Similar to before, but with range fill
 vkt declare-sv --dims 32 32 32 --data-format uint8 | vkt fill --value 0.05 | vkt fill-range --value 1 --first 0 0 0 --last 8 8 8 | vkt render
+
+# Load and render with multi scattering and a user-supplied RGBA LUT
+vkt read -i /home/user/file.raw | vkt render --render-algo multi-scattering --rgba-lookup-table 1 1 1 0  0.2 0.0 0.2 0.2  0.0 0.8 0.8 0.8  1 1 0 1
 ```
 
 Rendering

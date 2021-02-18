@@ -9,10 +9,12 @@
 #include <iostream>
 #include <ostream>
 #include <sstream>
+#include <vector>
 
 #include <vkt/Fill.hpp>
 #include <vkt/Flip.hpp>
 #include <vkt/InputStream.hpp>
+#include <vkt/LookupTable.hpp>
 #include <vkt/OutputStream.hpp>
 #include <vkt/Resample.hpp>
 #include <vkt/Render.hpp>
@@ -104,6 +106,7 @@ struct
     float value { 0.f };
     Axis axis { Axis::X };
     std::string renderAlgo;
+    std::vector<Vec4f> rgbaLUT;
 
     bool parse(int argc, char** argv)
     {
@@ -238,6 +241,41 @@ struct
                     return false;
                 }
                 renderAlgo = argv[++i];
+            }
+            else if (opt == "-lut" || opt == "--rgba-lookup-table")
+            {
+                float rgba[4] = { 0.f, 0.f, 0.f, 0.f };
+
+                for (int c = 0; true; ++c)
+                {
+                    ++i;
+
+                    if (i >= argc)
+                        break;
+
+                    float val = 0.f;
+                    try
+                    {
+                        val = (float)std::stof(argv[i]);
+                    }
+                    catch (std::invalid_argument)
+                    {
+                        // TODO: Maybe a file?
+                        // if (c == 0)
+                        // else
+                        --i; // Don't consume!
+                        break;
+                    }
+
+                    rgba[c % 4] = val;
+
+                    if (c % 4 == 3)
+                        rgbaLUT.push_back({ rgba[0], rgba[1], rgba[2], rgba[3] });
+
+                }
+
+                if (rgbaLUT.empty())
+                    std::cerr << "Option " << opt << " requires one or more arguments\n";
             }
             else if (opt == "-val" || opt == "--value")
             {
@@ -649,6 +687,15 @@ int main(int argc, char** argv)
                 return EXIT_FAILURE;
             }
         }
+
+        vkt::LookupTable lut;
+        if (!cmdline.rgbaLUT.empty())
+        {
+            lut = vkt::LookupTable(cmdline.rgbaLUT.size(), 1, 1, vkt::ColorFormat::RGBA32F);
+            lut.setData((uint8_t*)cmdline.rgbaLUT.data());
+            renderState.rgbaLookupTable = lut.getResourceHandle();
+        }
+
         Render(volume, renderState);
     }
     else if (cmdline.command == "resample")
