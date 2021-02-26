@@ -56,14 +56,14 @@ int main(int argc, char** argv)
     vkt::LookupTable lut(5,1,1,vkt::ColorFormat::RGBA32F);
     lut.setData((uint8_t*)rgba);
 
+    // Compute histogram
+    vkt::Histogram histogram(256);
+    vkt::ComputeHistogram(volume, histogram);
+
     // Switch execution to GPU (remove those lines for CPU rendering)
     vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
     ep.device = vkt::ExecutionPolicy::Device::GPU;
     vkt::SetThreadExecutionPolicy(ep);
-
-    // Compute histogram
-    vkt::Histogram histogram(256);
-    vkt::ComputeHistogram(volume, histogram);
 
     vkt::RenderState renderState;
     //renderState.renderAlgo = vkt::RenderAlgo::RayMarching;

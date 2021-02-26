@@ -95,10 +95,16 @@ struct Viewer : ViewerBase
     gpu_buffer_rt<PF_RGBA32F, PF_UNSPECIFIED> device_rt[2];
     cuda_sched<RayType>                       device_sched;
     thrust::device_vector<vec4>               device_accumBuffer;
+    cuda_texture<int16_t, 3>                  device_volumeInt16;
     cuda_texture<uint8_t, 3>                  device_volumeUint8;
     cuda_texture<uint16_t, 3>                 device_volumeUint16;
     cuda_texture<uint32_t, 3>                 device_volumeUint32;
     cuda_texture<vec4, 1>                     device_transfunc;
+
+    inline cuda_texture_ref<int16_t, 3> prepareDeviceVolume(int16_t /* */)
+    {
+        return cuda_texture_ref<int16_t, 3>(device_volumeInt16);
+    }
 
     inline cuda_texture_ref<uint8_t, 3> prepareDeviceVolume(uint8_t /* */)
     {
@@ -195,6 +201,16 @@ Viewer::Viewer(
 #if VKT_HAVE_CUDA
         switch (volume.getDataFormat())
         {
+        case vkt::DataFormat::Int16:
+            device_volumeInt16 = cuda_texture<int16_t, 3>(
+                (int16_t*)volume.getData(),
+                volume.getDims().x,
+                volume.getDims().y,
+                volume.getDims().z,
+                Clamp,
+                Nearest
+                );
+            break;
         case vkt::DataFormat::UInt8:
             device_volumeUint8 = cuda_texture<uint8_t, 3>(
                 (uint8_t*)volume.getData(),
@@ -453,6 +469,10 @@ void Viewer::on_display()
 
     switch (volume.getDataFormat())
     {
+    case vkt::DataFormat::Int16:
+        callKernel(int16_t{});
+        break;
+
     case vkt::DataFormat::UInt8:
         callKernel(uint8_t{});
         break;

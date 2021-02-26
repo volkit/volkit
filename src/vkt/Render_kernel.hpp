@@ -242,7 +242,10 @@ struct MultiScatteringKernel : AccumulationKernel
         float voxel = convert_to_float(tex3D(volume, pos / bbox.size()));
 
         // normalize to [0..1]
-        voxel /= float(numeric_limits<typename Volume::value_type>::max());
+        typename Volume::value_type minval = numeric_limits<typename Volume::value_type>::min();
+        typename Volume::value_type maxval = numeric_limits<typename Volume::value_type>::max();
+        voxel -= (float)minval;
+        voxel /= (float)(maxval - minval);
 
         if (transfunc)
         {

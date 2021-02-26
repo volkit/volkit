@@ -23,6 +23,19 @@ namespace vkt
 
         switch (dataFormat)
         {
+            case DataFormat::Int16:
+            {
+                int16_t ival = value * 65535.999f - 32767.f;
+#ifdef VKT_LITTLE_ENDIAN
+                dst[0] = static_cast<uint8_t>(ival);
+                dst[1] = static_cast<uint8_t>(ival >> 8);
+#else
+                dst[0] = static_cast<uint8_t>(ival >> 8);
+                dst[1] = static_cast<uint8_t>(ival);
+#endif
+                break;
+            }
+
             case DataFormat::UInt8:
             {
                 uint8_t ival = value * 255.999f;
@@ -72,6 +85,20 @@ namespace vkt
     {
         switch (dataFormat)
         {
+            case DataFormat::Int16:
+            {
+#ifdef VKT_LITTLE_ENDIAN
+                int16_t ival = static_cast<int16_t>(src[0])
+                             | static_cast<int16_t>(src[1] << 8);
+#else
+                int16_t ival = static_cast<int16_t>(src[0] << 8)
+                             | static_cast<int16_t>(src[1]);
+#endif
+                float fval = static_cast<float>(ival);
+                value = lerp(mappingLo, mappingHi, (fval + 32767.f) / 65535.999f);
+                break;
+            }
+
             case DataFormat::UInt8:
             {
                 uint8_t ival = src[0];

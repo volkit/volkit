@@ -176,14 +176,6 @@ namespace vkt
         float lo = 0.f;
         float hi = 1.f;
 
-        switch (impl_->header->datatype)
-        {
-        case NIFTI_TYPE_INT16:
-            lo = SHRT_MIN;
-            hi = SHRT_MAX;
-            break;
-        }
-
         return {
             lo * impl_->header->scl_slope + impl_->header->scl_inter,
             hi * impl_->header->scl_slope + impl_->header->scl_inter
