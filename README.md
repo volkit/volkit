@@ -133,10 +133,6 @@ Core Algorithms
 
 ### Copy
 
-### Delete
-
-### Crop
-
 ### Transform
 
 ### Core Algorithm Variants
@@ -156,6 +152,19 @@ Decomposition Algorithms
 ------------------------
 
 ### BrickDecompose
+
+Derived Algorithms
+------------------
+
+Derived algorithms are algorithms that can be implemented by using other core algorithms.
+
+### Crop
+
+Implemented using `Copy`.
+
+### Delete
+
+Implemented using `Fill`.
 
 Implementation Status
 ---------------------
