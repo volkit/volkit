@@ -38,6 +38,7 @@
 #include <common/viewer_glut.h>
 #endif
 
+#include <vkt/Array1D.hpp>
 #include <vkt/ExecutionPolicy.hpp>
 #include <vkt/LookupTable.hpp>
 #include <vkt/Render.hpp>
@@ -69,8 +70,8 @@ struct Viewer : ViewerBase
     //using RayType = basic_ray<simd::float4>;
     using RayType = basic_ray<float>;
 
-    vkt::StructuredVolume&                    volume;
-    vkt::RenderState const&                   renderState;
+    vkt::Array1D<vkt::StructuredVolume>&      volumes;
+    vkt::RenderState                          renderState;
 
     aabb                                      bbox;
     thin_lens_camera                          cam;
@@ -152,28 +153,31 @@ struct Viewer : ViewerBase
 
 
     Viewer(
-        vkt::StructuredVolume& volume,
-        vkt::RenderState const& renderState,
+        vkt::Array1D<vkt::StructuredVolume>& volumes,
+        vkt::RenderState renderState,
         char const* windowTitle = "",
         unsigned numThreads = std::thread::hardware_concurrency()
         );
 
+    void updateVolumeTexture();
+
     void clearFrame();
 
     void on_display();
+    void on_key_press(visionaray::key_event const& event);
     void on_mouse_move(visionaray::mouse_event const& event);
     void on_space_mouse_move(visionaray::space_mouse_event const& event);
     void on_resize(int w, int h);
 };
 
 Viewer::Viewer(
-        vkt::StructuredVolume& volume,
-        vkt::RenderState const& renderState,
+        vkt::Array1D<vkt::StructuredVolume>& volumes,
+        vkt::RenderState renderState,
         char const* windowTitle,
         unsigned numThreads
         )
     : ViewerBase(renderState.viewportWidth, renderState.viewportHeight, windowTitle)
-    , volume(volume)
+    , volumes(volumes)
     , renderState(renderState)
     , host_sched(numThreads)
     , frontBufferIndex(0)
@@ -183,6 +187,13 @@ Viewer::Viewer(
 
     if (renderState.histogram != vkt::ResourceHandle(-1))
         transfuncEditor.setHistogramResource(renderState.histogram);
+
+    updateVolumeTexture();
+}
+
+void Viewer::updateVolumeTexture()
+{
+    vkt::StructuredVolume& volume = volumes[renderState.frameNum];
 
     vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
 
@@ -242,6 +253,8 @@ void Viewer::on_display()
 {
     if (transfuncEditor.updated())
         clearFrame();
+
+    vkt::StructuredVolume& volume = volumes[renderState.frameNum];
 
     // Prepare a kernel with the volume set up appropriately
     // according to the provided texture and texel type
@@ -490,6 +503,18 @@ void Viewer::on_display()
         transfuncEditor.show();
 }
 
+void Viewer::on_key_press(visionaray::key_event const& event)
+{
+    if (event.key() == keyboard::Space)
+    {
+        renderState.frameNum++;
+        renderState.frameNum %= volumes.numElements();
+        clearFrame();
+    }
+
+    ViewerBase::on_key_press(event);
+}
+
 void Viewer::on_mouse_move(visionaray::mouse_event const& event)
 {
     if (event.buttons() != mouse::NoButton)
@@ -539,19 +564,19 @@ void Viewer::on_resize(int w, int h)
 //
 
 static void Render_impl(
-        vkt::StructuredVolume& volume,
+        vkt::Array1D<vkt::StructuredVolume>& volumes,
         vkt::RenderState const& renderState,
         vkt::RenderState* newRenderState
         )
 {
-    Viewer viewer(volume, renderState);
+    Viewer viewer(volumes, renderState);
 
     int argc = 1;
     char const* argv = "vktRender";
     viewer.init(argc, (char**)&argv);
 
-    vkt::Vec3i dims = volume.getDims();
-    vkt::Vec3f dist = volume.getDist();
+    vkt::Vec3i dims = volumes[0].getDims();
+    vkt::Vec3f dist = volumes[0].getDist();
     viewer.bbox = aabb(
             { 0.f, 0.f, 0.f },
             { dims.x * dist.x, dims.y * dist.y, dims.z * dist.z }
@@ -582,6 +607,22 @@ static void Render_impl(
     }
 }
 
+//-------------------------------------------------------------------------------------------------
+// Overload for single volume
+//
+
+static void Render_impl(
+        vkt::StructuredVolume& volume,
+        vkt::RenderState const& renderState,
+        vkt::RenderState* newRenderState
+        )
+{
+    vkt::Array1D<vkt::StructuredVolume> volumes(1);
+    volumes[0] = volume;
+
+    Render_impl(volumes, renderState, newRenderState);
+}
+
 
 //-------------------------------------------------------------------------------------------------
 // C++ API
@@ -593,6 +634,16 @@ namespace vkt
     Error Render(StructuredVolume& volume, RenderState const& renderState, RenderState* newRenderState)
     {
         Render_impl(volume, renderState, newRenderState);
+
+        return NoError;
+    }
+
+    Error RenderFrames(
+            Array1D<StructuredVolume>& volumes,
+            RenderState const& renderState,
+            RenderState* newRenderState)
+    {
+        Render_impl(volumes, renderState, newRenderState);
 
         return NoError;
     }
