@@ -86,10 +86,24 @@ namespace vkt
 
     };
 
+    /*! @brief  Render single volume
+     *
+     * Render a single structured volume. @param volume is a managed volkit
+     * structured volume object. Rendering of multiple volumes can be done
+     * using @ref RenderFrames().
+     * @see RenderFrames()
+     */
     VKTAPI Error Render(StructuredVolume& volume,
                         RenderState const& renderState = {},
                         RenderState* newRenderState = 0);
 
+    /*! @brief  Render volumes as animation frames
+     *
+     * Render numAnimationFrames volumes as a sequence of time steps. @param
+     * volume is a CPU-accessible raw pointer pointing to managed volkit
+     * structured volume objects.
+     * @see Render()
+     */
     VKTAPI Error RenderFrames(StructuredVolume* volumes,
                               std::size_t numAnimationFrames,
                               RenderState const& renderState = {},
