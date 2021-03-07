@@ -61,7 +61,7 @@ typedef struct
     //! Parameters related to animation
     ///@{
 
-    unsigned frameNum;
+    unsigned animationFrame;
 
     ///@}
 
@@ -112,7 +112,7 @@ static void vktRenderStateDefaultInit(vktRenderState_t* renderState)
         .isoSurfaces = { .5f },
         .dtImplicitIso = 1.f,
         .majorant = 1.f,
-        .frameNum = 0,
+        .animationFrame = 0,
         .rgbaLookupTable = -1,
         .histogram = -1,
         .viewportWidth = 512,

@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <ostream>
+#include <vector>
 
 #include <vkt/Array1D.hpp>
 #include <vkt/ExecutionPolicy.hpp>
@@ -18,7 +19,7 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    vkt::Array1D<vkt::StructuredVolume> volumes(argc - 1);
+    std::vector<vkt::StructuredVolume> volumes(argc - 1);
 
     for (int i = 1; i < argc; ++i)
     {
@@ -63,10 +64,15 @@ int main(int argc, char** argv)
     vkt::LookupTable lut(5,1,1,vkt::ColorFormat::RGBA32F);
     lut.setData((uint8_t*)rgba);
 
+    // Switch execution to GPU (remove those lines for CPU rendering)
+    vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
+    ep.device = vkt::ExecutionPolicy::Device::GPU;
+    vkt::SetThreadExecutionPolicy(ep);
+
     vkt::RenderState renderState;
     renderState.renderAlgo = vkt::RenderAlgo::RayMarching;
     //renderState.renderAlgo = vkt::RenderAlgo::ImplicitIso;
     //renderState.renderAlgo = vkt::RenderAlgo::MultiScattering;
     renderState.rgbaLookupTable = lut.getResourceHandle();
-    vkt::RenderFrames(volumes, renderState);
+    vkt::RenderFrames(volumes.data(), volumes.size(), renderState);
 }

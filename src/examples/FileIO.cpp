@@ -57,7 +57,7 @@ int main(int argc, char** argv)
 
     // Switch execution to GPU (remove those lines for CPU rendering)
     vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
-    // ep.device = vkt::ExecutionPolicy::Device::GPU;
+    ep.device = vkt::ExecutionPolicy::Device::GPU;
     vkt::SetThreadExecutionPolicy(ep);
 
     vkt::RenderState renderState;
