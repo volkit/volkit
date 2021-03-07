@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <vkt/Array1D.hpp>
 #include <vkt/ManagedResource.hpp>
 
 #include "common.hpp"
@@ -55,6 +56,13 @@ namespace vkt
 
         ///@}
 
+        //! Parameters related to animation
+        ///@{
+
+        unsigned frameNum = 0;
+
+        ///@}
+
         //! General parameters
         ///@{
 
@@ -81,4 +89,7 @@ namespace vkt
                         RenderState const& renderState = {},
                         RenderState* newRenderState = 0);
 
+    VKTAPI Error RenderFrames(Array1D<StructuredVolume>& volumes,
+                              RenderState const& renderState = {},
+                              RenderState* newRenderState = 0);
 } // vkt
