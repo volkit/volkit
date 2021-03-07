@@ -15,7 +15,7 @@ int main(int argc, char** argv)
 {
     if (argc < 2)
     {
-        std::cerr << "Usage: " << argv[0] << " file.raw\n";
+        std::cerr << "Usage: " << argv[0] << " file.raw [|file.raw]\n";
         return EXIT_FAILURE;
     }
 
@@ -70,9 +70,9 @@ int main(int argc, char** argv)
     vkt::SetThreadExecutionPolicy(ep);
 
     vkt::RenderState renderState;
-    renderState.renderAlgo = vkt::RenderAlgo::RayMarching;
+    //renderState.renderAlgo = vkt::RenderAlgo::RayMarching;
     //renderState.renderAlgo = vkt::RenderAlgo::ImplicitIso;
-    //renderState.renderAlgo = vkt::RenderAlgo::MultiScattering;
+    renderState.renderAlgo = vkt::RenderAlgo::MultiScattering;
     renderState.rgbaLookupTable = lut.getResourceHandle();
     vkt::RenderFrames(volumes.data(), volumes.size(), renderState);
 }
