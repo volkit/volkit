@@ -40,6 +40,7 @@ namespace vkt
     VKTAPI Error ComputeHistogram(StructuredVolume& volume, Histogram& histogram)
     {
         VKT_CALL__(ComputeHistogramRange, volume, histogram, { 0, 0, 0 }, volume.getDims());
+        return Error::NoError;
     }
 
     VKTAPI Error ComputeHistogramRange(

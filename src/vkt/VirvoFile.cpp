@@ -1,6 +1,7 @@
 // This file is distributed under the MIT license.
 // See the LICENSE file for details.
 
+
 #include <cstddef>
 #include <cstring>
 
@@ -69,6 +70,7 @@ namespace vkt
             vvFileIO fileio;
             return fileio.saveVolumeData(vd, true/*overwrite existing*/) == vvFileIO::OK;
 #endif
+            return false;
         }
 
         void resetVD()

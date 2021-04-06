@@ -34,7 +34,18 @@ find_library(VIRVO_FILEIO_LIBRARY
         lib
 )
 
-set(VIRVO_LIBRARIES ${VIRVO_LIBRARY})
+
+find_library(VIRVO_TRANSFUNC_LIBRARY
+    NAMES
+        virvo_transfunc
+    PATHS
+        ${paths}
+    PATH_SUFFIXES
+        lib64
+        lib
+)
+
+set(VIRVO_LIBRARIES ${VIRVO_LIBRARY} ${VIRVO_FILEIO_LIBRARY} ${VIRVO_TRANSFUNC_LIBRARY})
 
 find_package_handle_standard_args(Virvo
     VIRVO_DEFAULT_MSG

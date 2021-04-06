@@ -6,7 +6,13 @@
 #include <stdint.h>
 
 /*! VKTAPI */
+#ifndef VKTAPI
+
 #define VKTAPI
+
+#endif 
+
+
 
 /*! Boolean */
 typedef uint8_t vktBool_t;

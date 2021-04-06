@@ -70,7 +70,7 @@ namespace vkt
 
         if (ft == RAW)
         {
-            dataSource_ = new RawFile(fileName_, "rw");
+            dataSource_ = new RawFile(fileName_, "rb");
             if (RawFile const* rf = dynamic_cast<RawFile const*>(dataSource_))
             {
                 header_.isStructured = true;
@@ -207,14 +207,14 @@ namespace vkt
 // C API
 //
 
-VKTAPI void vktVolumeFileCreateS(vktVolumeFile* file, char const* fileName, vktOpenMode om)
+void vktVolumeFileCreateS(vktVolumeFile* file, char const* fileName, vktOpenMode om)
 {
     assert(file != nullptr);
 
     *file = new vktVolumeFile_impl(fileName, om);
 }
 
-VKTAPI vktDataSource vktVolumeFileGetBase(vktVolumeFile file)
+vktDataSource vktVolumeFileGetBase(vktVolumeFile file)
 {
     return file->base;
 }

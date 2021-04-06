@@ -9,23 +9,32 @@
 #include <vkt/StructuredVolume.hpp>
 #include <vkt/VolumeFile.hpp>
 
+
 int main(int argc, char** argv)
 {
+    std::cout << __LINE__ << std::endl;
+
     if (argc < 2)
     {
         std::cerr << "Usage: " << argv[0] << " file.raw\n";
         return EXIT_FAILURE;
     }
+    std::cout << __LINE__ << std::endl;
+    std::cout << argv[1] << std::endl;
 
     vkt::VolumeFile file(argv[1], vkt::OpenMode::Read);
+    std::cout << __LINE__ << std::endl;
 
     vkt::VolumeFileHeader hdr = file.getHeader();
+    std::cout << __LINE__ << std::endl;
 
     if (!hdr.isStructured)
     {
         std::cerr << "No valid volume file\n";
         return EXIT_FAILURE;
     }
+    std::cout << __LINE__ << std::endl;
+    std::cout << __LINE__ << std::endl;
 
     vkt::Vec3i dims = hdr.dims;
     if (dims.x * dims.y * dims.z < 1)
@@ -33,18 +42,19 @@ int main(int argc, char** argv)
         std::cerr << "Cannot parse dimensions from file name\n";
         return EXIT_FAILURE;
     }
-
+    std::cout << __LINE__ << std::endl;
     vkt::DataFormat dataFormat = hdr.dataFormat;
     if (dataFormat == vkt::DataFormat::Unspecified)
     {
         std::cerr << "Cannot parse data format from file name, guessing uint8...\n";
         dataFormat = vkt::DataFormat::UInt8;
     }
-
+    std::cout << __LINE__ << std::endl;
     vkt::StructuredVolume volume(dims.x, dims.y, dims.z, dataFormat);
     vkt::InputStream is(file);
     is.read(volume);
 
+    std::cout << __LINE__ << std::endl;
     float rgba[] = {
             1.f, 1.f, 1.f, .005f,
             0.f, .1f, .1f, .25f,
@@ -54,12 +64,12 @@ int main(int argc, char** argv)
             };
     vkt::LookupTable lut(5,1,1,vkt::ColorFormat::RGBA32F);
     lut.setData((uint8_t*)rgba);
-
+    std::cout << __LINE__ << std::endl;
     // Switch execution to GPU (remove those lines for CPU rendering)
     vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
     ep.device = vkt::ExecutionPolicy::Device::GPU;
     vkt::SetThreadExecutionPolicy(ep);
-
+    std::cout << __LINE__ << std::endl;
     vkt::RenderState renderState;
     //renderState.renderAlgo = vkt::RenderAlgo::RayMarching;
     //renderState.renderAlgo = vkt::RenderAlgo::ImplicitIso;

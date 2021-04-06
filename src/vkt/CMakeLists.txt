@@ -1,7 +1,7 @@
 # This file is distributed under the MIT license.
 # See the LICENSE file for details.
 
-find_package(Boost COMPONENTS filesystem system REQUIRED)
+find_package(Boost COMPONENTS filesystem system serialization REQUIRED)
 find_package(CUDA)
 find_package(Nifti)
 find_package(SDL2)
