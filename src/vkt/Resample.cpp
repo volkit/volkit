@@ -28,4 +28,14 @@ namespace vkt
 
         return NoError;
     }
+
+    VKTAPI Error ResampleCLAHE(
+            StructuredVolume& dst,
+            StructuredVolume& src
+            )
+    {
+        VKT_CALL__(ResampleCLAHE, dst, src);
+
+        return NoError;
+    }
 }

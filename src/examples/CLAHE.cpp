@@ -54,7 +54,7 @@ int main(int argc, char** argv)
 
     // Resample using contrast limited adaptive histogram equalization
     // Source volume is also dest volume
-    //vkt::ResampleCLAHE(volume, volume);
+    vkt::ResampleCLAHE(volume, volume);
 
     float rgba[] = {
             1.f, 1.f, 1.f, .005f,

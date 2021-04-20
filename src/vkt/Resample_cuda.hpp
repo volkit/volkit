@@ -14,4 +14,9 @@ namespace vkt
             Filter filter
             );
 
+    void ResampleCLAHE_cuda(
+            StructuredVolume& dst,
+            StructuredVolume& src,
+            Filter filter
+            );
 } // vkt
