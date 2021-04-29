@@ -16,7 +16,6 @@ namespace vkt
 
     void ResampleCLAHE_cuda(
             StructuredVolume& dst,
-            StructuredVolume& src,
-            Filter filter
+            StructuredVolume& src
             );
 } // vkt

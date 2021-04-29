@@ -13,4 +13,11 @@ namespace vkt
             )
     {
     }
+
+    void ResampleCLAHE_cuda(
+            StructuredVolume& dst,
+            StructuredVolume& src
+            )
+    {
+    }
 } // vkt
