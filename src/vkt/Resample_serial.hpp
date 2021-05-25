@@ -95,6 +95,41 @@ namespace vkt
             return ival;
         };
 
+        auto imageStore = [&](int x, int y, int z, float value)
+        {
+            uint8_t dstBytes[4];
+
+            Vec2f vm = src.getVoxelMapping();
+            value -= vm.x;
+            value /= vm.y - vm.x;
+
+            switch (dst.getDataFormat())
+            {
+            case DataFormat::UInt8:
+            {
+                uint8_t ival = value * 255.999f;
+                dstBytes[0] = ival;
+                break;
+            }
+
+            case DataFormat::UInt16:
+            {
+                uint16_t ival = value * 65535.999f;
+#ifdef VKT_LITTLE_ENDIAN
+                dstBytes[0] = static_cast<uint8_t>(ival);
+                dstBytes[1] = static_cast<uint8_t>(ival >> 8);
+#else
+                dstBytes[0] = static_cast<uint8_t>(ival >> 8);
+                dstBytes[1] = static_cast<uint8_t>(ival);
+#endif
+                break;
+            }
+
+            }
+
+            dst.setBytes(x, y, z, dstBytes);
+        };
+
         auto mapHistogram = [&](uint32_t minVal, uint32_t maxVal, uint32_t numPixelsSB, uint32_t numBins, uint32_t* localHist) {
 
             float sum = 0;
@@ -205,7 +240,7 @@ namespace vkt
             unsigned int histIndex = index / NumBins;
 
             // Compute the clip value of the current Histogram
-            unsigned int clipValue = unsigned int(float(histMax[histIndex]) * clipLimit);
+            unsigned int clipValue(float(histMax[histIndex]) * clipLimit);
 
             // Calculate the number of excess pixels
             excess[histIndex] += max(0, int(hist[index]) - int(clipValue));
@@ -220,7 +255,7 @@ namespace vkt
             unsigned int histIndex = hist1DIndex / NumBins;
             // Pass 1 of redistributing the excess pixels 
             unsigned int avgInc = excess[histIndex] / NumBins;
-            unsigned int clipValue = unsigned int(float(histMax[histIndex]) * clipLimit);
+            unsigned int clipValue(float(histMax[histIndex]) * clipLimit);
             unsigned int upperLimit = clipValue - avgInc;	// Bins larger than upperLimit set to clipValue
 
             // if the number in the histogram is too big -> clip the bin
@@ -273,7 +308,7 @@ namespace vkt
 
                 // Pass 2 of redistributing the excess pixels 
                 unsigned int stepSize = stepSizeVector[histIndex];
-                unsigned int clipValue = unsigned int(float(histMax[histIndex]) * clipLimit);
+                unsigned int clipValue(float(histMax[histIndex]) * clipLimit);
 
 
                 // get 0...NUM_BINS index
@@ -451,10 +486,11 @@ namespace vkt
 
                 
                     // store new value back into the volume texture 
-                    uint8_t data[4];
-                    data[0] = (unsigned int)ans*255;
-                    
-                    dst.setBytes(x, y, z, &data[0]);
+                    imageStore(x,y,z,ans);
+                    // uint8_t data[4];
+                    // data[0] = (unsigned int)ans*255;
+                    // 
+                    // dst.setBytes(x, y, z, &data[0]);
                    
                     
                     
