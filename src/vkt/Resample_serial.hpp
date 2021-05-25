@@ -13,6 +13,7 @@
 
 #include "linalg.hpp"
  
+#include <iostream>
 namespace vkt
 {
     void Resample_serial(
@@ -63,38 +64,38 @@ namespace vkt
     }
 
     void ResampleCLAHE_serial(
-            StructuredVolume& dst,
-            StructuredVolume& src
-            )
+        StructuredVolume& dst,
+        StructuredVolume& src
+    )
     {
         auto imageLoad = [&](int x, int y, int z)
             -> unsigned
         {
-                    uint8_t data[4];
-                    src.getBytes(x, y, z, data);
+            uint8_t data[4];
+            src.getBytes(x, y, z, data);
 
-                    unsigned ival;
-                    switch (dst.getDataFormat())
-                    {
-                    case DataFormat::UInt8:
-                        ival = (unsigned)data[0];
-                        break;
+            unsigned ival;
+            switch (dst.getDataFormat())
+            {
+            case DataFormat::UInt8:
+                ival = (unsigned)data[0];
+                break;
 
-                    case DataFormat::UInt16:
+            case DataFormat::UInt16:
 #ifdef VKT_LITTLE_ENDIAN
-                        ival = static_cast<unsigned>(data[0])
-                                      | static_cast<unsigned>(data[1] << 8);
+                ival = static_cast<unsigned>(data[0])
+                    | static_cast<unsigned>(data[1] << 8);
 #else
-                        ival = static_cast<unsigned>(data[0] << 8)
-                                      | static_cast<unsigned>(data[1]);
+                ival = static_cast<unsigned>(data[0] << 8)
+                    | static_cast<unsigned>(data[1]);
 #endif
-                        break;
-                    }
+                break;
+            }
 
-                    return ival;
+            return ival;
         };
 
-        auto mapHistogram = [&](uint32_t minVal, uint32_t maxVal, uint32_t numPixelsSB, uint32_t numBins, uint32_t * localHist) {
+        auto mapHistogram = [&](uint32_t minVal, uint32_t maxVal, uint32_t numPixelsSB, uint32_t numBins, uint32_t* localHist) {
 
             float sum = 0;
             const float scale = ((float)(maxVal - minVal)) / (float)numPixelsSB;
@@ -126,7 +127,7 @@ namespace vkt
             {
                 for (int32_t x = 0; x != dstDims.x; ++x)
                 {
-                    unsigned ival = imageLoad(x,y,z);
+                    unsigned ival = imageLoad(x, y, z);
                     globalMin = std::min(globalMin, ival);
                     globalMax = std::max(globalMax, ival);
                 }
@@ -134,18 +135,18 @@ namespace vkt
         }
 
         // LUT shader
-        constexpr static unsigned NumBins = 1<<16;
+        constexpr static unsigned NumBins = 1 << 16;
         unsigned LUT[NumBins];
-        std::fill(LUT, LUT+NumBins, 0);
+        std::fill(LUT, LUT + NumBins, 0);
 
         unsigned binSize = 1 + unsigned((globalMax - globalMin) / NumBins);
         for (unsigned index = 0; index < NumBins; ++index)
         {
-            LUT[index] = ( index - globalMin ) / binSize;
+            LUT[index] = (index - globalMin) / binSize;
         }
 
-        Vec3i numSB{4,4,2};
-
+        Vec3i numSB{ 4,4,3 };
+        Vec3i sizeSB = dst.getDims() / numSB;
         unsigned int numInGrayVals = 65535;
         unsigned offsetX = 0;
         unsigned offsetY = 0;
@@ -157,7 +158,7 @@ namespace vkt
         std::vector<unsigned> hist(totalHistSize);
         std::fill(hist.begin(), hist.end(), 0);
 
-        std::vector<unsigned> histMax(numSB.x*numSB.y*numSB.z);
+        std::vector<unsigned> histMax(numSB.x * numSB.y * numSB.z);
         std::fill(histMax.begin(), histMax.end(), 0);
 
         // Hist shader
@@ -167,26 +168,28 @@ namespace vkt
             {
                 for (int32_t x = 0; x != dstDims.x; ++x)
                 {
-                    Vec3i index{x,y,z};
-                    Vec3i sizeSB = dst.getDims() / numSB;
+
+
+                    Vec3i index{ x,y,z };
                     Vec3i currSB = index / sizeSB;
                     // if we are not within the volume of interest -> return 
 
                     // get the gray value of the Volume
-                    unsigned volSample = imageLoad(x+offsetX, y+offsetY, z+offsetZ);
+                    unsigned volSample = imageLoad(x + offsetX, y + offsetY, z + offsetZ);
                     unsigned histIndex = (currSB.z * numSB.x * numSB.y + currSB.y * numSB.x + currSB.x);
-                    
+
+
                     // Increment the appropriate histogram
                     unsigned grayIndex = (NumBins * histIndex) + volSample;
-                    if (useLUT){
-                        grayIndex = (NumBins * histIndex) + LUT[ volSample ];
+                    if (useLUT) {
+                        grayIndex = (NumBins * histIndex) + LUT[volSample];
                     }
                     // atomicAdd( hist[ grayIndex ], 1 );
                     hist[grayIndex]++;
 
                     // update the histograms max value
                     // atomicMax( histMax[ histIndex ], hist[ grayIndex ] );
-                    histMax[ histIndex ] += hist[ grayIndex ];
+                    histMax[histIndex] += hist[grayIndex];
                 }
             }
         }
@@ -194,74 +197,56 @@ namespace vkt
         //excess
         float clipLimit = 0.85f;
 
-        std::vector<unsigned> excess(numSB.x* numSB.y* numSB.z);
+        std::vector<unsigned> excess(numSB.x * numSB.y * numSB.z);
         std::fill(excess.begin(), excess.end(), 0);
-        for (int32_t z = 0; z != dstDims.z; ++z)
-        {
-            for (int32_t y = 0; y != dstDims.y; ++y)
-            {
-                for (int32_t x = 0; x != dstDims.x; ++x)
-                {
-                    // figure out the sub Block histogram this index belongs to 
-                    unsigned int index = unsigned int(z * dst.getDims().x * dst.getDims().y + y * dst.getDims().x + x);
-                    unsigned int histIndex = index / NumBins;
+        for (int i = 0; i < hist.size(); i++) {
+            // figure out the sub Block histogram this index belongs to 
+            unsigned int index = i;
+            unsigned int histIndex = index / NumBins;
 
-                    // Compute the clip value of the current Histogram
-                    unsigned int clipValue = unsigned int(float(histMax[histIndex]) * clipLimit);
+            // Compute the clip value of the current Histogram
+            unsigned int clipValue = unsigned int(float(histMax[histIndex]) * clipLimit);
 
-                    // Calculate the number of excess pixels
-                    excess[histIndex] += max(0, int(hist[index]) - int(clipValue));
-                }
-            }
+            // Calculate the number of excess pixels
+            excess[histIndex] += max(0, int(hist[index]) - int(clipValue));
         }
+
 
 
         //Cliphist 1
-        for (int32_t z = 0; z != dstDims.z; ++z)
-        {
-            for (int32_t y = 0; y != dstDims.y; ++y)
-            {
-                for (int32_t x = 0; x != dstDims.x; ++x)
-                {
-                    Vec3i index{ x,y,z };
-                    Vec3i sizeSB = dst.getDims() / numSB;
-                    Vec3i currSB = index / sizeSB;
+        for (int i = 0; i < totalHistSize; i++){
+            unsigned int hist1DIndex = i;
+            // get the gray value of the Volume
+            unsigned int histIndex = hist1DIndex / NumBins;
+            // Pass 1 of redistributing the excess pixels 
+            unsigned int avgInc = excess[histIndex] / NumBins;
+            unsigned int clipValue = unsigned int(float(histMax[histIndex]) * clipLimit);
+            unsigned int upperLimit = clipValue - avgInc;	// Bins larger than upperLimit set to clipValue
 
+            // if the number in the histogram is too big -> clip the bin
 
-                    unsigned int hist1DIndex = unsigned int(z * dst.getDims().x * dst.getDims().y + y * dst.getDims().x + x);
-                    // get the gray value of the Volume
-                    unsigned int histIndex = hist1DIndex/NumBins;
-                    // Pass 1 of redistributing the excess pixels 
-                    unsigned int avgInc = excess[histIndex] / NumBins;
-                    unsigned int clipValue = unsigned int(float(histMax[histIndex]) * clipLimit);
-                    unsigned int upperLimit = clipValue - avgInc;	// Bins larger than upperLimit set to clipValue
-
-                    // if the number in the histogram is too big -> clip the bin
-                   
-                    unsigned int histValue = hist[hist1DIndex];
-                    if (histValue > clipValue) {
-                        hist[hist1DIndex] = clipValue;
+            unsigned int histValue = hist[hist1DIndex];
+            if (histValue > clipValue) {
+                hist[hist1DIndex] = clipValue;
+            }
+            else {
+                // if the value is too large remove from the bin into excess 
+                if (histValue > upperLimit) {
+                    if (avgInc > 0) {
+                        excess[histIndex] += -int(histValue - upperLimit);
                     }
-                    else {
-                        // if the value is too large remove from the bin into excess 
-                        if (histValue > upperLimit) {
-                            if (avgInc > 0) {
-                               excess[histIndex]+= -int(histValue - upperLimit);
-                            }
-                            hist[hist1DIndex] = clipValue;
-                        }
-                        // otherwise put the excess into the bin
-                        else {
-                            if (avgInc > 0) {
-                                excess[histIndex] += -int(avgInc);
-                                hist[hist1DIndex] += int(avgInc);
-                            }
-                        }
+                    hist[hist1DIndex] = clipValue;
+                }
+                // otherwise put the excess into the bin
+                else {
+                    if (avgInc > 0) {
+                        excess[histIndex] += -int(avgInc);
+                        hist[hist1DIndex] += int(avgInc);
                     }
                 }
             }
-        }
 
+        }
         //Cliphist 2
         unsigned int histCount = numSB.x * numSB.y * numSB.z;
 
@@ -282,40 +267,32 @@ namespace vkt
 
 
         if (computePass2) {
-            for (int32_t z = 0; z != dstDims.z; ++z)
-            {
-                for (int32_t y = 0; y != dstDims.y; ++y)
-                {
-                    for (int32_t x = 0; x != dstDims.x; ++x)
-                    {
-                        unsigned int hist1DIndex = unsigned int(z * dst.getDims().x * dst.getDims().y + y * dst.getDims().x + x);
-                        unsigned int histIndex = hist1DIndex / NumBins;
+            for (int i = 0; i < totalHistSize; i++) {
+                unsigned int hist1DIndex = i;
+                unsigned int histIndex = hist1DIndex / NumBins;
 
-                        // Pass 2 of redistributing the excess pixels 
-                        unsigned int stepSize = stepSizeVector[histIndex];
-                        unsigned int clipValue = unsigned int(float(histMax[histIndex]) * clipLimit);
+                // Pass 2 of redistributing the excess pixels 
+                unsigned int stepSize = stepSizeVector[histIndex];
+                unsigned int clipValue = unsigned int(float(histMax[histIndex]) * clipLimit);
 
 
-                        // get 0...NUM_BINS index
-                        unsigned int currHistIndex = hist1DIndex % NumBins;
+                // get 0...NUM_BINS index
+                unsigned int currHistIndex = hist1DIndex % NumBins;
 
-                        // add excess to the histogram
-                        bool add;
-                        if (stepSize == 0)
-                            add = 0;
-                        else
-                            add = (currHistIndex % stepSize == 0) && (hist[hist1DIndex] < clipValue);
+                // add excess to the histogram
+                bool add;
+                if (stepSize == 0)
+                    add = 0;
+                else
+                    add = (currHistIndex % stepSize == 0) && (hist[hist1DIndex] < clipValue);
 
 
-                        unsigned int prev = excess[histIndex];
-                        excess[histIndex]--;
-                        if (prev == 0) excess[histIndex] = 0;
+                unsigned int prev = excess[histIndex];
+                excess[histIndex]--;
+                if (prev == 0) excess[histIndex] = 0;
 
-                        hist[hist1DIndex] += (add && prev > 0) ? 1 : 0;
-                    }
-                }
+                hist[hist1DIndex] += (add && prev > 0) ? 1 : 0;
             }
-          
         }
 
         // Map the histograms 
@@ -324,7 +301,6 @@ namespace vkt
         unsigned int numPixelsSB;
        
 
-        Vec3i sizeSB = dst.getDims() / numSB;
         numPixelsSB = sizeSB.x * sizeSB.y * sizeSB.z;
 
 
@@ -336,16 +312,14 @@ namespace vkt
             mapHistogram( globalMin, globalMax, numPixelsSB, numInGrayVals, currHist);
         }
        
-      
+         
         //lerp
         for (int32_t z = 0; z != dstDims.z; ++z)
         {
             for (int32_t y = 0; y != dstDims.y; ++y)
             {
                 for (int32_t x = 0; x != dstDims.x; ++x)
-                {
-                    unsigned int hist1DIndex = unsigned int(z * dst.getDims().x * dst.getDims().y + y * dst.getDims().x + x);
-                   
+                {                   
 
                     // number of blocks to interpolate over is 2x number of SB the volume is divided into
                     Vec3i index; index.x = x; index.y = y; index.z = z;
@@ -440,17 +414,18 @@ namespace vkt
 
                     ////////////////////////////////////////////////////////////////////////////
                     // get the histogram indices for the neighbooring subblocks 
-                    unsigned int LUF = NumBins * (zFront * numSB.x * numSB.y + yUp * numSB.x + xLeft);
-                    unsigned int RUF = NumBins * (zFront * numSB.x * numSB.y + yUp * numSB.x + xRight);
-                    unsigned int LDF = NumBins * (zFront * numSB.x * numSB.y + yDown * numSB.x + xLeft);
-                    unsigned int RDF = NumBins * (zFront * numSB.x * numSB.y + yDown * numSB.x + xRight);
+                    unsigned int LUF = NumBins-1 * (zFront * numSB.x * numSB.y + yUp * numSB.x + xLeft);
+                    unsigned int RUF = NumBins-1 * (zFront * numSB.x * numSB.y + yUp * numSB.x + xRight);
+                    unsigned int LDF = NumBins-1 * (zFront * numSB.x * numSB.y + yDown * numSB.x + xLeft);
+                    unsigned int RDF = NumBins-1 * (zFront * numSB.x * numSB.y + yDown * numSB.x + xRight);
 
-                    unsigned int LUB = NumBins * (zBack * numSB.x * numSB.y + yUp * numSB.x + xLeft);
-                    unsigned int RUB = NumBins * (zBack * numSB.x * numSB.y + yUp * numSB.x + xRight);
-                    unsigned int LDB = NumBins * (zBack * numSB.x * numSB.y + yDown * numSB.x + xLeft);
-                    unsigned int RDB = NumBins * (zBack * numSB.x * numSB.y + yDown * numSB.x + xRight);
+                    unsigned int LUB = NumBins-1 * (zBack * numSB.x * numSB.y + yUp * numSB.x + xLeft);
+                    unsigned int RUB = NumBins-1 * (zBack * numSB.x * numSB.y + yUp * numSB.x + xRight);
+                    unsigned int LDB = NumBins-1 * (zBack * numSB.x * numSB.y + yDown * numSB.x + xLeft);
+                    unsigned int RDB = NumBins-1 * (zBack * numSB.x * numSB.y + yDown * numSB.x + xRight);
 
 
+               
                     ////////////////////////////////////////////////////////////////////////////
                     // LERP
 
@@ -478,6 +453,7 @@ namespace vkt
                     // store new value back into the volume texture 
                     uint8_t data[4];
                     data[0] = (unsigned int)ans*255;
+                    
                     dst.setBytes(x, y, z, &data[0]);
                    
                     
