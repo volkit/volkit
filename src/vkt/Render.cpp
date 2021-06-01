@@ -673,7 +673,6 @@ namespace vkt
 
     Error Render(StructuredVolume& volume, RenderState const& renderState, RenderState* newRenderState)
     {
-        std::cout << "hello" << std::endl;
         Render_impl(volume, renderState, newRenderState);
 
         return NoError;
