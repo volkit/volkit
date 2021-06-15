@@ -99,7 +99,9 @@ namespace vkt
 #endif
 
 #if VKT_HAVE_VIRVO
-        if (ft == Virvo)
+        // Also try to load Unknown file formats - Virvo might be able
+        // to load them anyway!
+        if (ft == Virvo || ft == Unknown)
         {
             dataSource_ = new VirvoFile(fileName_);
             if (VirvoFile* vf = dynamic_cast<VirvoFile*>(dataSource_))
@@ -185,7 +187,7 @@ namespace vkt
 #endif
 
 #if VKT_HAVE_VIRVO
-        if (ft == Virvo)
+        if (ft == Virvo || ft == Unknown)
         {
             if (VirvoFile* vf = dynamic_cast<VirvoFile*>(dataSource_))
             {
