@@ -146,7 +146,7 @@ namespace vkt
                 data_[index + i] = data[i];
         }
 
-        VKT_FUNC void getBytes(int32_t x, int32_t y, int32_t z, uint8_t* data)
+        VKT_FUNC void getBytes(int32_t x, int32_t y, int32_t z, uint8_t* data) const
         {
             std::size_t index = linearIndex(x, y, z);
 
