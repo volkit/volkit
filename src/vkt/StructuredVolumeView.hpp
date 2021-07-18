@@ -162,12 +162,12 @@ namespace vkt
                 data_[lindex + i] = data[i];
         }
 
-        VKT_FUNC void getBytes(Vec3i index, uint8_t* data)
+        VKT_FUNC void getBytes(Vec3i index, uint8_t* data) const
         {
             std::size_t lindex = linearIndex(index);
 
             for (uint8_t i = 0; i < vkt::getSizeInBytes(dataFormat_); ++i)
-                data[i] = data[lindex + i];
+                data[i] = data_[lindex + i];
         }
 
     private:
