@@ -188,3 +188,13 @@ Implementation Status
 | Volume File I/O                | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | n/a                | n/a                |
 
 <a name="1"><sup>1</sup></a>Specific file I/O can however be used via Volume File I/O (`class vkt::VolumeFile`), which is also available in C and Python.
+
+API Documentation
+-----------------
+
+Documentation generated with [doxygen](https://www.doxygen.nl/index.html) can be found under [https://docs.volkit.org](https://docs.volkit.org)
+
+License
+-------
+
+Volkit is licensed under the MIT License (MIT)
