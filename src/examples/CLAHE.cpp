@@ -52,9 +52,15 @@ int main(int argc, char** argv)
     vkt::InputStream is(file);
     is.read(volume);
 
+    ep.device = vkt::ExecutionPolicy::Device::GPU;
+    vkt::SetThreadExecutionPolicy(ep);
+
     // Resample using contrast limited adaptive histogram equalization
     // Source volume is also dest volume
     vkt::ResampleCLAHE(volume, volume);
+
+    ep.device = vkt::ExecutionPolicy::Device::CPU;
+    vkt::SetThreadExecutionPolicy(ep);
 
     float rgba[] = {
             1.f, 1.f, 1.f, .005f,
