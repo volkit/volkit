@@ -143,6 +143,7 @@ set(SOURCES
     Decompose.cpp
     ExecutionPolicy.cpp
     Fill.cpp
+    Filter.cpp
     Flip.cpp
     Histogram.cpp
     InputStream.cpp

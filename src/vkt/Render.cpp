@@ -5,8 +5,11 @@
 
 #include <cstddef>
 #include <cstring>
+#include <fstream>
 #include <future>
 #include <memory>
+
+#include <boost/filesystem.hpp>
 
 #if VKT_HAVE_CUDA
 #include <cuda_runtime.h>
@@ -17,6 +20,7 @@
 
 #include <visionaray/math/simd/simd.h>
 #include <visionaray/math/aabb.h>
+#include <visionaray/math/io.h>
 #include <visionaray/math/ray.h>
 #include <visionaray/texture/texture.h>
 #include <visionaray/cpu_buffer_rt.h>
@@ -61,6 +65,31 @@ using ViewerBase = viewer_sdl2;
 #else
 using ViewerBase = viewer_glut;
 #endif
+
+
+//-------------------------------------------------------------------------------------------------
+// I/O utility for camera lookat only - not fit for the general case!
+//
+
+inline std::istream& operator>>(std::istream& in, thin_lens_camera& cam)
+{
+    vec3 eye;
+    vec3 center;
+    vec3 up;
+
+    in >> eye >> std::ws >> center >> std::ws >> up >> std::ws;
+    cam.look_at(eye, center, up);
+
+    return in;
+}
+
+inline std::ostream& operator<<(std::ostream& out, thin_lens_camera const& cam)
+{
+    out << cam.eye() << '\n';
+    out << cam.center() << '\n';
+    out << cam.up() << '\n';
+    return out;
+}
 
 
 //-------------------------------------------------------------------------------------------------
@@ -182,6 +211,17 @@ struct Viewer : ViewerBase
     void on_mouse_move(visionaray::mouse_event const& event);
     void on_space_mouse_move(visionaray::space_mouse_event const& event);
     void on_resize(int w, int h);
+
+    void load_camera(std::string filename)
+    {
+        std::ifstream file(filename);
+        if (file.good())
+        {
+            file >> cam;
+            clearFrame();
+            std::cout << "Load camera from file: " << filename << '\n';
+        }
+    }
 };
 
 Viewer::Viewer(
@@ -552,6 +592,49 @@ void Viewer::on_key_press(visionaray::key_event const& event)
         renderState.animationFrame %= numAnimationFrames;
         updateVolumeTexture();
         clearFrame();
+    }
+
+    if (event.key() == 'u')
+    {
+        const std::string camera_file_base = "volkit-camera";
+        const std::string camera_file_suffix = ".txt";
+
+        int inc = 0;
+        std::string inc_str = "";
+
+        std::string filename = camera_file_base + inc_str + camera_file_suffix;
+
+        while (boost::filesystem::exists(filename))
+        {
+            ++inc;
+            inc_str = std::to_string(inc);
+
+            while (inc_str.length() < 4)
+            {
+                inc_str = std::string("0") + inc_str;
+            }
+
+            inc_str = std::string("-") + inc_str;
+
+            filename = camera_file_base + inc_str + camera_file_suffix;
+        }
+
+        std::ofstream file(filename);
+        if (file.good())
+        {
+            std::cout << "Storing camera to file: " << filename << '\n';
+            file << cam;
+        }
+    }
+
+    if (event.key() == 'v')
+    {
+        std::string filename = "volkit-camera.txt";
+        if (boost::filesystem::exists(filename))
+        {
+            load_camera(filename);
+            clearFrame();
+        }
     }
 
     ViewerBase::on_key_press(event);
