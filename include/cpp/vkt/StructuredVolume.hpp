@@ -64,20 +64,43 @@ namespace vkt
         void setDataFormat(DataFormat dataFormat);
         DataFormat getDataFormat() const;
 
+        //! Set cell distance (dflt: (1.,1.,1.))
         void setDist(float distX, float distY, float distZ);
+
+        //! Get cell distance as three floats
         void getDist(float& distX, float& distY, float& distZ);
 
+        //! Set cell distance (dflt: (1.,1.,1.))
         void setDist(Vec3f dist);
+
+        //! Get cell distance as Vec3f
         Vec3f getDist() const;
 
+        //! Set linear mapping from internal to float (dflt: (0.,1.))
         void setVoxelMapping(float lo, float hi);
+
+        //! Get linear mapping from internal to float as two floats
         void getVoxelMapping(float& lo, float& hi);
 
+        //! Set linear mapping from internal to float (dflt: (0.,1.))
         void setVoxelMapping(Vec2f mapping);
+
+        //! Get linear mapping from internal to float as Vec2f
         Vec2f getVoxelMapping() const;
 
+        //! Set the offset of the minimum corner in world space (dflt: (0,0,0))
+        void setWorldOrigin(Vec3f worldOrigin);
+
+        //! Get the offset of the minimum corner in world space
+        Vec3f getWorldOrigin() const;
+
+        //! Get the interpolation domain (cell bounds + halo) in world space
+        Box3f getDomainBounds() const;
+
+        //! Get the cell's bounds in world space
         Box3f getWorldBounds() const;
 
+        //! Get a raw pointer to the internal data
         uint8_t* getData();
 
         float sampleLinear(int32_t x, int32_t y, int32_t z);
@@ -104,6 +127,14 @@ namespace vkt
         DataFormat dataFormat_;
         Vec3f dist_;
         Vec2f voxelMapping_;
+        Vec3f origin_;
+        /* we currently *don't* expose the halo size to the user but
+         set it (hardcoded) to .5f,.5f,.5f in the ctor. The halo size _is_
+         exposed though through the getDomain() function, where the domain is
+         just worldBounds+(-haloSize,+haloSize). We might make this editable
+         later if we support higher order interpolation, or, (more likely) more
+         accurate interpolation for AMR data */
+        Vec3f haloSize_;
 
         std::size_t linearIndex(int32_t x, int32_t y, int32_t z) const;
         std::size_t linearIndex(Vec3i index) const;
