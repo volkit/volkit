@@ -31,6 +31,8 @@ namespace vkt
                         Vec3i first,
                         Vec3i last);
 
+        Error read(HierarchicalVolume& volume);
+
         Error seek(std::size_t pos);
 
     private:

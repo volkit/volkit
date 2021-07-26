@@ -148,14 +148,29 @@ namespace vkt
         return { a.x / b.x, a.y / b.y, a.z / b.z };
     }
 
-    VKT_FUNC inline Vec3f operator*(float a, Vec3f const& b)
+    VKT_FUNC inline Vec3f operator+(Vec3f const& a, float b)
     {
-        return  { a * b.x, a * b.y, a * b.z };
+        return  { a.x + b, a.y + b, a.z + b };
+    }
+
+    VKT_FUNC inline Vec3f operator-(Vec3f const& a, float b)
+    {
+        return  { a.x - b, a.y - b, a.z - b };
+    }
+
+    VKT_FUNC inline Vec3f operator*(Vec3f const& a, float b)
+    {
+        return  { a.x * b, a.y * b, a.z * b };
     }
 
     VKT_FUNC inline Vec3f operator/(Vec3f const& a, float b)
     {
         return { a.x / b, a.y / b, a.z / b };
+    }
+
+    VKT_FUNC inline Vec3f operator*(float a, Vec3f const& b)
+    {
+        return  { a * b.x, a * b.y, a * b.z };
     }
 
     VKT_FUNC inline Vec3f& operator+=(Vec3f& a, Vec3f const& b)
@@ -182,6 +197,30 @@ namespace vkt
         return a;
     }
 
+    VKT_FUNC inline Vec3f& operator+=(Vec3f& a, float b)
+    {
+        a = a + b;
+        return a;
+    }
+
+    VKT_FUNC inline Vec3f& operator-=(Vec3f& a, float b)
+    {
+        a = a - b;
+        return a;
+    }
+
+    VKT_FUNC inline Vec3f& operator*=(Vec3f& a, float b)
+    {
+        a = a * b;
+        return a;
+    }
+
+    VKT_FUNC inline Vec3f& operator/=(Vec3f& a, float b)
+    {
+        a = a / b;
+        return a;
+    }
+
     VKT_FUNC inline float dot(Vec3f const& a, Vec3f const& b)
     {
         return a.x * b.x + a.y * b.y + a.z * b.z;
@@ -195,6 +234,16 @@ namespace vkt
     VKT_FUNC inline Vec3f normalize(Vec3f const& a)
     {
         return a / length(a);
+    }
+
+    VKT_FUNC inline Vec3f min(Vec3f const& a, Vec3f const& b)
+    {
+        return { min(a.x, b.x), min(a.y, b.y), min(a.z, b.z) };
+    }
+
+    VKT_FUNC inline Vec3f max(Vec3f const& a, Vec3f const& b)
+    {
+        return { max(a.x, b.x), max(a.y, b.y), max(a.z, b.z) };
     }
 
     inline std::ostream& operator<<(std::ostream& out, Vec3f const& v)
@@ -362,6 +411,11 @@ namespace vkt
         return { a.x / b.x, a.y / b.y, a.z / b.z };
     }
 
+    VKT_FUNC inline Vec3i operator*(Vec3i const& a, int b)
+    {
+        return { a.x * b, a.y * b, a.z * b };
+    }
+
     VKT_FUNC inline Vec3i& operator+=(Vec3i& a, Vec3i const& b)
     {
         a = a + b;
@@ -384,6 +438,22 @@ namespace vkt
     {
         a = a / b;
         return a;
+    }
+
+    VKT_FUNC inline Vec3i& operator*=(Vec3i& a, int b)
+    {
+        a = a * b;
+        return a;
+    }
+
+    VKT_FUNC inline Vec3i min(Vec3i const& a, Vec3i const& b)
+    {
+        return { min(a.x, b.x), min(a.y, b.y), min(a.z, b.z) };
+    }
+
+    VKT_FUNC inline Vec3i max(Vec3i const& a, Vec3i const& b)
+    {
+        return { max(a.x, b.x), max(a.y, b.y), max(a.z, b.z) };
     }
 
     inline std::ostream& operator<<(std::ostream& out, Vec3i const& v)

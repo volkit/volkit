@@ -47,6 +47,7 @@ namespace vkt
         , dataFormat_(dataFormat)
         , dist_{distX, distY, distZ}
         , voxelMapping_{mappingLo, mappingHi}
+        , haloSize_{.5f, .5f, .5f}
     {
     }
 

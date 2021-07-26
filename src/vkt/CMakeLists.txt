@@ -3,6 +3,7 @@
 
 find_package(Boost COMPONENTS filesystem system REQUIRED)
 find_package(CUDA)
+find_package(HDF5 COMPONENTS CXX)
 find_package(Nifti)
 find_package(SDL2)
 find_package(SWIG)
@@ -11,6 +12,10 @@ find_package(Virvo)
 
 vkt_use_package(Boost)
 vkt_use_package(CUDA)
+vkt_use_package(HDF5)
+if(HDF5_FOUND)
+    include_directories(${HDF5_CXX_INCLUDE_DIRS})
+endif()
 vkt_use_package(Nifti)
 vkt_use_package(SDL2)
 vkt_use_package(Threads)
@@ -143,7 +148,9 @@ set(SOURCES
     Decompose.cpp
     ExecutionPolicy.cpp
     Fill.cpp
+    FLASHFile.cpp
     Flip.cpp
+    HierarchicalVolume.cpp
     Histogram.cpp
     InputStream.cpp
     Logging.cpp

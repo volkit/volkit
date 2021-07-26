@@ -315,7 +315,7 @@ void Viewer::on_display()
     {
         using namespace vkt;
 
-        texture_ref<vec4, 1> transfunc_tex(0);
+        texture_ref<vec4, 1> transfunc_tex(0U);
 
         if (renderState.rgbaLookupTable != ResourceHandle(-1))
         {

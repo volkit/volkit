@@ -20,4 +20,8 @@ namespace vkt
     VKTAPI Error Resample(StructuredVolume& dst,
                           StructuredVolume& src,
                           Filter filter);
+
+    VKTAPI Error Resample(StructuredVolume& dst,
+                          HierarchicalVolume& src,
+                          Filter filter);
 } // vkt

@@ -28,6 +28,7 @@ vkt_add_executable(RotateC Rotate.c)
 vkt_add_executable(ScanC Scan.c)
 
 vkt_add_executable(AnimationCPP Animation.cpp)
+vkt_add_executable(AMRCPP AMR.cpp)
 vkt_add_executable(AggregatesCPP Aggregates.cpp)
 vkt_add_executable(ArithmeticCPP Arithmetic.cpp)
 vkt_add_executable(DecomposeCPP Decompose.cpp)

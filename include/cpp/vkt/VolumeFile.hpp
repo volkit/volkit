@@ -13,11 +13,27 @@ namespace vkt
 {
     struct VolumeFileHeader
     {
+        //! Parameters set when the volume is structured
+        ///@{
         bool isStructured = false;
         Vec3i dims = { 0, 0, 0 };
-        DataFormat dataFormat = DataFormat::UInt8;
         Vec3f dist = { 1.f, 1.f, 1.f };
         Vec2f voxelMapping = { 0.f, 1.f };
+        ///@}
+
+        //! Parameters set when the volume is hierarchical
+        ///@{
+        bool isHierarchical = false;
+        unsigned numSubVolumes = 0;
+        Vec3i* minCorners = nullptr;
+        Vec3i* subVolumeDims = nullptr;
+        unsigned* levels = nullptr;
+        ///@}
+
+        //! Common parameters
+        ///@{
+        DataFormat dataFormat = DataFormat::UInt8;
+        ///@}
     };
 
     enum class VolumeFileOpenMode
@@ -40,7 +56,10 @@ namespace vkt
         bool flush();
         bool good() const;
 
+        //! Set volume file header. Pointers to CPU memory are deep copied
         void setHeader(VolumeFileHeader header);
+
+        //! Get volume file header
         VolumeFileHeader getHeader() const;
 
     private:

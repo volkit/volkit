@@ -72,6 +72,23 @@ namespace vkt
 #endif
                 break;
             }
+
+            case DataFormat::Float32:
+            {
+                uint32_t ival = *(uint32_t*)(&value);
+#ifdef VKT_LITTLE_ENDIAN
+                dst[0] = static_cast<uint8_t>(ival);
+                dst[1] = static_cast<uint8_t>(ival >> 8);
+                dst[2] = static_cast<uint8_t>(ival >> 16);
+                dst[3] = static_cast<uint8_t>(ival >> 24);
+#else
+                dst[0] = static_cast<uint8_t>(ival >> 24);
+                dst[1] = static_cast<uint8_t>(ival >> 16);
+                dst[2] = static_cast<uint8_t>(ival >> 8);
+                dst[3] = static_cast<uint8_t>(ival);
+#endif
+                break;
+            }
         }
     }
 
@@ -136,6 +153,23 @@ namespace vkt
 #endif
                 float fval = static_cast<float>(ival);
                 value = lerp(mappingLo, mappingHi, fval / 4294967295.999f);
+                break;
+            }
+
+            case DataFormat::Float32:
+            {
+#ifdef VKT_LITTLE_ENDIAN
+                uint32_t ival = static_cast<uint32_t>(src[0])
+                              | static_cast<uint32_t>(src[1] << 8)
+                              | static_cast<uint32_t>(src[2] << 16)
+                              | static_cast<uint32_t>(src[3] << 24);
+#else
+                uint32_t ival = static_cast<uint32_t>(src[0] << 24)
+                              | static_cast<uint32_t>(src[1] << 16)
+                              | static_cast<uint32_t>(src[2] << 8)
+                              | static_cast<uint32_t>(src[3]);
+#endif
+                value = *(float*)&ival;
                 break;
             }
         }

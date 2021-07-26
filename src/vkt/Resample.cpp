@@ -28,4 +28,15 @@ namespace vkt
 
         return NoError;
     }
+
+    VKTAPI Error Resample(
+            StructuredVolume& dst,
+            HierarchicalVolume& src,
+            Filter filter
+            )
+    {
+        VKT_CALL__(Resample, dst, src, filter);
+
+        return NoError;
+    }
 }

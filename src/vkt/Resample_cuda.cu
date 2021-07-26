@@ -13,4 +13,12 @@ namespace vkt
             )
     {
     }
+
+    void Resample_cuda(
+            StructuredVolume& dst,
+            HierarchicalVolume& src,
+            Filter filter
+            )
+    {
+    }
 } // vkt

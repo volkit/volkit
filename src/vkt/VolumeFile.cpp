@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cstdlib>
 #include <string>
 
 #include <boost/filesystem.hpp>
@@ -119,6 +120,9 @@ namespace vkt
 
     VolumeFile::~VolumeFile()
     {
+        delete[] header_.minCorners;
+        delete[] header_.subVolumeDims;
+        delete[] header_.levels;
         delete dataSource_;
     }
 
@@ -161,7 +165,17 @@ namespace vkt
 
     void VolumeFile::setHeader(VolumeFileHeader header)
     {
+        // deep copy header
+        delete[] header_.minCorners;
+        delete[] header_.subVolumeDims;
+        delete[] header_.levels;
         header_ = header;
+        header_.minCorners = new Vec3i[header_.numSubVolumes];
+        std::memcpy(header_.minCorners, header.minCorners, header_.numSubVolumes * sizeof(Vec3i));
+        header_.subVolumeDims = new Vec3i[header_.numSubVolumes];
+        std::memcpy(header_.subVolumeDims, header.subVolumeDims, header_.numSubVolumes * sizeof(Vec3i));
+        header_.levels = new unsigned[header_.numSubVolumes];
+        std::memcpy(header_.levels, header.levels, header_.numSubVolumes * sizeof(unsigned));
 
         FileType ft = getFileType(fileName_);
 
@@ -253,9 +267,14 @@ vktVolumeFileHeader_t vktVolumeFileGetHeader(vktVolumeFile file)
     else
         chdr.isStructured = VKT_FALSE;
 
+    if (hdr.isHierarchical)
+        chdr.isHierarchical = VKT_TRUE;
+    else
+        chdr.isHierarchical = VKT_FALSE;
+
+    // Structured parameters
     vkt::Vec3i dims = hdr.dims;
     chdr.dims = { dims.x, dims.y, dims.z };
-
     chdr.dataFormat = (vktDataFormat)hdr.dataFormat;
 
     return chdr;
