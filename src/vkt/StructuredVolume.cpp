@@ -27,7 +27,6 @@ namespace vkt
         , dataFormat_(DataFormat::UInt8)
         , dist_{1.f, 1.f, 1.f}
         , voxelMapping_{0.f, 1.f}
-        , origin_{0.f, 0.f, 0.f}
         , haloSize_{.5f, .5f, .5f}
     {
     }
@@ -132,19 +131,9 @@ namespace vkt
         return voxelMapping_;
     }
 
-    void StructuredVolume::setWorldOrigin(Vec3f worldOrigin)
-    {
-        origin_ = worldOrigin;
-    }
-
-    Vec3f StructuredVolume::getWorldOrigin() const
-    {
-        return origin_;
-    }
-
     Box3f StructuredVolume::getDomainBounds() const
     {
-        Box3f domainBounds = getWorldBounds();
+        Box3f domainBounds = getObjectBounds();
 
         domainBounds.min -= haloSize_;
         domainBounds.max += haloSize_;
@@ -152,11 +141,11 @@ namespace vkt
         return domainBounds;
     }
 
-    Box3f StructuredVolume::getWorldBounds() const
+    Box3f StructuredVolume::getObjectBounds() const
     {
         return {
-            origin_,
-            origin_ + Vec3f{ dims_.x * dist_.x, dims_.y * dist_.y, dims_.z * dist_.z }
+            { 0.f, 0.f, 0.f },
+            { dims_.x * dist_.x, dims_.y * dist_.y, dims_.z * dist_.z }
             };
     }
 

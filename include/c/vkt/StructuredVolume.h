@@ -83,14 +83,9 @@ VKTAPI void vktStructuredVolumeSetVoxelMapping2fv(vktStructuredVolume volume,
 
 VKTAPI vktVec2f_t vktStructuredVolumeGetVoxelMapping2fv(vktStructuredVolume volume);
 
-VKTAPI void vktStructuredVolumeSetWorldOrigin3fv(vktStructuredVolume volume,
-                                                 vktVec3f_t worldOrigin);
-
-VKTAPI vktVec3f_t vktStructuredVolumeGetWorldOrigin3fv(vktStructuredVolume volume);
-
 VKTAPI vktBox3f_t vktStructuredVolumeGetDomainBounds(vktStructuredVolume volume);
 
-VKTAPI vktBox3f_t vktStructuredVolumeGetWorldBounds(vktStructuredVolume volume);
+VKTAPI vktBox3f_t vktStructuredVolumeGetObjectBounds(vktStructuredVolume volume);
 
 VKTAPI uint8_t* vktStructuredVolumeGetData(vktStructuredVolume volume);
 

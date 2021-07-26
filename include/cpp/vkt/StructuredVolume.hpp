@@ -88,17 +88,11 @@ namespace vkt
         //! Get linear mapping from internal to float as Vec2f
         Vec2f getVoxelMapping() const;
 
-        //! Set the offset of the minimum corner in world space (dflt: (0,0,0))
-        void setWorldOrigin(Vec3f worldOrigin);
-
-        //! Get the offset of the minimum corner in world space
-        Vec3f getWorldOrigin() const;
-
-        //! Get the interpolation domain (cell bounds + halo) in world space
+        //! Get the interpolation domain (cell bounds + halo) in object space
         Box3f getDomainBounds() const;
 
-        //! Get the cell's bounds in world space
-        Box3f getWorldBounds() const;
+        //! Get the cell's bounds in object space (origin at (0,0,0))
+        Box3f getObjectBounds() const;
 
         //! Get a raw pointer to the internal data
         uint8_t* getData();
@@ -127,11 +121,10 @@ namespace vkt
         DataFormat dataFormat_;
         Vec3f dist_;
         Vec2f voxelMapping_;
-        Vec3f origin_;
         /* we currently *don't* expose the halo size to the user but
          set it (hardcoded) to .5f,.5f,.5f in the ctor. The halo size _is_
          exposed though through the getDomain() function, where the domain is
-         just worldBounds+(-haloSize,+haloSize). We might make this editable
+         just objectBounds+(-haloSize,+haloSize). We might make this editable
          later if we support higher order interpolation, or, (more likely) more
          accurate interpolation for AMR data */
         Vec3f haloSize_;
