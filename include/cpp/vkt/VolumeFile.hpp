@@ -13,7 +13,7 @@ namespace vkt
 {
     struct VolumeFileHeader
     {
-        bool isStructured = true;
+        bool isStructured = false;
         Vec3i dims = { 0, 0, 0 };
         DataFormat dataFormat = DataFormat::UInt8;
         Vec3f dist = { 1.f, 1.f, 1.f };
