@@ -97,8 +97,6 @@ namespace vkt
         //! Get a raw pointer to the internal data
         uint8_t* getData();
 
-        float sampleLinear(int32_t x, int32_t y, int32_t z);
-
         void setValue(int32_t x, int32_t y, int32_t z, float value);
         void getValue(int32_t x, int32_t y, int32_t z, float& value);
         float getValue(int32_t x, int32_t y, int32_t z);

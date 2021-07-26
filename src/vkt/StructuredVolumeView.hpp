@@ -77,6 +77,47 @@ namespace vkt
             return data_;
         }
 
+        VKT_FUNC float sampleLinear(int32_t x, int32_t y, int32_t z)
+        {
+            float xf1 = x - 0.f;
+            float yf1 = y - 0.f;
+            float zf1 = z - 0.f;
+
+            float xf2 = x + 1.f;
+            float yf2 = y + 1.f;
+            float zf2 = z + 1.f;
+
+            Vec3i lo{ (int)xf1, (int)yf1, (int)zf1 };
+            Vec3i hi{ (int)xf2, (int)yf2, (int)zf2 };
+
+            lo.x = clamp(lo.x, 0, dims_.x - 1);
+            lo.y = clamp(lo.y, 0, dims_.y - 1);
+            lo.x = clamp(lo.x, 0, dims_.x - 1);
+
+            hi.y = clamp(hi.y, 0, dims_.y - 1);
+            hi.z = clamp(hi.z, 0, dims_.z - 1);
+            hi.z = clamp(hi.z, 0, dims_.z - 1);
+
+            Vec3f frac{ xf1 - lo.x, yf1 - lo.y, zf1 - lo.z };
+
+            float v[8] = {
+                getValue(lo.x, lo.y, lo.z),
+                getValue(hi.x, lo.y, lo.z),
+                getValue(lo.x, hi.y, lo.z),
+                getValue(hi.x, hi.y, lo.z),
+                getValue(lo.x, lo.y, hi.z),
+                getValue(hi.x, lo.y, hi.z),
+                getValue(lo.x, hi.y, hi.z),
+                getValue(hi.x, hi.y, hi.z)
+                };
+
+            return lerp(
+                lerp(lerp(v[0], v[1], frac.x), lerp(v[2], v[3], frac.x), frac.y),
+                lerp(lerp(v[4], v[5], frac.x), lerp(v[6], v[7], frac.x), frac.y),
+                frac.z
+                );
+        }
+
         VKT_FUNC void setValue(int32_t x, int32_t y, int32_t z, float value)
         {
             std::size_t index = linearIndex(x, y, z);

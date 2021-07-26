@@ -7,6 +7,7 @@
 #include <vkt/StructuredVolume.hpp>
 
 #include "linalg.hpp"
+#include "StructuredVolumeView.hpp"
 
 namespace vkt
 {
@@ -36,6 +37,8 @@ namespace vkt
         }
         else
         {
+            // So we can use sampleLinear()
+            StructuredVolumeView sourceView(src);
 
             Vec3i dstDims = dst.getDims();
             Vec3i srcDims = src.getDims();
@@ -49,7 +52,7 @@ namespace vkt
                         float srcX = x / float(dstDims.x) * srcDims.x;
                         float srcY = y / float(dstDims.y) * srcDims.y;
                         float srcZ = z / float(dstDims.z) * srcDims.z;
-                        float value = src.sampleLinear(srcX, srcY, srcZ);
+                        float value = sourceView.sampleLinear(srcX, srcY, srcZ);
                         dst.setValue({x,y,z}, value);
                     }
                 }

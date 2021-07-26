@@ -7,6 +7,7 @@
 #include <vkt/StructuredVolume.hpp>
 
 #include "linalg.hpp"
+#include "StructuredVolumeView.hpp"
 
 namespace vkt
 {
@@ -48,6 +49,9 @@ namespace vkt
             Vec3f centerOfRotation
             )
     {
+        // So we can use sampleLinear()
+        StructuredVolumeView sourceView(source);
+
         // Normalize axis
         axis = normalize(axis);
 
@@ -83,7 +87,7 @@ namespace vkt
                      && p.y >= first.y && p.y < last.y
                      && p.z >= first.z && p.z < last.z)
                     {
-                        float val = source.sampleLinear(p.x, p.y, p.z);
+                        float val = sourceView.sampleLinear(p.x, p.y, p.z);
                         dest.setValue(x, y, z, val);
                     }
                 }
