@@ -72,11 +72,11 @@ struct Viewer : ViewerBase
     //using RayType = basic_ray<simd::float4>;
     using RayType = basic_ray<float>;
 
-    vkt::StructuredVolume*                    volumes;
+    vkt::StructuredVolume*                    structuredVolumes;
     std::size_t                               numAnimationFrames;
     vkt::RenderState                          renderState;
 
-    std::vector<vkt::StructuredVolumeView>    volumeViews;
+    std::vector<vkt::StructuredVolumeView>    structuredVolumeViews;
 
     aabb                                      bbox;
     thin_lens_camera                          cam;
@@ -192,7 +192,7 @@ Viewer::Viewer(
         unsigned numThreads
         )
     : ViewerBase(renderState.viewportWidth, renderState.viewportHeight, windowTitle)
-    , volumes(volumes)
+    , structuredVolumes(volumes)
     , numAnimationFrames(numAnimationFrames)
     , renderState(renderState)
     , host_sched(numThreads)
@@ -211,16 +211,16 @@ Viewer::Viewer(
 
 void Viewer::createVolumeViews()
 {
-    volumeViews.resize(numAnimationFrames);
+    structuredVolumeViews.resize(numAnimationFrames);
     for (std::size_t i = 0; i < numAnimationFrames; ++i)
     {
-        volumeViews[i] = vkt::StructuredVolumeView(volumes[i]);
+        structuredVolumeViews[i] = vkt::StructuredVolumeView(structuredVolumes[i]);
     }
 }
 
 void Viewer::updateVolumeTexture()
 {
-    vkt::StructuredVolumeView volume = volumeViews[renderState.animationFrame];
+    vkt::StructuredVolumeView volume = structuredVolumeViews[renderState.animationFrame];
 
     vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
 
@@ -291,7 +291,7 @@ void Viewer::on_display()
     if (transfuncEditor.updated())
         clearFrame();
 
-    vkt::StructuredVolumeView volume = volumeViews[renderState.animationFrame];
+    vkt::StructuredVolumeView volume = structuredVolumeViews[renderState.animationFrame];
 
     // Prepare a kernel with the volume set up appropriately
     // according to the provided texture and texel type
