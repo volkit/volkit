@@ -22,7 +22,9 @@
 #include <vkt/Decompose.hpp>
 #include <vkt/ExecutionPolicy.hpp>
 #include <vkt/Fill.hpp>
+#include <vkt/FLASHFile.hpp>
 #include <vkt/Flip.hpp>
+#include <vkt/HierarchicalVolume.hpp>
 #include <vkt/InputStream.hpp>
 #include <vkt/LookupTable.hpp>
 #include <vkt/ManagedBuffer.hpp>
@@ -49,6 +51,7 @@ using namespace vkt;
 %include <vkt/linalg.hpp>
 
 %include <vkt/ExecutionPolicy.hpp>
+%include <vkt/FLASHFile.hpp>
 %include <vkt/NiftiFile.hpp>
 %include <vkt/RawFile.hpp>
 %include <vkt/VirvoFile.hpp>
@@ -70,6 +73,7 @@ namespace std
         memcpy(self->getData(), (uint8_t*)floats.data(), self->getSizeInBytes());
     }
 }
+%include <vkt/HierarchicalVolume.hpp>
 %include <vkt/ManagedResource.hpp>
 %include <vkt/StructuredVolume.hpp>
 %include <vkt/Voxel.hpp>
@@ -102,6 +106,7 @@ namespace std
 %include <vkt/Rotate.hpp>
 %include <vkt/Scale.hpp>
 %include <vkt/Scan.hpp>
+%apply vkt::HierarchicalVolume &INOUT { vkt::HierarchicalVolume &hv };
 %apply vkt::StructuredVolume &INOUT { vkt::StructuredVolume &sv };
 %apply vkt::RenderState &INOUT { vkt::RenderState &rs };
 %apply vkt::VolumeFileHeader &INOUT { vkt::VolumeFileHeader &hdr };
