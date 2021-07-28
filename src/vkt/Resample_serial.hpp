@@ -73,7 +73,6 @@ namespace vkt
         Vec3i dstDims = dst.getDims();
         Vec3i srcDims = src.getDims();
 
-        //for (int32_t z = 0; z != 64; ++z)//dstDims.z; ++z)
         for (int32_t z = 0; z != dstDims.z; ++z)
         {
             for (int32_t y = 0; y != dstDims.y; ++y)

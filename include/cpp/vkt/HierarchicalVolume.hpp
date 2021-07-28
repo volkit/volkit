@@ -27,12 +27,17 @@ namespace vkt
     class HierarchicalVolume : public ManagedBuffer<uint8_t>
     {
     public:
+        constexpr static uint8_t GetMaxBytesPerVoxel() { return 8; }
+
+    public:
         HierarchicalVolume() = default;
 
         HierarchicalVolume(
                 Brick const* bricks,
                 std::size_t numBricks,
-                DataFormat dataFormat);
+                DataFormat dataFormat,
+                float mappingLo = 0.f,
+                float mappingHi = 1.f);
 
         //! Compute logical grid size
         Vec3i getDims() const;
@@ -46,11 +51,24 @@ namespace vkt
 
         DataFormat getDataFormat() const;
 
+        //! Set linear mapping from internal to float (dflt: (0.,1.))
+        void setVoxelMapping(float lo, float hi);
+
+        //! Get linear mapping from internal to float as two floats
+        void getVoxelMapping(float& lo, float& hi);
+
+        //! Set linear mapping from internal to float (dflt: (0.,1.))
+        void setVoxelMapping(Vec2f mapping);
+
+        //! Get linear mapping from internal to float as Vec2f
+        Vec2f getVoxelMapping() const;
+
         //! Get a raw pointer to the internal data
         uint8_t* getData();
 
     private:
         Array1D<Brick> bricks_;
         DataFormat dataFormat_;
+        Vec2f voxelMapping_;
     };
 } // vkt

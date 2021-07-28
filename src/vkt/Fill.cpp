@@ -4,6 +4,7 @@
 #include <vkt/config.h>
 
 #include <vkt/Fill.hpp>
+#include <vkt/HierarchicalVolume.hpp>
 #include <vkt/StructuredVolume.hpp>
 
 #include <vkt/Fill.h>
@@ -58,6 +59,47 @@ namespace vkt
     }
 
     Error FillRange(StructuredVolume& volume, Vec3i first, Vec3i last, float value)
+    {
+        VKT_CALL__(FillRange, volume, first, last, value);
+
+        return NoError;
+    }
+
+    Error Fill(HierarchicalVolume& volume, float value)
+    {
+        VKT_CALL__(
+            FillRange,
+            volume,
+            { 0, 0, 0 },
+            volume.getDims(),
+            value);
+
+        return NoError;
+    }
+
+    Error FillRange(
+            HierarchicalVolume& volume,
+            int32_t firstX,
+            int32_t firstY,
+            int32_t firstZ,
+            int32_t lastX,
+            int32_t lastY,
+            int32_t lastZ,
+            float value
+            )
+    {
+        VKT_CALL__(
+            FillRange,
+            volume,
+            { firstX, firstY, firstZ },
+            { lastX, lastY, lastZ },
+            value
+            );
+
+        return NoError;
+    }
+
+    Error FillRange(HierarchicalVolume& volume, Vec3i first, Vec3i last, float value)
     {
         VKT_CALL__(FillRange, volume, first, last, value);
 

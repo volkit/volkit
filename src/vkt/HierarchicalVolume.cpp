@@ -17,10 +17,13 @@ namespace vkt
     HierarchicalVolume::HierarchicalVolume(
             Brick const* bricks,
             std::size_t numBricks,
-            DataFormat dataFormat
+            DataFormat dataFormat,
+            float mappingLo,
+            float mappingHi
             )
         : bricks_(numBricks)
         , dataFormat_(dataFormat)
+        , voxelMapping_{mappingLo, mappingHi}
     {
         std::memcpy(bricks_.data(), bricks, numBricks * sizeof(Brick));
 
@@ -78,6 +81,27 @@ namespace vkt
     DataFormat HierarchicalVolume::getDataFormat() const
     {
         return dataFormat_;
+    }
+
+    void HierarchicalVolume::setVoxelMapping(float lo, float hi)
+    {
+        voxelMapping_ = {lo, hi };
+    }
+
+    void HierarchicalVolume::getVoxelMapping(float& lo, float& hi)
+    {
+        lo = voxelMapping_.x;
+        hi = voxelMapping_.y;
+    }
+
+    void HierarchicalVolume::setVoxelMapping(Vec2f mapping)
+    {
+        voxelMapping_ = mapping;
+    }
+
+    Vec2f HierarchicalVolume::getVoxelMapping() const
+    {
+        return voxelMapping_;
     }
 
     uint8_t* HierarchicalVolume::getData()
