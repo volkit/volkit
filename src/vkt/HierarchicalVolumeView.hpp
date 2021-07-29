@@ -38,12 +38,12 @@ namespace visionaray
         uint8_t* scalars; // pointer to the whole field!
     };
 
-    inline aabb get_bounds(ActiveBrickRegion const& abr)
+    inline VKT_FUNC aabb get_bounds(ActiveBrickRegion const& abr)
     {
         return abr.domain;
     }
 
-    void split_primitive(aabb& /*L*/, aabb& /*R*/, float /*plane*/, int /*axis*/, ActiveBrickRegion const& /*box*/)
+    inline void VKT_FUNC split_primitive(aabb& /*L*/, aabb& /*R*/, float /*plane*/, int /*axis*/, ActiveBrickRegion const& /*box*/)
     {
         assert(0);
     }
@@ -248,7 +248,7 @@ namespace visionaray
         }
     }
 
-    HitRecord intersect(Ray const& ray, ActiveBrickRegion const& abr)
+    inline VKT_FUNC HitRecord intersect(Ray const& ray, ActiveBrickRegion const& abr)
     {
         if (ray.ori.x >= abr.domain.min.x && ray.ori.x <= abr.domain.max.x
          && ray.ori.y >= abr.domain.min.y && ray.ori.y <= abr.domain.max.y
@@ -336,7 +336,9 @@ namespace vkt
             r.sumDerivatives = &sumDerivatives;
             r.sumDerivativeCoefficients = &sumDerivativeCoefficients;
 
+#ifndef __CUDACC__ // TODO
             intersect(r, cpuBVHRef);
+#endif
 
             return sumWeights >= 1e-20f ? sumWeightedValues/sumWeights : 0.f;
         }
@@ -351,7 +353,7 @@ namespace vkt
 
 #ifdef __CUDACC__
         visionaray::cuda_index_bvh<visionaray::ActiveBrickRegion> gpuBVH;
-        visionaray::cuda_index_bvh_ref_t<visionaray::ActiveBrickRegion> gpuBVHRef;
+        visionaray::cuda_index_bvh<visionaray::ActiveBrickRegion>::bvh_ref gpuBVHRef;
 #endif
     };
 

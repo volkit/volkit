@@ -41,6 +41,7 @@
 #endif
 
 #include <vkt/ExecutionPolicy.hpp>
+#include <vkt/HierarchicalVolume.hpp>
 #include <vkt/LookupTable.hpp>
 #include <vkt/Render.hpp>
 #include <vkt/StructuredVolume.hpp>
@@ -48,6 +49,7 @@
 #include <vkt/Render.h>
 #include <vkt/StructuredVolume.h>
 
+#include "HierarchicalVolumeView.hpp"
 #include "Logging.hpp"
 #include "Render_kernel.hpp"
 #include "StructuredVolumeView.hpp"
@@ -73,6 +75,7 @@ struct Viewer : ViewerBase
     using RayType = basic_ray<float>;
 
     vkt::StructuredVolume*                    structuredVolumes;
+    vkt::HierarchicalVolume*                  hierarchicalVolumes;
     std::size_t                               numAnimationFrames;
     vkt::RenderState                          renderState;
 
@@ -164,7 +167,8 @@ struct Viewer : ViewerBase
 
 
     Viewer(
-        vkt::StructuredVolume* volumes,
+        vkt::StructuredVolume* structuredVolumes,
+        vkt::HierarchicalVolume* hierarchicalVolumes,
         std::size_t numAnimationFrames,
         vkt::RenderState renderState,
         char const* windowTitle = "",
@@ -185,14 +189,16 @@ struct Viewer : ViewerBase
 };
 
 Viewer::Viewer(
-        vkt::StructuredVolume* volumes,
+        vkt::StructuredVolume* structuredVolumes,
+        vkt::HierarchicalVolume* hierarchicalVolumes,
         std::size_t numAnimationFrames,
         vkt::RenderState renderState,
         char const* windowTitle,
         unsigned numThreads
         )
     : ViewerBase(renderState.viewportWidth, renderState.viewportHeight, windowTitle)
-    , structuredVolumes(volumes)
+    , structuredVolumes(structuredVolumes)
+    , hierarchicalVolumes(hierarchicalVolumes)
     , numAnimationFrames(numAnimationFrames)
     , renderState(renderState)
     , host_sched(numThreads)
@@ -606,20 +612,30 @@ void Viewer::on_resize(int w, int h)
 //
 
 static void Render_impl(
-        vkt::StructuredVolume* volumes,
+        vkt::StructuredVolume* structuredVolumes,
+        vkt::HierarchicalVolume* hierarchicalVolumes,
         std::size_t numAnimationFrames,
         vkt::RenderState const& renderState,
         vkt::RenderState* newRenderState
         )
 {
-    Viewer viewer(volumes, numAnimationFrames, renderState);
+    Viewer viewer(structuredVolumes, hierarchicalVolumes, numAnimationFrames, renderState);
 
     int argc = 1;
     char const* argv = "vktRender";
     viewer.init(argc, (char**)&argv);
 
-    vkt::Vec3i dims = volumes[0].getDims();
-    vkt::Vec3f dist = volumes[0].getDist();
+    vkt::Vec3i dims;
+    vkt::Vec3f dist{ 1.f, 1.f, 1.f };
+
+    if (structuredVolumes != nullptr)
+    {
+        dims = structuredVolumes[0].getDims();
+        dist = structuredVolumes[0].getDist();
+    }
+    else if (hierarchicalVolumes != nullptr)
+        dims = hierarchicalVolumes[0].getDims();
+
     viewer.bbox = aabb(
             { 0.f, 0.f, 0.f },
             { dims.x * dist.x, dims.y * dist.y, dims.z * dist.z }
@@ -651,7 +667,7 @@ static void Render_impl(
 }
 
 //-------------------------------------------------------------------------------------------------
-// Overload for single volume
+// Overloads for single volume
 //
 
 static void Render_impl(
@@ -660,7 +676,16 @@ static void Render_impl(
         vkt::RenderState* newRenderState
         )
 {
-    Render_impl(&volume, 1, renderState, newRenderState);
+    Render_impl(&volume, nullptr, 1, renderState, newRenderState);
+}
+
+static void Render_impl(
+        vkt::HierarchicalVolume& volume,
+        vkt::RenderState const& renderState,
+        vkt::RenderState* newRenderState
+        )
+{
+    Render_impl(nullptr, &volume, 1, renderState, newRenderState);
 }
 
 
@@ -684,7 +709,25 @@ namespace vkt
             RenderState const& renderState,
             RenderState* newRenderState)
     {
-        Render_impl(frames, numAnimationFrames, renderState, newRenderState);
+        Render_impl(frames, nullptr, numAnimationFrames, renderState, newRenderState);
+
+        return NoError;
+    }
+
+    Error Render(HierarchicalVolume& volume, RenderState const& renderState, RenderState* newRenderState)
+    {
+        Render_impl(volume, renderState, newRenderState);
+
+        return NoError;
+    }
+
+    Error RenderFrames(
+            HierarchicalVolume* frames,
+            std::size_t numAnimationFrames,
+            RenderState const& renderState,
+            RenderState* newRenderState)
+    {
+        Render_impl(nullptr, frames, numAnimationFrames, renderState, newRenderState);
 
         return NoError;
     }

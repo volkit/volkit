@@ -182,6 +182,7 @@ Implementation Status
 | Flip                           |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Nifti I/O<sup>[1](#1)</sup>    |                     | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                | n/a                | n/a                |
 | Raw File I/O<sup>[1](#1)</sup> |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | n/a                | n/a                |
+| Render                         |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Resample                       | Structured          | :heavy_check_mark: | :x:                | :x:                | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 |                                | Hierarchical        | :heavy_check_mark: | :x:                | :x:                | :x:                | :x:                | :x:                |
 | Rotate                         |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                |
