@@ -1,12 +1,16 @@
 // This file is distributed under the MIT license.
 // See the LICENSE file for details.
 
+#include <cassert>
 #include <cstdlib>
 
 #include <vkt/HierarchicalVolume.hpp>
 
+#include <vkt/HierarchicalVolume.h>
+
 #include "DataFormatInfo.hpp"
 #include "linalg.hpp"
+#include "HierarchicalVolume_impl.hpp"
 
 //-------------------------------------------------------------------------------------------------
 // C++ API
@@ -111,3 +115,38 @@ namespace vkt
         return ManagedBuffer::data_;
     }
 } // vkt
+
+
+//-------------------------------------------------------------------------------------------------
+// C API
+//
+
+uint8_t vktHierarchicalVolumeGetMaxBytesPerVoxel()
+{
+    return vkt::HierarchicalVolume::GetMaxBytesPerVoxel();
+}
+
+void vktHierarchicalVolumeCreate(
+        vktHierarchicalVolume* volume,
+        vktBrick_t* bricks,
+        size_t numBricks,
+        vktDataFormat dataFormat,
+        float mappingLo,
+        float mappingHi
+        )
+{
+    assert(voluem != nullptr);
+
+    *volume = new vktHierarchicalVolume_impl(
+            (vkt::Brick*)bricks,
+            numBricks,
+            (vkt::DataFormat)dataFormat,
+            mappingLo,
+            mappingHi
+            );
+}
+
+void vktHierarchicalVolumeDestroy(vktHierarchicalVolume volume)
+{
+    delete volume;
+}
