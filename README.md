@@ -178,7 +178,7 @@ Implementation Status
 | Crop                           |                     | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
 | Delete                         |                     | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
 | Fill                           | Structured          | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-|                                | Hierarchical        | :heavy_check_mark: | :x:                | :x:                | :x:                | :x:                | :x:                |
+|                                | Hierarchical        | :heavy_check_mark: | :heavy_check_mark: | :x:                | :x:                | :x:                | :x:                |
 | Flip                           |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Nifti I/O<sup>[1](#1)</sup>    |                     | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                | n/a                | n/a                |
 | Raw File I/O<sup>[1](#1)</sup> |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | n/a                | n/a                |
