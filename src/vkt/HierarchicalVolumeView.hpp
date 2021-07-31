@@ -34,7 +34,7 @@ namespace visionaray
         int level;
         aabb bounds; // w/o halo
         aabb domain; // w/ halo
-        vkt::ArrayView1D<vkt::Brick> bricks;
+        vkt::Brick* bricks;
         uint8_t* scalars; // pointer to the whole field!
     };
 
@@ -264,15 +264,12 @@ namespace visionaray
 
 namespace vkt
 {
-    class HierarchicalVolumeView
+    class HierarchicalVolumeAccel
     {
     public:
-        HierarchicalVolumeView() = default;
-        VKT_FUNC HierarchicalVolumeView(HierarchicalVolume& volume)
-            : data_(volume.getData())
+        HierarchicalVolumeAccel() = default;
+        HierarchicalVolumeAccel(HierarchicalVolume& volume)
         {
-            bricks_ = ArrayView1D<Brick>(volume.getBricks(), volume.getNumBricks());
-
             using namespace visionaray;
 
             aligned_vector<ActiveBrickRegion> abrs(volume.getNumBricks());
@@ -303,21 +300,46 @@ namespace vkt
                               {bounds.max.x,bounds.max.y,bounds.max.z} },
                             { {domain.min.x,domain.min.y,domain.min.z},
                               {domain.max.x,domain.max.y,domain.max.z} },
-                            bricks_, data_ };
+                            volume.getBricks(), volume.getData() };
             }
 
             binned_sah_builder builder;
             cpuBVH = builder.build(visionaray::index_bvh<visionaray::ActiveBrickRegion>{},
                                    abrs.data(), abrs.size());
-            cpuBVHRef = cpuBVH.ref();
-
 #ifdef __CUDACC__
             gpuBVH = visionaray::cuda_index_bvh<visionaray::ActiveBrickRegion>(cpuBVH);
-            gpuBVHRef = gpuBVH.ref();
 #endif
         }
 
-        VKT_FUNC float sampleLinear(int32_t x, int32_t y, int32_t z)
+        visionaray::index_bvh<visionaray::ActiveBrickRegion> cpuBVH;
+
+#ifdef __CUDACC__
+        visionaray::cuda_index_bvh<visionaray::ActiveBrickRegion> gpuBVH;
+#endif
+    };
+
+    class HierarchicalVolumeView
+    {
+    public:
+        HierarchicalVolumeView() = default;
+        HierarchicalVolumeView(HierarchicalVolume& volume, HierarchicalVolumeAccel const& accel)
+            : data_(volume.getData())
+            , dataFormat_(volume.getDataFormat())
+            , voxelMapping_(volume.getVoxelMapping())
+        {
+            bricks_ = ArrayView1D<Brick>(volume.getBricks(), volume.getNumBricks());
+
+            // Logical grid dims, compute only once!
+            dims_ = volume.getDims();
+
+            cpuBVHRef = accel.cpuBVH.ref();
+
+#ifdef __CUDACC__
+            gpuBVHRef = accel.gpuBVH.ref();
+#endif
+        }
+
+        VKT_FUNC float sampleLinear(int32_t x, int32_t y, int32_t z) const
         {
             using namespace visionaray;
 
@@ -336,11 +358,32 @@ namespace vkt
             r.sumDerivatives = &sumDerivatives;
             r.sumDerivativeCoefficients = &sumDerivativeCoefficients;
 
-#ifndef __CUDACC__ // TODO
-            intersect(r, cpuBVHRef);
-#endif
+            default_intersector isect;
+            intersect<detail::ClosestHit>(r, cpuBVHRef, isect);
 
             return sumWeights >= 1e-20f ? sumWeightedValues/sumWeights : 0.f;
+        }
+
+        // Logical grid dims
+        VKT_FUNC Vec3i getDims() const
+        {
+            return dims_;
+        }
+
+        VKT_FUNC DataFormat getDataFormat() const
+        {
+            return dataFormat_;
+        }
+
+        VKT_FUNC void getVoxelMapping(float& lo, float& hi)
+        {
+            lo = voxelMapping_.x;
+            hi = voxelMapping_.y;
+        }
+
+        VKT_FUNC Vec2f getVoxelMapping() const
+        {
+            return voxelMapping_;
         }
 
     private:
@@ -348,11 +391,14 @@ namespace vkt
 
         ArrayView1D<Brick> bricks_;
 
-        visionaray::index_bvh<visionaray::ActiveBrickRegion> cpuBVH;
+        Vec3i dims_;
+
+        DataFormat dataFormat_;
+        Vec2f voxelMapping_;
+
         visionaray::index_bvh_ref_t<visionaray::ActiveBrickRegion> cpuBVHRef;
 
 #ifdef __CUDACC__
-        visionaray::cuda_index_bvh<visionaray::ActiveBrickRegion> gpuBVH;
         visionaray::cuda_index_bvh<visionaray::ActiveBrickRegion>::bvh_ref gpuBVHRef;
 #endif
     };

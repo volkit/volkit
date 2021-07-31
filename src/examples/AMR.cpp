@@ -130,7 +130,7 @@ int main()
 
     // Switch execution to GPU (remove those lines for CPU rendering)
     vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
-    ep.device = vkt::ExecutionPolicy::Device::GPU;
+    // ep.device = vkt::ExecutionPolicy::Device::GPU;
     vkt::SetThreadExecutionPolicy(ep);
 
     vkt::RenderState renderState;
@@ -138,5 +138,5 @@ int main()
     //renderState.renderAlgo = vkt::RenderAlgo::ImplicitIso;
     renderState.renderAlgo = vkt::RenderAlgo::MultiScattering;
     renderState.rgbaLookupTable = lut.getResourceHandle();
-    vkt::Render(sv, renderState);
+    vkt::Render(hv, renderState);
 }

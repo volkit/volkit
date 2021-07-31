@@ -68,7 +68,8 @@ namespace vkt
             )
     {
         // So we can use sampleLinear()
-        HierarchicalVolumeView sourceView(src);
+        HierarchicalVolumeAccel accel(src);
+        HierarchicalVolumeView sourceView(src, accel);
 
         Vec3i dstDims = dst.getDims();
         Vec3i srcDims = src.getDims();

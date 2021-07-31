@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <cassert>
+
 #include <visionaray/math/aabb.h>
 #include <visionaray/math/intersect.h>
 #include <visionaray/math/limits.h>
@@ -11,6 +13,39 @@
 #include <visionaray/result_record.h>
 
 #include <vkt/Render.hpp>
+
+#include "HierarchicalVolumeView.hpp"
+
+
+VKT_FUNC inline float tex3D(vkt::HierarchicalVolumeView const& vol, visionaray::vec3 coord)
+{
+    assert(vol.getDataFormat() == vkt::DataFormat::Float32);
+
+    visionaray::vec3 logicalGridDims((float)vol.getDims().x, (float)vol.getDims().y, (float)vol.getDims().z);
+
+    coord *= logicalGridDims-visionaray::vec3(.5f);
+
+    return vol.sampleLinear(coord.x, coord.y, coord.z);
+}
+
+template <typename Volume>
+VKT_FUNC float normalize(Volume /* */, float voxel)
+{
+    typename Volume::value_type minval = visionaray::numeric_limits<typename Volume::value_type>::min();
+    typename Volume::value_type maxval = visionaray::numeric_limits<typename Volume::value_type>::max();
+    voxel -= (float)minval;
+    voxel /= (float)(maxval - minval);
+    return voxel;
+}
+
+VKT_FUNC inline float normalize(vkt::HierarchicalVolumeView const& volume, float voxel)
+{
+    assert(volume.getDataFormat() == vkt::DataFormat::Float32);
+
+    voxel -= volume.getVoxelMapping().x;
+    voxel /= volume.getVoxelMapping().y - volume.getVoxelMapping().x;
+    return voxel;
+}
 
 
 struct AccumulationKernel
@@ -70,10 +105,10 @@ struct RayMarchingKernel : AccumulationKernel
         while (visionaray::any(t < hit_rec.tfar))
         {
             // sample volume
-            S voxel = convert_to_float(tex3D(volume, tex_coord));
+            S voxel = (float)tex3D(volume, tex_coord);
 
             // normalize to [0..1]
-            voxel /= S(numeric_limits<typename Volume::value_type>::max());
+            voxel = normalize(volume, voxel);
 
             // classification
             C color;
@@ -175,10 +210,10 @@ struct ImplicitIsoKernel : AccumulationKernel
         while (visionaray::any(t < hit_rec.tfar))
         {
             // sample volume
-            S voxel = convert_to_float(tex3D(volume, tex_coord));
+            S voxel = (float)tex3D(volume, tex_coord);
 
             // normalize to [0..1]
-            voxel /= S(numeric_limits<typename Volume::value_type>::max());
+            voxel = normalize(volume, voxel);
 
             if (visionaray::any(last >= S(-1e10f)))
             {
@@ -239,13 +274,10 @@ struct MultiScatteringKernel : AccumulationKernel
     {
         using namespace visionaray;
 
-        float voxel = convert_to_float(tex3D(volume, pos / bbox.size()));
+        float voxel = (float)tex3D(volume, pos / bbox.size());
 
         // normalize to [0..1]
-        typename Volume::value_type minval = numeric_limits<typename Volume::value_type>::min();
-        typename Volume::value_type maxval = numeric_limits<typename Volume::value_type>::max();
-        voxel -= (float)minval;
-        voxel /= (float)(maxval - minval);
+        voxel = normalize(volume, voxel);
 
         if (transfunc)
         {
@@ -261,10 +293,10 @@ struct MultiScatteringKernel : AccumulationKernel
     {
         using namespace visionaray;
 
-        float voxel = convert_to_float(tex3D(volume, pos / bbox.size()));
+        float voxel = (float)tex3D(volume, pos / bbox.size());
 
         // normalize to [0..1]
-        voxel /= float(numeric_limits<typename Volume::value_type>::max());
+        voxel = normalize(volume, voxel);
 
         if (transfunc)
         {

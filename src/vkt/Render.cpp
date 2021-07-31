@@ -80,6 +80,8 @@ struct Viewer : ViewerBase
     vkt::RenderState                          renderState;
 
     std::vector<vkt::StructuredVolumeView>    structuredVolumeViews;
+    std::vector<vkt::HierarchicalVolumeAccel> hierarchicalVolumeAccels;
+    std::vector<vkt::HierarchicalVolumeView>  hierarchicalVolumeViews;
 
     aabb                                      bbox;
     thin_lens_camera                          cam;
@@ -217,15 +219,34 @@ Viewer::Viewer(
 
 void Viewer::createVolumeViews()
 {
-    structuredVolumeViews.resize(numAnimationFrames);
-    for (std::size_t i = 0; i < numAnimationFrames; ++i)
+    if (structuredVolumes != nullptr)
     {
-        structuredVolumeViews[i] = vkt::StructuredVolumeView(structuredVolumes[i]);
+        structuredVolumeViews.resize(numAnimationFrames);
+        for (std::size_t i = 0; i < numAnimationFrames; ++i)
+        {
+            structuredVolumeViews[i] = vkt::StructuredVolumeView(structuredVolumes[i]);
+        }
+    }
+    else if (hierarchicalVolumes != nullptr)
+    {
+        hierarchicalVolumeAccels.resize(numAnimationFrames);
+        hierarchicalVolumeViews.resize(numAnimationFrames);
+        for (std::size_t i = 0; i < numAnimationFrames; ++i)
+        {
+            hierarchicalVolumeAccels[i] = vkt::HierarchicalVolumeAccel(hierarchicalVolumes[i]);
+            hierarchicalVolumeViews[i] = vkt::HierarchicalVolumeView(
+                    hierarchicalVolumes[i],
+                    hierarchicalVolumeAccels[i]
+                    );
+        }
     }
 }
 
 void Viewer::updateVolumeTexture()
 {
+    if (structuredVolumes == nullptr)
+        return;
+
     vkt::StructuredVolumeView volume = structuredVolumeViews[renderState.animationFrame];
 
     vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
@@ -297,21 +318,29 @@ void Viewer::on_display()
     if (transfuncEditor.updated())
         clearFrame();
 
-    vkt::StructuredVolumeView volume = structuredVolumeViews[renderState.animationFrame];
+    vkt::StructuredVolumeView structuredVolume;
+    vkt::HierarchicalVolumeView hierarchicalVolume;
+
+    bool structured = structuredVolumes != nullptr;
+
+    if (structured)
+        structuredVolume = structuredVolumeViews[renderState.animationFrame];
+    else
+        hierarchicalVolume = hierarchicalVolumeViews[renderState.animationFrame];
 
     // Prepare a kernel with the volume set up appropriately
     // according to the provided texture and texel type
-    auto prepareVolume = [&](auto texel)
+    auto prepareStructuredVolume = [&](auto texel)
     {
         using TexelType = decltype(texel);
         using Texture = texture_ref<TexelType, 3>;
 
         Texture volume_tex(
-                volume.getDims().x,
-                volume.getDims().y,
-                volume.getDims().z
+                structuredVolume.getDims().x,
+                structuredVolume.getDims().y,
+                structuredVolume.getDims().z
                 );
-        volume_tex.reset((TexelType*)volume.getData());
+        volume_tex.reset((TexelType*)structuredVolume.getData());
         volume_tex.set_filter_mode(Nearest);
         volume_tex.set_address_mode(Clamp);
         return volume_tex;
@@ -478,7 +507,7 @@ void Viewer::on_display()
                         if (renderState.renderAlgo == vkt::RenderAlgo::RayMarching)
                         {
                             auto kernel = prepareRayMarchingKernel(
-                                    prepareVolume(TexelType{}),
+                                    prepareStructuredVolume(TexelType{}),
                                     prepareTransfunc(),
                                     host_accumBuffer.data()
                                     );
@@ -487,7 +516,7 @@ void Viewer::on_display()
                         else if (renderState.renderAlgo == vkt::RenderAlgo::ImplicitIso)
                         {
                             auto kernel = prepareImplicitIsoKernel(
-                                    prepareVolume(TexelType{}),
+                                    prepareStructuredVolume(TexelType{}),
                                     prepareTransfunc(),
                                     host_accumBuffer.data()
                                     );
@@ -495,35 +524,54 @@ void Viewer::on_display()
                         }
                         else if (renderState.renderAlgo == vkt::RenderAlgo::MultiScattering)
                         {
-                            auto kernel = prepareMultiScatteringKernel(
-                                    prepareVolume(TexelType{}),
-                                    prepareTransfunc(),
-                                    host_accumBuffer.data()
-                                    );
-                            host_sched.frame(kernel, sparams);
+                            if (structured)
+                            {
+                                auto kernel = prepareMultiScatteringKernel(
+                                        prepareStructuredVolume(TexelType{}),
+                                        prepareTransfunc(),
+                                        host_accumBuffer.data()
+                                        );
+                                host_sched.frame(kernel, sparams);
+                            }
+                            else
+                            {
+                                auto kernel = prepareMultiScatteringKernel(
+                                        hierarchicalVolume,
+                                        prepareTransfunc(),
+                                        host_accumBuffer.data()
+                                        );
+                                host_sched.frame(kernel, sparams);
+                            }
                         }
                     }
                 });
         }
     };
 
-    switch (volume.getDataFormat())
+    if (structured)
     {
-    case vkt::DataFormat::Int16:
-        callKernel(int16_t{});
-        break;
+        switch (structuredVolume.getDataFormat())
+        {
+        case vkt::DataFormat::Int16:
+            callKernel(int16_t{});
+            break;
 
-    case vkt::DataFormat::UInt8:
+        case vkt::DataFormat::UInt8:
+            callKernel(uint8_t{});
+            break;
+
+        case vkt::DataFormat::UInt16:
+            callKernel(uint16_t{});
+            break;
+
+        case vkt::DataFormat::UInt32:
+            callKernel(uint32_t{});
+            break;
+        }
+    }
+    else // hierarchical
+    {
         callKernel(uint8_t{});
-        break;
-
-    case vkt::DataFormat::UInt16:
-        callKernel(uint16_t{});
-        break;
-
-    case vkt::DataFormat::UInt32:
-        callKernel(uint32_t{});
-        break;
     }
 
     // display the rendered image

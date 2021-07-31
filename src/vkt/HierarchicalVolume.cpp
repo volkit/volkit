@@ -135,7 +135,7 @@ void vktHierarchicalVolumeCreate(
         float mappingHi
         )
 {
-    assert(voluem != nullptr);
+    assert(volume != nullptr);
 
     *volume = new vktHierarchicalVolume_impl(
             (vkt::Brick*)bricks,
