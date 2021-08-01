@@ -506,28 +506,52 @@ void Viewer::on_display()
 
                         if (renderState.renderAlgo == vkt::RenderAlgo::RayMarching)
                         {
-                            auto kernel = prepareRayMarchingKernel(
-                                    prepareStructuredVolume(TexelType{}),
-                                    prepareTransfunc(),
-                                    host_accumBuffer.data()
-                                    );
-                            host_sched.frame(kernel, sparams);
+                            if (structured)
+                            {
+                                auto kernel = prepareRayMarchingKernel(
+                                        prepareStructuredVolume(TexelType{}),
+                                        prepareTransfunc(),
+                                        host_accumBuffer.data()
+                                        );
+                                host_sched.frame(kernel, sparams);
+                            }
+                            else
+                            {
+                                auto kernel = prepareRayMarchingKernel(
+                                        hierarchicalVolume,
+                                        prepareTransfunc(),
+                                        host_accumBuffer.data()
+                                        );
+                                host_sched.frame(kernel, sparams);
+                            }
                         }
                         else if (renderState.renderAlgo == vkt::RenderAlgo::ImplicitIso)
                         {
-                            auto kernel = prepareImplicitIsoKernel(
-                                    prepareStructuredVolume(TexelType{}),
-                                    prepareTransfunc(),
-                                    host_accumBuffer.data()
-                                    );
-                            host_sched.frame(kernel, sparams);
+                            if (structured)
+                            {
+                                auto kernel = prepareImplicitIsoKernel(
+                                        prepareStructuredVolume(TexelType{}),
+                                        prepareTransfunc(),
+                                        host_accumBuffer.data()
+                                        );
+                                host_sched.frame(kernel, sparams);
+                            }
+                            else
+                            {
+                                auto kernel = prepareImplicitIsoKernel(
+                                        prepareStructuredVolume(TexelType{}),
+                                        prepareTransfunc(),
+                                        host_accumBuffer.data()
+                                        );
+                                host_sched.frame(kernel, sparams);
+                            }
                         }
                         else if (renderState.renderAlgo == vkt::RenderAlgo::MultiScattering)
                         {
                             if (structured)
                             {
                                 auto kernel = prepareMultiScatteringKernel(
-                                        prepareStructuredVolume(TexelType{}),
+                                        hierarchicalVolume,
                                         prepareTransfunc(),
                                         host_accumBuffer.data()
                                         );

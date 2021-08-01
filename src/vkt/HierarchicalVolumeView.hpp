@@ -359,7 +359,11 @@ namespace vkt
             r.sumDerivativeCoefficients = &sumDerivativeCoefficients;
 
             default_intersector isect;
+#ifdef __CUDA_ARCH__
+            intersect<detail::ClosestHit>(r, gpuBVHRef, isect);
+#else
             intersect<detail::ClosestHit>(r, cpuBVHRef, isect);
+#endif
 
             return sumWeights >= 1e-20f ? sumWeightedValues/sumWeights : 0.f;
         }
