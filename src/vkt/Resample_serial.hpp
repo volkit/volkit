@@ -182,7 +182,7 @@ namespace vkt
 
         Vec3i numSB{ 4,4,3 };
         Vec3i sizeSB = dst.getDims() / numSB;
-        unsigned int numInGrayVals = 65535;
+        unsigned int numInGrayVals = 255;
         unsigned offsetX = 0;
         unsigned offsetY = 0;
         unsigned offsetZ = 0;
@@ -220,11 +220,13 @@ namespace vkt
                         grayIndex = (NumBins * histIndex) + LUT[volSample];
                     }
                     // atomicAdd( hist[ grayIndex ], 1 );
-                    hist[grayIndex]++;
+                    if (grayIndex < totalHistSize) {
+                        hist[grayIndex]++;
 
-                    // update the histograms max value
-                    // atomicMax( histMax[ histIndex ], hist[ grayIndex ] );
-                    histMax[histIndex] += hist[grayIndex];
+                        // update the histograms max value
+                        // atomicMax( histMax[ histIndex ], hist[ grayIndex ] );
+                        histMax[histIndex] += hist[grayIndex];
+                    }
                 }
             }
         }

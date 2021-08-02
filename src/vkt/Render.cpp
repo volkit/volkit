@@ -9,7 +9,7 @@
 #include <future>
 #include <memory>
 
-#include <boost/filesystem.hpp>
+//#include <boost/filesystem.hpp>
 
 #if VKT_HAVE_CUDA
 #include <cuda_runtime.h>
@@ -594,48 +594,6 @@ void Viewer::on_key_press(visionaray::key_event const& event)
         clearFrame();
     }
 
-    if (event.key() == 'u')
-    {
-        const std::string camera_file_base = "volkit-camera";
-        const std::string camera_file_suffix = ".txt";
-
-        int inc = 0;
-        std::string inc_str = "";
-
-        std::string filename = camera_file_base + inc_str + camera_file_suffix;
-
-        while (boost::filesystem::exists(filename))
-        {
-            ++inc;
-            inc_str = std::to_string(inc);
-
-            while (inc_str.length() < 4)
-            {
-                inc_str = std::string("0") + inc_str;
-            }
-
-            inc_str = std::string("-") + inc_str;
-
-            filename = camera_file_base + inc_str + camera_file_suffix;
-        }
-
-        std::ofstream file(filename);
-        if (file.good())
-        {
-            std::cout << "Storing camera to file: " << filename << '\n';
-            file << cam;
-        }
-    }
-
-    if (event.key() == 'v')
-    {
-        std::string filename = "volkit-camera.txt";
-        if (boost::filesystem::exists(filename))
-        {
-            load_camera(filename);
-            clearFrame();
-        }
-    }
 
     ViewerBase::on_key_press(event);
 }

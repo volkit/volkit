@@ -206,7 +206,7 @@ namespace vkt
 
         Vec3i numSB{ 4,4,3 };
         Vec3i sizeSB = dst.getDims() / numSB;
-        unsigned int numInGrayVals = 65535;
+        unsigned int numInGrayVals = 255;
         unsigned offsetX = 0;
         unsigned offsetY = 0;
         unsigned offsetZ = 0;
@@ -228,7 +228,6 @@ namespace vkt
         for_each(0,dstDims.x,0,dstDims.y,0,dstDims.z,
                  [=] __device__ (int x, int y, int z) {
 
-
                     Vec3i index{ x,y,z };
                     Vec3i currSB = index / sizeSB;
                     // if we are not within the volume of interest -> return 
@@ -244,11 +243,14 @@ namespace vkt
                         grayIndex = (NumBins * histIndex) + LUT[volSample];
                     }
                     // atomicAdd( hist[ grayIndex ], 1 );
-                    hist[grayIndex]++;
+                    if (grayIndex < totalHistSize) {
+                        hist[grayIndex]++;
 
-                    // update the histograms max value
-                    // atomicMax( histMax[ histIndex ], hist[ grayIndex ] );
-                    histMax[histIndex] += hist[grayIndex];
+                        // update the histograms max value
+                        // atomicMax( histMax[ histIndex ], hist[ grayIndex ] );
+
+                        histMax[histIndex] += hist[grayIndex];
+                    }
                 });
         thrust::copy(d_hist.begin(),d_hist.end(),h_hist.begin());
         thrust::copy(d_histMax.begin(),d_histMax.end(),h_histMax.begin());
