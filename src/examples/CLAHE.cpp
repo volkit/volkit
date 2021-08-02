@@ -52,7 +52,7 @@ int main(int argc, char** argv)
     vkt::InputStream is(file);
     is.read(volume);
 
-    ep.device = vkt::ExecutionPolicy::Device::GPU;
+    // ep.device = vkt::ExecutionPolicy::Device::GPU;
     vkt::SetThreadExecutionPolicy(ep);
 
     // Resample using contrast limited adaptive histogram equalization

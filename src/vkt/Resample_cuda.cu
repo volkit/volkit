@@ -247,9 +247,7 @@ namespace vkt
                         hist[grayIndex]++;
 
                         // update the histograms max value
-                        // atomicMax( histMax[ histIndex ], hist[ grayIndex ] );
-
-                        histMax[histIndex] += hist[grayIndex];
+                        atomicMax( &histMax[ histIndex ], hist[ grayIndex ] );
                     }
                 });
         thrust::copy(d_hist.begin(),d_hist.end(),h_hist.begin());

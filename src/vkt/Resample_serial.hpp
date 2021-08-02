@@ -170,7 +170,7 @@ namespace vkt
         }
 
         // LUT shader
-        constexpr static unsigned NumBins = 1 << 16;
+        constexpr static unsigned NumBins = 1 << 8;
         unsigned LUT[NumBins];
         std::fill(LUT, LUT + NumBins, 0);
 
@@ -180,9 +180,9 @@ namespace vkt
             LUT[index] = (index - globalMin) / binSize;
         }
 
-        Vec3i numSB{ 4,4,3 };
+        Vec3i numSB{ 4,4,4 };
         Vec3i sizeSB = dst.getDims() / numSB;
-        unsigned int numInGrayVals = 255;
+        unsigned int numInGrayVals = src.getDataFormat()==vkt::DataFormat::UInt8 ? 255 : 65535;;
         unsigned offsetX = 0;
         unsigned offsetY = 0;
         unsigned offsetZ = 0;
@@ -211,11 +211,12 @@ namespace vkt
 
                     // get the gray value of the Volume
                     unsigned volSample = imageLoad(x + offsetX, y + offsetY, z + offsetZ);
+                    float volSampleF = volSample / (float)numInGrayVals; // in [0,1]
                     unsigned histIndex = (currSB.z * numSB.x * numSB.y + currSB.y * numSB.x + currSB.x);
 
 
                     // Increment the appropriate histogram
-                    unsigned grayIndex = (NumBins * histIndex) + volSample;
+                    unsigned grayIndex = (NumBins * histIndex) + (volSampleF*(NumBins-1));
                     if (useLUT) {
                         grayIndex = (NumBins * histIndex) + LUT[volSample];
                     }
@@ -225,7 +226,8 @@ namespace vkt
 
                         // update the histograms max value
                         // atomicMax( histMax[ histIndex ], hist[ grayIndex ] );
-                        histMax[histIndex] += hist[grayIndex];
+                        // histMax[histIndex] += hist[grayIndex];
+                        histMax[histIndex] = max(histMax[histIndex],hist[grayIndex]);
                     }
                 }
             }
@@ -348,7 +350,7 @@ namespace vkt
             uint32_t* currHist = &hist[currHistIndex * numInGrayVals];
             mapHistogram( globalMin, globalMax, numPixelsSB, numInGrayVals, currHist);
         }
-       
+      
          
         //lerp
         for (int32_t z = 0; z != dstDims.z; ++z)
