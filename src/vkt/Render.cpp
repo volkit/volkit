@@ -539,7 +539,7 @@ void Viewer::on_display()
                             else
                             {
                                 auto kernel = prepareImplicitIsoKernel(
-                                        prepareStructuredVolume(TexelType{}),
+                                        hierarchicalVolume,
                                         prepareTransfunc(),
                                         host_accumBuffer.data()
                                         );
@@ -551,7 +551,7 @@ void Viewer::on_display()
                             if (structured)
                             {
                                 auto kernel = prepareMultiScatteringKernel(
-                                        hierarchicalVolume,
+                                        prepareStructuredVolume(TexelType{}),
                                         prepareTransfunc(),
                                         host_accumBuffer.data()
                                         );

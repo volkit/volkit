@@ -138,5 +138,5 @@ int main()
     //renderState.renderAlgo = vkt::RenderAlgo::ImplicitIso;
     renderState.renderAlgo = vkt::RenderAlgo::MultiScattering;
     renderState.rgbaLookupTable = lut.getResourceHandle();
-    vkt::Render(hv, renderState);
+    vkt::Render(sv, renderState);
 }
