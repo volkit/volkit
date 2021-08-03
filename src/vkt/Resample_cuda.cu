@@ -191,7 +191,7 @@ namespace vkt
         globalMax = h_globalMinMax[1];
 
         // LUT shader
-        constexpr static unsigned NumBins = 1 << 16;
+        constexpr static unsigned NumBins = 1 << 8;
         unsigned h_LUT[NumBins];
         std::fill(h_LUT, h_LUT + NumBins, 0);
 
@@ -206,7 +206,7 @@ namespace vkt
 
         Vec3i numSB{ 4,4,4 };
         Vec3i sizeSB = dst.getDims() / numSB;
-        unsigned int numInGrayVals = 255;
+        unsigned int numInGrayVals = src.getDataFormat()==vkt::DataFormat::UInt8 ? 255 : 65535;
         unsigned offsetX = 0;
         unsigned offsetY = 0;
         unsigned offsetZ = 0;
