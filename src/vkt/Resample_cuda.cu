@@ -204,7 +204,7 @@ namespace vkt
         thrust::copy(h_LUT,h_LUT+NumBins,d_LUT.data());
         unsigned* LUT = thrust::raw_pointer_cast(d_LUT.data());
 
-        Vec3i numSB{ 4,4,3 };
+        Vec3i numSB{ 4,4,4 };
         Vec3i sizeSB = dst.getDims() / numSB;
         unsigned int numInGrayVals = 255;
         unsigned offsetX = 0;
@@ -244,7 +244,7 @@ namespace vkt
                     }
                     // atomicAdd( hist[ grayIndex ], 1 );
                     if (grayIndex < totalHistSize) {
-                        hist[grayIndex]++;
+                        atomicAdd(&hist[grayIndex], 1);
 
                         // update the histograms max value
                         atomicMax( &histMax[ histIndex ], hist[ grayIndex ] );

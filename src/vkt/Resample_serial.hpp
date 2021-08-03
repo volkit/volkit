@@ -182,11 +182,11 @@ namespace vkt
 
         Vec3i numSB{ 4,4,4 };
         Vec3i sizeSB = dst.getDims() / numSB;
-        unsigned int numInGrayVals = src.getDataFormat()==vkt::DataFormat::UInt8 ? 255 : 65535;;
+        unsigned int numInGrayVals = src.getDataFormat()==vkt::DataFormat::UInt8 ? 255 : 65535;
         unsigned offsetX = 0;
         unsigned offsetY = 0;
         unsigned offsetZ = 0;
-        bool useLUT = true;
+        bool useLUT = false;
 
         unsigned int totalHistSize = numSB.x * numSB.y * numSB.z * NumBins;
 
@@ -341,7 +341,6 @@ namespace vkt
        
 
         numPixelsSB = sizeSB.x * sizeSB.y * sizeSB.z;
-
 
        
         
