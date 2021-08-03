@@ -11,7 +11,6 @@
 #include <vkt/Resample.hpp>
 #include <vkt/StructuredVolume.hpp>
 
-#include "DataFormatInfo.hpp"
 #include "linalg.hpp"
  
 #include <iostream>
@@ -183,7 +182,7 @@ namespace vkt
 
         Vec3i numSB{ 4,4,4 };
         Vec3i sizeSB = dst.getDims() / numSB;
-        unsigned int numInGrayVals = 1 << (vkt::getSizeInBytes(src.getDataFormat())*8);
+        unsigned int numInGrayVals = src.getDataFormat()==vkt::DataFormat::UInt8 ? 255 : 65535;
         unsigned offsetX = 0;
         unsigned offsetY = 0;
         unsigned offsetZ = 0;
@@ -212,7 +211,7 @@ namespace vkt
 
                     // get the gray value of the Volume
                     unsigned volSample = imageLoad(x + offsetX, y + offsetY, z + offsetZ);
-                    float volSampleF = volSample / (float)(numInGrayVals-1); // in [0,1]
+                    float volSampleF = volSample / (float)numInGrayVals; // in [0,1]
                     unsigned histIndex = (currSB.z * numSB.x * numSB.y + currSB.y * numSB.x + currSB.x);
 
 
@@ -221,14 +220,15 @@ namespace vkt
                     if (useLUT) {
                         grayIndex = (NumBins * histIndex) + LUT[volSample];
                     }
-                    assert(grayIndex < totalHistSize);
                     // atomicAdd( hist[ grayIndex ], 1 );
-                    hist[grayIndex]++;
+                    if (grayIndex < totalHistSize) {
+                        hist[grayIndex]++;
 
-                    // update the histograms max value
-                    // atomicMax( histMax[ histIndex ], hist[ grayIndex ] );
-                    // histMax[histIndex] += hist[grayIndex];
-                    histMax[histIndex] = max(histMax[histIndex],hist[grayIndex]);
+                        // update the histograms max value
+                        // atomicMax( histMax[ histIndex ], hist[ grayIndex ] );
+                        // histMax[histIndex] += hist[grayIndex];
+                        histMax[histIndex] = max(histMax[histIndex],hist[grayIndex]);
+                    }
                 }
             }
         }
@@ -286,6 +286,7 @@ namespace vkt
             }
 
         }
+
         //Cliphist 2
         unsigned int histCount = numSB.x * numSB.y * numSB.z;
 
@@ -346,12 +347,19 @@ namespace vkt
         
 
         for (unsigned int currHistIndex = 0; currHistIndex < histCount; currHistIndex++) {
-            uint32_t* currHist = &hist[currHistIndex * NumBins];
+            uint32_t* currHist = &hist[currHistIndex * numInGrayVals];
             mapHistogram( globalMin, globalMax, numPixelsSB, numInGrayVals, currHist);
         }
+
+        //std::cout << "VKT Hist before Lerp: " << std::endl;
+        //long int sum = 0;
+        //for (int i = 0; i < numInGrayVals; i++) {
+        //    std::cout << hist[i] << " ";
+        //    sum += hist[i];
+        //}
+        //std::cout << "VKT Sum " << sum << std::endl;
       
-         
-        //lerp
+         //lerp
         for (int32_t z = 0; z != dstDims.z; ++z)
         {
             for (int32_t y = 0; y != dstDims.y; ++y)
@@ -365,8 +373,7 @@ namespace vkt
                     Vec3i numBlocks; numBlocks.x = numSB.x * 2; numBlocks.y = numSB.y * 2; numBlocks.z = numSB.z * 2;
                     Vec3i sizeBlock = Vec3i(dst.getDims() / numBlocks);
                     Vec3i currBlock = Vec3i(index / sizeBlock);
-
-
+ 
                     // find the neighbooring subBlocks and interpolation values (a,b,c) for the 
                     // block we are interpolating over
                     unsigned int xRight, xLeft, yUp, yDown, zFront, zBack;
@@ -402,7 +409,7 @@ namespace vkt
                     aInv = size.x - a;
 
                     ////////////////////////////////////////////////////////////////////////////
-                    // Y neighboors
+                   // Y neighboors
                     if (currBlock.y == 0) {
                         yUp = 0;							yDown = 0;
                         b = index.y - currBlock.y * sizeBlock.y;
@@ -426,7 +433,7 @@ namespace vkt
                     bInv = size.y - b;
 
                     ////////////////////////////////////////////////////////////////////////////
-                    // Z neighboors
+                   // Z neighboors
                     if (currBlock.z == 0) {
                         zFront = 0;							zBack = 0;
                         c = index.z - currBlock.z * sizeBlock.z;
@@ -452,15 +459,15 @@ namespace vkt
 
                     ////////////////////////////////////////////////////////////////////////////
                     // get the histogram indices for the neighbooring subblocks 
-                    unsigned int LUF = NumBins-1 * (zFront * numSB.x * numSB.y + yUp * numSB.x + xLeft);
-                    unsigned int RUF = NumBins-1 * (zFront * numSB.x * numSB.y + yUp * numSB.x + xRight);
-                    unsigned int LDF = NumBins-1 * (zFront * numSB.x * numSB.y + yDown * numSB.x + xLeft);
-                    unsigned int RDF = NumBins-1 * (zFront * numSB.x * numSB.y + yDown * numSB.x + xRight);
+                    unsigned int LUF = NumBins * (zFront * numSB.x * numSB.y + yUp * numSB.x + xLeft);
+                    unsigned int RUF = NumBins * (zFront * numSB.x * numSB.y + yUp * numSB.x + xRight);
+                    unsigned int LDF = NumBins * (zFront * numSB.x * numSB.y + yDown * numSB.x + xLeft);
+                    unsigned int RDF = NumBins * (zFront * numSB.x * numSB.y + yDown * numSB.x + xRight);
 
-                    unsigned int LUB = NumBins-1 * (zBack * numSB.x * numSB.y + yUp * numSB.x + xLeft);
-                    unsigned int RUB = NumBins-1 * (zBack * numSB.x * numSB.y + yUp * numSB.x + xRight);
-                    unsigned int LDB = NumBins-1 * (zBack * numSB.x * numSB.y + yDown * numSB.x + xLeft);
-                    unsigned int RDB = NumBins-1 * (zBack * numSB.x * numSB.y + yDown * numSB.x + xRight);
+                    unsigned int LUB = NumBins * (zBack * numSB.x * numSB.y + yUp * numSB.x + xLeft);
+                    unsigned int RUB = NumBins * (zBack * numSB.x * numSB.y + yUp * numSB.x + xRight);
+                    unsigned int LDB = NumBins * (zBack * numSB.x * numSB.y + yDown * numSB.x + xLeft);
+                    unsigned int RDB = NumBins * (zBack * numSB.x * numSB.y + yDown * numSB.x + xRight);
 
 
                
@@ -474,13 +481,13 @@ namespace vkt
                     }
 
                     // bilinear interpolation - zFront
-                    float up_front = aInv * float(hist[LUF + greyValue]) / float(NumBins) + a * float(hist[RUF + greyValue]) / float(NumBins);
-                    float dn_front = aInv * float(hist[LDF + greyValue]) / float(NumBins) + a * float(hist[RDF + greyValue]) / float(NumBins);
+                    float up_front = aInv * float(hist[LUF + greyValue]) / float(NumBins-1) + a * float(hist[RUF + greyValue]) / float(NumBins-1);
+                    float dn_front = aInv * float(hist[LDF + greyValue]) / float(NumBins) + a * float(hist[RDF + greyValue]) / float(NumBins-1);
                     float front = bInv * up_front + b * dn_front;
 
                     // bilinear interpolation - zBack
-                    float up_back = aInv * float(hist[LUB + greyValue]) / float(NumBins) + a * float(hist[RUB + greyValue]) / float(NumBins);
-                    float dn_back = aInv * float(hist[LDB + greyValue]) / float(NumBins) + a * float(hist[RDB + greyValue]) / float(NumBins);
+                    float up_back = aInv * float(hist[LUB + greyValue]) / float(NumBins-1) + a * float(hist[RUB + greyValue]) / float(NumBins-1);
+                    float dn_back = aInv * float(hist[LDB + greyValue]) / float(NumBins-1) + a * float(hist[RDB + greyValue]) / float(NumBins-1);
                     float back = bInv * up_back + b * dn_back;
 
                     // trilinear interpolation
@@ -495,13 +502,12 @@ namespace vkt
                     // 
                     // dst.setBytes(x, y, z, &data[0]);
                    
-                    
+                     
                     
                 }
-            }
-        }
-
-
+             }
+         }
+ 
     }
 
    
