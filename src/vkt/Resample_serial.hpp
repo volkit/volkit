@@ -11,6 +11,7 @@
 #include <vkt/Resample.hpp>
 #include <vkt/StructuredVolume.hpp>
 
+#include "DataFormatInfo.hpp"
 #include "linalg.hpp"
  
 #include <iostream>
@@ -182,7 +183,7 @@ namespace vkt
 
         Vec3i numSB{ 4,4,4 };
         Vec3i sizeSB = dst.getDims() / numSB;
-        unsigned int numInGrayVals = src.getDataFormat()==vkt::DataFormat::UInt8 ? 255 : 65535;
+        unsigned int numInGrayVals = 1 << (vkt::getSizeInBytes(src.getDataFormat())*8);
         unsigned offsetX = 0;
         unsigned offsetY = 0;
         unsigned offsetZ = 0;
@@ -211,7 +212,7 @@ namespace vkt
 
                     // get the gray value of the Volume
                     unsigned volSample = imageLoad(x + offsetX, y + offsetY, z + offsetZ);
-                    float volSampleF = volSample / (float)numInGrayVals; // in [0,1]
+                    float volSampleF = volSample / (float)(numInGrayVals-1); // in [0,1]
                     unsigned histIndex = (currSB.z * numSB.x * numSB.y + currSB.y * numSB.x + currSB.x);
 
 
@@ -220,15 +221,14 @@ namespace vkt
                     if (useLUT) {
                         grayIndex = (NumBins * histIndex) + LUT[volSample];
                     }
+                    assert(grayIndex < totalHistSize);
                     // atomicAdd( hist[ grayIndex ], 1 );
-                    if (grayIndex < totalHistSize) {
-                        hist[grayIndex]++;
+                    hist[grayIndex]++;
 
-                        // update the histograms max value
-                        // atomicMax( histMax[ histIndex ], hist[ grayIndex ] );
-                        // histMax[histIndex] += hist[grayIndex];
-                        histMax[histIndex] = max(histMax[histIndex],hist[grayIndex]);
-                    }
+                    // update the histograms max value
+                    // atomicMax( histMax[ histIndex ], hist[ grayIndex ] );
+                    // histMax[histIndex] += hist[grayIndex];
+                    histMax[histIndex] = max(histMax[histIndex],hist[grayIndex]);
                 }
             }
         }
@@ -346,7 +346,7 @@ namespace vkt
         
 
         for (unsigned int currHistIndex = 0; currHistIndex < histCount; currHistIndex++) {
-            uint32_t* currHist = &hist[currHistIndex * numInGrayVals];
+            uint32_t* currHist = &hist[currHistIndex * NumBins];
             mapHistogram( globalMin, globalMax, numPixelsSB, numInGrayVals, currHist);
         }
       
