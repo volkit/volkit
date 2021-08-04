@@ -24,10 +24,6 @@ namespace vkt
         //! Parameters set when the volume is hierarchical
         ///@{
         bool isHierarchical = false;
-        unsigned numSubVolumes = 0;
-        Vec3i* minCorners = nullptr;
-        Vec3i* subVolumeDims = nullptr;
-        unsigned* levels = nullptr;
         ///@}
 
         //! Common parameters
