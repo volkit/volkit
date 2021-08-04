@@ -3,6 +3,7 @@
 #include <random>
 #include <vector>
 
+#include <vkt/Crop.hpp>
 #include <vkt/ExecutionPolicy.hpp>
 #include <vkt/FLASHFile.hpp>
 #include <vkt/HierarchicalVolume.hpp>
@@ -113,10 +114,15 @@ int main()
                                vkt::DataFormat::Float32);
     is.read(hv);
 
-    // vkt::StructuredVolume sv(128,128,2560,vkt::DataFormat::UInt16);
-    vkt::StructuredVolume sv(32,32,32,vkt::DataFormat::UInt8);
+    vkt::HierarchicalVolume hv2(nullptr, 0, vkt::DataFormat::Float32);
 
-    vkt::Resample(sv, hv, vkt::Filter::Linear);
+    vkt::CropResize(hv2, hv, {0,0,2}, {8,8,8});
+    vkt::Crop(hv2, hv, {0,0,2}, {8,8,8});
+
+    // vkt::StructuredVolume sv(128,128,2560,vkt::DataFormat::UInt16);
+    vkt::StructuredVolume sv(32,32,24,vkt::DataFormat::UInt8);
+
+    vkt::Resample(sv, hv2, vkt::Filter::Linear);
 
     float rgba[] = {
             1.f, 1.f, 1.f, .005f,

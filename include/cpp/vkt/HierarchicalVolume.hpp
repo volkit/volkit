@@ -47,6 +47,9 @@ namespace vkt
 
         std::size_t getNumBricks();
 
+        //! Set bricks. This will create a deep copy of the array
+        void setBricks(Brick const* bricks, std::size_t numBricks);
+
         Brick* getBricks();
 
         DataFormat getDataFormat() const;

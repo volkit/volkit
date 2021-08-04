@@ -77,6 +77,21 @@ namespace vkt
         return bricks_.numElements();
     }
 
+    void HierarchicalVolume::setBricks(Brick const* bricks, std::size_t numBricks)
+    {
+        bricks_.resize(numBricks);
+
+        std::memcpy(bricks_.data(), bricks, sizeof(Brick) * numBricks);
+
+        std::size_t newSize = 0;
+        for (std::size_t i = 0; i < bricks_.numElements(); ++i)
+        {
+            Vec3i dims = bricks_[i].dims;
+            newSize += dims.x * dims.y * dims.z *  vkt::getSizeInBytes(dataFormat_);
+        }
+        resize(newSize);
+    }
+
     Brick* HierarchicalVolume::getBricks()
     {
         return bricks_.data();

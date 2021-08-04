@@ -160,8 +160,6 @@ Derived algorithms are algorithms that can be implemented by using other core al
 
 ### Crop
 
-Implemented using `Copy`.
-
 ### Delete
 
 Implemented using `Fill`.
@@ -175,7 +173,8 @@ Implementation Status
 | BrickDecompose                 |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                |
 | ComputeHistogram               |                     | :heavy_check_mark: | :x:                | :x:                | :x:                | :heavy_check_mark: | :heavy_check_mark: |
 | Copy                           |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :heavy_check_mark: |
-| Crop                           |                     | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
+| Crop                           | Structured          | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
+|                                | Hierarchical        | :heavy_check_mark: | :x:                | :x:                | :x:                | :x:                | :x:                |
 | Delete                         |                     | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
 | Fill                           | Structured          | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 |                                | Hierarchical        | :heavy_check_mark: | :heavy_check_mark: | :x:                | :x:                | :x:                | :x:                |

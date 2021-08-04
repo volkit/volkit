@@ -145,6 +145,7 @@ set(SOURCES
     Aggregates.cpp
     Arithmetic.cpp
     Copy.cpp
+    Crop.cpp
     Decompose.cpp
     ExecutionPolicy.cpp
     Fill.cpp
