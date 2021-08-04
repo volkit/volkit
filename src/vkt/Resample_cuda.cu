@@ -234,11 +234,12 @@ namespace vkt
 
                     // get the gray value of the Volume
                     unsigned volSample = imageLoad(x + offsetX, y + offsetY, z + offsetZ);
+                    float volSampleF = volSample / (float)numInGrayVals; // in [0,1]
                     unsigned histIndex = (currSB.z * numSB.x * numSB.y + currSB.y * numSB.x + currSB.x);
 
 
                     // Increment the appropriate histogram
-                    unsigned grayIndex = (NumBins * histIndex) + volSample;
+                    unsigned grayIndex = (NumBins * histIndex) + (volSampleF*(NumBins-1));
                     if (useLUT) {
                         grayIndex = (NumBins * histIndex) + LUT[volSample];
                     }
@@ -473,15 +474,15 @@ namespace vkt
 
                     ////////////////////////////////////////////////////////////////////////////
                     // get the histogram indices for the neighbooring subblocks 
-                    unsigned int LUF = NumBins-1 * (zFront * numSB.x * numSB.y + yUp * numSB.x + xLeft);
-                    unsigned int RUF = NumBins-1 * (zFront * numSB.x * numSB.y + yUp * numSB.x + xRight);
-                    unsigned int LDF = NumBins-1 * (zFront * numSB.x * numSB.y + yDown * numSB.x + xLeft);
-                    unsigned int RDF = NumBins-1 * (zFront * numSB.x * numSB.y + yDown * numSB.x + xRight);
+                    unsigned int LUF = NumBins * (zFront * numSB.x * numSB.y + yUp * numSB.x + xLeft);
+                    unsigned int RUF = NumBins * (zFront * numSB.x * numSB.y + yUp * numSB.x + xRight);
+                    unsigned int LDF = NumBins * (zFront * numSB.x * numSB.y + yDown * numSB.x + xLeft);
+                    unsigned int RDF = NumBins * (zFront * numSB.x * numSB.y + yDown * numSB.x + xRight);
 
-                    unsigned int LUB = NumBins-1 * (zBack * numSB.x * numSB.y + yUp * numSB.x + xLeft);
-                    unsigned int RUB = NumBins-1 * (zBack * numSB.x * numSB.y + yUp * numSB.x + xRight);
-                    unsigned int LDB = NumBins-1 * (zBack * numSB.x * numSB.y + yDown * numSB.x + xLeft);
-                    unsigned int RDB = NumBins-1 * (zBack * numSB.x * numSB.y + yDown * numSB.x + xRight);
+                    unsigned int LUB = NumBins * (zBack * numSB.x * numSB.y + yUp * numSB.x + xLeft);
+                    unsigned int RUB = NumBins * (zBack * numSB.x * numSB.y + yUp * numSB.x + xRight);
+                    unsigned int LDB = NumBins * (zBack * numSB.x * numSB.y + yDown * numSB.x + xLeft);
+                    unsigned int RDB = NumBins * (zBack * numSB.x * numSB.y + yDown * numSB.x + xRight);
 
 
                
@@ -495,13 +496,13 @@ namespace vkt
                     }
 
                     // bilinear interpolation - zFront
-                    float up_front = aInv * float(hist[LUF + greyValue]) / float(NumBins) + a * float(hist[RUF + greyValue]) / float(NumBins);
-                    float dn_front = aInv * float(hist[LDF + greyValue]) / float(NumBins) + a * float(hist[RDF + greyValue]) / float(NumBins);
+                    float up_front = aInv * float(hist[LUF + greyValue]) / float(NumBins-1) + a * float(hist[RUF + greyValue]) / float(NumBins-1);
+                    float dn_front = aInv * float(hist[LDF + greyValue]) / float(NumBins-1) + a * float(hist[RDF + greyValue]) / float(NumBins-1);
                     float front = bInv * up_front + b * dn_front;
 
                     // bilinear interpolation - zBack
-                    float up_back = aInv * float(hist[LUB + greyValue]) / float(NumBins) + a * float(hist[RUB + greyValue]) / float(NumBins);
-                    float dn_back = aInv * float(hist[LDB + greyValue]) / float(NumBins) + a * float(hist[RDB + greyValue]) / float(NumBins);
+                    float up_back = aInv * float(hist[LUB + greyValue]) / float(NumBins-1) + a * float(hist[RUB + greyValue]) / float(NumBins-1);
+                    float dn_back = aInv * float(hist[LDB + greyValue]) / float(NumBins-1) + a * float(hist[RDB + greyValue]) / float(NumBins-1);
                     float back = bInv * up_back + b * dn_back;
 
                     // trilinear interpolation
