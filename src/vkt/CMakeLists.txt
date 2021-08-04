@@ -178,6 +178,7 @@ if(CUDA_FOUND AND VSNRAY_ENABLE_CUDA)
     vkt_cuda_compile(CUDA_SOURCES
         Arithmetic_cuda.cu
         Copy_cuda.cu
+        Crop_cuda.cu
         Decompose_cuda.cu
         Fill_cuda.cu
         Flip_cuda.cu

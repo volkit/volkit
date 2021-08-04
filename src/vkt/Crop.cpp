@@ -1,6 +1,8 @@
 // This file is distributed under the MIT license.
 // See the LICENSE file for details.
 
+#include <vkt/config.h>
+
 #include <cassert>
 #include <vector>
 
@@ -10,6 +12,10 @@
 #include "DataFormatInfo.hpp"
 #include "linalg.hpp"
 #include "macros.hpp"
+
+#if VKT_HAVE_CUDA
+#include "Crop_cuda.hpp"
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // C++ API
