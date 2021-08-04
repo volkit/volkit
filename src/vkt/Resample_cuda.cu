@@ -210,7 +210,7 @@ namespace vkt
         unsigned offsetX = 0;
         unsigned offsetY = 0;
         unsigned offsetZ = 0;
-        bool useLUT = true;
+        bool useLUT = false;
 
         unsigned int totalHistSize = numSB.x * numSB.y * numSB.z * NumBins;
 
