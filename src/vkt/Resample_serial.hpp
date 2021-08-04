@@ -347,8 +347,9 @@ namespace vkt
         
 
         for (unsigned int currHistIndex = 0; currHistIndex < histCount; currHistIndex++) {
-            uint32_t* currHist = &hist[currHistIndex * numInGrayVals];
-            mapHistogram( globalMin, globalMax, numPixelsSB, numInGrayVals, currHist);
+            // TODO (sz): check if this is a bug, I believe this should be NumBins, not NumBins-1
+            uint32_t* currHist = &hist[currHistIndex * (NumBins-1)];
+            mapHistogram( globalMin, globalMax, numPixelsSB, (NumBins-1), currHist);
         }
 
         //std::cout << "VKT Hist before Lerp: " << std::endl;

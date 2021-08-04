@@ -372,8 +372,9 @@ namespace vkt
         thrust::copy(h_hist.begin(),h_hist.end(),d_hist.begin());
         hist = thrust::raw_pointer_cast(d_hist.data());
         for_each(0,histCount, [=] __device__ (int currHistIndex) {
-            uint32_t* currHist = &hist[currHistIndex * numInGrayVals];
-            mapHistogram( globalMin, globalMax, numPixelsSB, numInGrayVals, currHist);
+            // TODO (sz): check if this is a bug, I believe this should be NumBins, not NumBins-1
+            uint32_t* currHist = &hist[currHistIndex * (NumBins-1)];
+            mapHistogram( globalMin, globalMax, numPixelsSB, (NumBins-1), currHist);
         });
        
          
