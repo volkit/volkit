@@ -11,11 +11,15 @@
 #include <ostream>
 #include <vector>
 
+#if VKT_HAVE_HDF5
 #include <H5Cpp.h>
+#endif
 
 #include <vkt/FLASHFile.hpp>
 
 // #include <vkt/FLASHFile.h>
+
+#if VKT_HAVE_HDF5
 
 #define MAX_STRING_LENGTH 80
 
@@ -378,6 +382,8 @@ void extract_scalars(grid_t const& grid, variable_t const& var, char* buf, std::
     // std::cout << "Cells:   " << cellfile << '\n';
 }
 
+#endif // VKT_HAVE_HDF5
+
 //-------------------------------------------------------------------------------------------------
 // C++ API
 //
@@ -386,6 +392,7 @@ namespace vkt
 {
     struct FLASHFile::Impl
     {
+#if VKT_HAVE_HDF5
         H5::H5File file;
         grid_t grid;
         char const* varName;
@@ -393,11 +400,13 @@ namespace vkt
         std::size_t pos;
 
         std::vector<Brick> bricks;
+#endif
     };
 
     FLASHFile::FLASHFile(char const* fileName, char const* var)
         : impl_(new Impl)
     {
+#if VKT_HAVE_HDF5
         impl_->file.openFile(fileName, H5F_ACC_RDONLY);
         impl_->varName = var;
         impl_->pos = 0;
@@ -405,6 +414,7 @@ namespace vkt
         read_variable(impl_->var, impl_->file, impl_->varName);
         read_grid(impl_->grid, impl_->file);
         extract_sub_volumes(impl_->grid, impl_->var, impl_->bricks);
+#endif
     }
 
     FLASHFile::~FLASHFile()
@@ -413,10 +423,13 @@ namespace vkt
 
     std::size_t FLASHFile::read(char* buf, std::size_t len)
     {
-        std::cout << impl_->pos << ' ' << len << '\n';
+#if VKT_HAVE_HDF5
         extract_scalars(impl_->grid, impl_->var, buf, impl_->pos, impl_->pos+len);
         impl_->pos += len;
         return len;
+#else
+        return 0;
+#endif
     }
 
     std::size_t FLASHFile::write(char const* buf, std::size_t len)
@@ -429,22 +442,32 @@ namespace vkt
 
     bool FLASHFile::flush()
     {
-        // impl_->pos = 0;
-        // return true;
     }
 
     bool FLASHFile::good() const
     {
+#if VKT_HAVE_HDF5
         return impl_->file.getFileSize();
+#else
+        return false;
+#endif
     }
 
     unsigned FLASHFile::getNumBricks() const
     {
+#if VKT_HAVE_HDF5
         return (unsigned)impl_->bricks.size();
+#else
+        return 0;
+#endif
     }
 
     Brick const* FLASHFile::getBricks() const
     {
+#if VKT_HAVE_HDF5
         return impl_->bricks.data();
+#else
+        return nullptr;
+#endif
     }
 }
