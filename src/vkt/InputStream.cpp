@@ -3,6 +3,7 @@
 
 #include <cassert>
 
+#include <vkt/HierarchicalVolume.hpp>
 #include <vkt/InputStream.hpp>
 #include <vkt/StructuredVolume.hpp>
 
@@ -71,6 +72,28 @@ namespace vkt
     Error InputStream::readRange(StructuredVolume& dst, Vec3i first, Vec3i last)
     {
         return readRange(dst, first.x, first.y, first.z, last.x, last.y, last.z);
+    }
+
+    Error InputStream::read(HierarchicalVolume& volume)
+    {
+        if (!dataSource_.good())
+            return InvalidDataSource;
+
+        std::size_t len = 0;
+        for (std::size_t i = 0; i < volume.getNumBricks(); ++i)
+        {
+            Vec3i dims = volume.getBricks()[i].dims;
+            std::size_t sizePerVoxel = vkt::getSizeInBytes(volume.getDataFormat());
+
+            len += dims.x * dims.y * dims.z * sizePerVoxel;
+        }
+
+        std::size_t res = dataSource_.read((char*)volume.getData(), len);
+
+        if (res != len)
+            return ReadError;
+
+        return NoError;
     }
 
     Error InputStream::seek(std::size_t pos)

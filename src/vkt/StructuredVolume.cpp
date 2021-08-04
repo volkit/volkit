@@ -27,6 +27,7 @@ namespace vkt
         , dataFormat_(DataFormat::UInt8)
         , dist_{1.f, 1.f, 1.f}
         , voxelMapping_{0.f, 1.f}
+        , haloSize_{.5f, .5f, .5f}
     {
     }
 
@@ -46,6 +47,7 @@ namespace vkt
         , dataFormat_(dataFormat)
         , dist_{distX, distY, distZ}
         , voxelMapping_{mappingLo, mappingHi}
+        , haloSize_{.5f, .5f, .5f}
     {
     }
 
@@ -130,7 +132,17 @@ namespace vkt
         return voxelMapping_;
     }
 
-    Box3f StructuredVolume::getWorldBounds() const
+    Box3f StructuredVolume::getDomainBounds() const
+    {
+        Box3f domainBounds = getObjectBounds();
+
+        domainBounds.min -= haloSize_;
+        domainBounds.max += haloSize_;
+
+        return domainBounds;
+    }
+
+    Box3f StructuredVolume::getObjectBounds() const
     {
         return {
             { 0.f, 0.f, 0.f },
@@ -143,47 +155,6 @@ namespace vkt
         migrate();
 
         return ManagedBuffer::data_;
-    }
-
-    float StructuredVolume::sampleLinear(int32_t x, int32_t y, int32_t z)
-    {
-        float xf1 = x - 0.f;
-        float yf1 = y - 0.f;
-        float zf1 = z - 0.f;
-
-        float xf2 = x + 1.f;
-        float yf2 = y + 1.f;
-        float zf2 = z + 1.f;
-
-        Vec3i lo{ (int)xf1, (int)yf1, (int)zf1 };
-        Vec3i hi{ (int)xf2, (int)yf2, (int)zf2 };
-
-        lo.x = clamp(lo.x, 0, dims_.x - 1);
-        lo.y = clamp(lo.y, 0, dims_.y - 1);
-        lo.x = clamp(lo.x, 0, dims_.x - 1);
-
-        hi.y = clamp(hi.y, 0, dims_.y - 1);
-        hi.z = clamp(hi.z, 0, dims_.z - 1);
-        hi.z = clamp(hi.z, 0, dims_.z - 1);
-
-        Vec3f frac{ xf1 - lo.x, yf1 - lo.y, zf1 - lo.z };
-
-        float v[8] = {
-            getValue(lo.x, lo.y, lo.z),
-            getValue(hi.x, lo.y, lo.z),
-            getValue(lo.x, hi.y, lo.z),
-            getValue(hi.x, hi.y, lo.z),
-            getValue(lo.x, lo.y, hi.z),
-            getValue(hi.x, lo.y, hi.z),
-            getValue(lo.x, hi.y, hi.z),
-            getValue(hi.x, hi.y, hi.z)
-            };
-
-        return lerp(
-            lerp(lerp(v[0], v[1], frac.x), lerp(v[2], v[3], frac.x), frac.y),
-            lerp(lerp(v[4], v[5], frac.x), lerp(v[6], v[7], frac.x), frac.y),
-            frac.z
-            );
     }
 
     void StructuredVolume::setValue(int32_t x, int32_t y, int32_t z, float value)

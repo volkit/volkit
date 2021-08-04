@@ -108,4 +108,27 @@ namespace vkt
                               std::size_t numAnimationFrames,
                               RenderState const& renderState = {},
                               RenderState* newRenderState = 0);
+
+    /*! @brief  Render single volume
+     *
+     * Render a single hierarchical volume. @param volume is a managed volkit
+     * hierarchical volume object. Rendering of multiple volumes can be done
+     * using @ref RenderFrames().
+     * @see RenderFrames()
+     */
+    VKTAPI Error Render(HierarchicalVolume& volume,
+                        RenderState const& renderState = {},
+                        RenderState* newRenderState = 0);
+
+    /*! @brief  Render volumes as animation frames
+     *
+     * Render numAnimationFrames volumes as a sequence of time steps. @param
+     * volume is a CPU-accessible raw pointer pointing to managed volkit
+     * hierarchical volume objects.
+     * @see Render()
+     */
+    VKTAPI Error RenderFrames(HierarchicalVolume* volumes,
+                              std::size_t numAnimationFrames,
+                              RenderState const& renderState = {},
+                              RenderState* newRenderState = 0);
 } // vkt

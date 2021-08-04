@@ -19,9 +19,17 @@ extern "C"
 
 typedef struct
 {
+    //! Parameters set when the volume is structured
+    ///@{
     vktBool_t isStructured;
     vktVec3i_t dims;
     vktDataFormat dataFormat;
+    ///@}
+
+    //! Parameters set when the volume is hierarchical
+    ///@{
+    vktBool_t isHierarchical;
+    ///@}
 } vktVolumeFileHeader_t;
 
 static void vktVolumeFileHeaderDefaultInit(vktVolumeFileHeader_t* header)

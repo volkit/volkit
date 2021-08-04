@@ -83,4 +83,8 @@ namespace vkt
                 last
                 );
     }
+
+    void FillRange_cuda(HierarchicalVolume& volume, Vec3i first, Vec3i last, float value)
+    {
+    }
 } // vkt

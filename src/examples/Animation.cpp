@@ -3,7 +3,6 @@
 #include <ostream>
 #include <vector>
 
-#include <vkt/Array1D.hpp>
 #include <vkt/ExecutionPolicy.hpp>
 #include <vkt/InputStream.hpp>
 #include <vkt/LookupTable.hpp>

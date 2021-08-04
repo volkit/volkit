@@ -34,6 +34,18 @@ VKTAPI vktError vktFillSubVoxelRangeSV(vktStructuredVolume volume,
                                        float lastZ,
                                        float value);
 
+VKTAPI vktError vktFillHV(vktHierarchicalVolume volume,
+                          float value);
+
+VKTAPI vktError vktFillRangeHV(vktHierarchicalVolume volume,
+                               int32_t firstX,
+                               int32_t firstY,
+                               int32_t firstZ,
+                               int32_t lastX,
+                               int32_t lastY,
+                               int32_t lastZ,
+                               float value);
+
 #ifdef __cplusplus
 }
 #endif

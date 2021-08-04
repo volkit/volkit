@@ -22,6 +22,10 @@ namespace vkt
                           StructuredVolume& src,
                           Filter filter);
 
+    VKTAPI Error Resample(StructuredVolume& dst,
+                          HierarchicalVolume& src,
+                          Filter filter);
+
     //! Resample using contrast limited adaptive histogram equalization
     VKTAPI Error ResampleCLAHE(StructuredVolume& dst,
                                StructuredVolume& src);

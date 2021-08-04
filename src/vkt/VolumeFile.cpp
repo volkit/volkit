@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cstdlib>
 #include <string>
 
 #include <boost/filesystem.hpp>
@@ -161,8 +162,6 @@ namespace vkt
 
     void VolumeFile::setHeader(VolumeFileHeader header)
     {
-        header_ = header;
-
         FileType ft = getFileType(fileName_);
 
         if (ft == RAW)
@@ -253,9 +252,14 @@ vktVolumeFileHeader_t vktVolumeFileGetHeader(vktVolumeFile file)
     else
         chdr.isStructured = VKT_FALSE;
 
+    if (hdr.isHierarchical)
+        chdr.isHierarchical = VKT_TRUE;
+    else
+        chdr.isHierarchical = VKT_FALSE;
+
+    // Structured parameters
     vkt::Vec3i dims = hdr.dims;
     chdr.dims = { dims.x, dims.y, dims.z };
-
     chdr.dataFormat = (vktDataFormat)hdr.dataFormat;
 
     return chdr;

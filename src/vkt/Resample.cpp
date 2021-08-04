@@ -29,13 +29,22 @@ namespace vkt
         return NoError;
     }
 
+    VKTAPI Error Resample(
+            StructuredVolume& dst,
+            HierarchicalVolume& src,
+            Filter filter
+            )
+    {
+        VKT_CALL__(Resample, dst, src, filter);
+
+        return NoError;
+    }
+
     VKTAPI Error ResampleCLAHE(
             StructuredVolume& dst,
             StructuredVolume& src
             )
     {
         VKT_CALL__(ResampleCLAHE, dst, src);
-
-        return NoError;
     }
 }

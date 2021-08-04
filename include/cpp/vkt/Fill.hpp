@@ -34,4 +34,23 @@ namespace vkt
                            Vec3i last,
                            float value);
 
+    //! Fill the whole volume with a constant value
+    VKTAPI Error Fill(HierarchicalVolume& volume,
+                      float value);
+
+    //! Fill the range `[firstXXX..lastXXX)` with a constant value
+    VKTAPI Error FillRange(HierarchicalVolume& volume,
+                           int32_t firstX,
+                           int32_t firstY,
+                           int32_t firstZ,
+                           int32_t lastX,
+                           int32_t lastY,
+                           int32_t lastZ,
+                           float value);
+
+    //! Fill the range `[first..last)` with a constant value
+    VKTAPI Error FillRange(HierarchicalVolume& volume,
+                           Vec3i first,
+                           Vec3i last,
+                           float value);
 } // vkt

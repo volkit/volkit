@@ -160,8 +160,6 @@ Derived algorithms are algorithms that can be implemented by using other core al
 
 ### Crop
 
-Implemented using `Copy`.
-
 ### Delete
 
 Implemented using `Fill`.
@@ -169,6 +167,7 @@ Implemented using `Fill`.
 Implementation Status
 ---------------------
 
+<<<<<<< HEAD
 | Algorithm                      | C++ API            | C API              | Python API         | CLI                | Serial version     | GPU version        |
 | ------------------------------ |:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|
 | ApplyFilter                    | :heavy_check_mark: | :x:                | :x:                | :x:                | :heavy_check_mark: | :x:                |
@@ -190,6 +189,35 @@ Implementation Status
 
 <a name="1"><sup>1</sup></a>Specific file I/O can however be used via Volume File I/O (`class vkt::VolumeFile`), which is also available in C and Python.
 
+=======
+| Algorithm                      | Volume Type<sup>[2] | C++ API            | C API              | Python API         | CLI                | Serial version     | GPU version        |
+| ------------------------------ |:-------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|
+| ApplyFilter                    |                     | :heavy_check_mark: | :x:                | :x:                | :x:                | :heavy_check_mark: | :x:                |
+| BrickDecompose                 |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                |
+| ComputeHistogram               |                     | :heavy_check_mark: | :x:                | :x:                | :x:                | :heavy_check_mark: | :heavy_check_mark: |
+| Copy                           |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :heavy_check_mark: |
+| Crop                           | Structured          | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
+|                                | Hierarchical        | :heavy_check_mark: | :x:                | :x:                | :x:                | :x:                | :x:                |
+| Delete                         |                     | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
+| Fill                           | Structured          | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+|                                | Hierarchical        | :heavy_check_mark: | :heavy_check_mark: | :x:                | :x:                | :x:                | :x:                |
+| Flip                           |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Nifti I/O<sup>[1](#1)</sup>    |                     | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                | n/a                | n/a                |
+| Raw File I/O<sup>[1](#1)</sup> |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | n/a                | n/a                |
+| Render                         |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Resample                       | Structured          | :heavy_check_mark: | :x:                | :x:                | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+|                                | Hierarchical        | :heavy_check_mark: | :x:                | :x:                | :x:                | :x:                | :x:                |
+| Rotate                         |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                |
+| Scan                           |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                |
+| Transform                      |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                |
+| Virvo I/O<sup>[1](#1)</sup>    |                     | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                | n/a                | n/a                |
+| Volume File I/O                |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | n/a                | n/a                |
+
+<a name="1"><sup>1</sup></a>Specific file I/O can however be used via Volume File I/O (`class vkt::VolumeFile`), which is also available in C and Python.
+
+<a name="2"><sup>2</sup></a>If empty, the volume type is `StructuredVolume`.
+
+>>>>>>> amr
 API Documentation
 -----------------
 

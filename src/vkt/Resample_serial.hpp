@@ -11,9 +11,13 @@
 #include <vkt/Resample.hpp>
 #include <vkt/StructuredVolume.hpp>
 
+#include "HierarchicalVolumeView.hpp"
 #include "linalg.hpp"
  
 #include <iostream>
+
+#include "StructuredVolumeView.hpp"
+
 namespace vkt
 {
     void Resample_serial(
@@ -42,6 +46,8 @@ namespace vkt
         }
         else
         {
+            // So we can use sampleLinear()
+            StructuredVolumeView sourceView(src);
 
             Vec3i dstDims = dst.getDims();
             Vec3i srcDims = src.getDims();
@@ -55,9 +61,38 @@ namespace vkt
                         float srcX = x / float(dstDims.x) * srcDims.x;
                         float srcY = y / float(dstDims.y) * srcDims.y;
                         float srcZ = z / float(dstDims.z) * srcDims.z;
-                        float value = src.sampleLinear(srcX, srcY, srcZ);
+                        float value = sourceView.sampleLinear(srcX, srcY, srcZ);
                         dst.setValue({x,y,z}, value);
                     }
+                }
+            }
+        }
+    }
+
+    void Resample_serial(
+            StructuredVolume& dst,
+            HierarchicalVolume& src,
+            Filter filter
+            )
+    {
+        // So we can use sampleLinear()
+        HierarchicalVolumeAccel accel(src);
+        HierarchicalVolumeView sourceView(src, accel);
+
+        Vec3i dstDims = dst.getDims();
+        Vec3i srcDims = src.getDims();
+
+        for (int32_t z = 0; z != dstDims.z; ++z)
+        {
+            for (int32_t y = 0; y != dstDims.y; ++y)
+            {
+                for (int32_t x = 0; x != dstDims.x; ++x)
+                {
+                    float srcX = x / float(dstDims.x) * srcDims.x;
+                    float srcY = y / float(dstDims.y) * srcDims.y;
+                    float srcZ = z / float(dstDims.z) * srcDims.z;
+                    float value = sourceView.sampleLinear(srcX, srcY, srcZ);
+                    dst.setValue({x,y,z}, value);
                 }
             }
         }
@@ -511,5 +546,5 @@ namespace vkt
  
     }
 
-   
+
 } // vkt

@@ -3,6 +3,7 @@
 
 find_package(Boost COMPONENTS filesystem system serialization REQUIRED)
 find_package(CUDA)
+find_package(HDF5 COMPONENTS CXX)
 find_package(Nifti)
 find_package(SDL2)
 find_package(SWIG)
@@ -11,6 +12,10 @@ find_package(Virvo)
 
 vkt_use_package(Boost)
 vkt_use_package(CUDA)
+vkt_use_package(HDF5)
+if(HDF5_FOUND)
+    include_directories(${HDF5_CXX_INCLUDE_DIRS})
+endif()
 vkt_use_package(Nifti)
 vkt_use_package(SDL2)
 vkt_use_package(Threads)
@@ -140,11 +145,14 @@ set(SOURCES
     Aggregates.cpp
     Arithmetic.cpp
     Copy.cpp
+    Crop.cpp
     Decompose.cpp
     ExecutionPolicy.cpp
     Fill.cpp
     Filter.cpp
+    FLASHFile.cpp
     Flip.cpp
+    HierarchicalVolume.cpp
     Histogram.cpp
     InputStream.cpp
     Logging.cpp
@@ -171,6 +179,7 @@ if(CUDA_FOUND AND VSNRAY_ENABLE_CUDA)
     vkt_cuda_compile(CUDA_SOURCES
         Arithmetic_cuda.cu
         Copy_cuda.cu
+        Crop_cuda.cu
         Decompose_cuda.cu
         Fill_cuda.cu
         Flip_cuda.cu
@@ -212,11 +221,11 @@ target_link_libraries(volkit visionaray_common)
 
 if(SWIG_FOUND)
     set_property(SOURCE volkit.i PROPERTY CPLUSPLUS ON)
-    if(BUILD_SHARED_LIBS)
+    #if(BUILD_SHARED_LIBS)
         swig_add_library(volkitpy LANGUAGE python SOURCES volkit.i)
-    else()
-        swig_add_library(volkitpy TYPE STATIC LANGUAGE python SOURCES volkit.i)
-    endif()
+    #else()
+    #    swig_add_library(volkitpy TYPE STATIC LANGUAGE python SOURCES volkit.i)
+    #endif()
     swig_link_libraries(volkitpy ${Python3_LIBRARIES})
     swig_link_libraries(volkitpy volkit)
 endif()
