@@ -119,10 +119,14 @@ int main()
     // vkt::CropResize(hv2, hv, {0,0,2}, {8,8,8});
     // vkt::Crop(hv2, hv, {0,0,2}, {8,8,8});
 
-    vkt::StructuredVolume sv(128,128,2560,vkt::DataFormat::UInt16);
+    // vkt::StructuredVolume sv(128,128,2560,vkt::DataFormat::UInt16);
+    vkt::StructuredVolume sv(32,32,640,vkt::DataFormat::UInt16);
     // vkt::StructuredVolume sv(32,32,24,vkt::DataFormat::UInt8);
 
     vkt::Resample(sv, hv, vkt::Filter::Linear);
+
+    vkt::StructuredVolume sv2(128,128,2560,vkt::DataFormat::UInt16);
+    vkt::Resample(sv2, sv, vkt::Filter::Nearest);
 
     float rgba[] = {
             1.f, 1.f, 1.f, .005f,
@@ -144,14 +148,14 @@ int main()
     // for SILCC volume
     renderState.viewportWidth = 1555;
     renderState.viewportHeight = 520;
-    renderState.initialCamera = { 1,{-206.179,159.237,1264.72},{54.7557,65.3722,1225.13},{0.33416,0.942009,-0.0310351},45.f,.001f,10.f };
+    renderState.initialCamera = { 1, {-167.111,138.028,1276.09},{54.7994,58.2017,1242.42},{0.33416,0.942009,-0.0310351},45.f,.001f,10.f };
 
     //renderState.renderAlgo = vkt::RenderAlgo::RayMarching;
     //renderState.renderAlgo = vkt::RenderAlgo::ImplicitIso;
     renderState.renderAlgo = vkt::RenderAlgo::MultiScattering;
     renderState.rgbaLookupTable = lut.getResourceHandle();
     vkt::RenderState out;
-    vkt::Render(sv, renderState, &out);
+    vkt::Render(sv2, renderState, &out);
     std::cout << "{" << out.initialCamera.eye.x << ',' <<  out.initialCamera.eye.y << ',' <<  out.initialCamera.eye.z << "}\n";
     std::cout << "{" << out.initialCamera.center.x << ',' <<  out.initialCamera.center.y << ',' <<  out.initialCamera.center.z << "}\n";
     std::cout << "{" << out.initialCamera.up.x << ',' <<  out.initialCamera.up.y << ',' <<  out.initialCamera.up.z << "}\n";
