@@ -61,7 +61,11 @@ namespace vkt
                         float srcX = x / float(dstDims.x) * srcDims.x;
                         float srcY = y / float(dstDims.y) * srcDims.y;
                         float srcZ = z / float(dstDims.z) * srcDims.z;
-                        float value = sourceView.sampleLinear(srcX, srcY, srcZ);
+                        float value = 0.f;
+                        if (filter == Filter::Linear)
+                            value = sourceView.sampleLinear(srcX, srcY, srcZ);
+                        else
+                            value = sourceView.getValue((int32_t)srcX, (int32_t)srcY, (int32_t)srcZ);
                         dst.setValue({x,y,z}, value);
                     }
                 }
