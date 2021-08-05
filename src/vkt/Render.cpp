@@ -752,15 +752,29 @@ static void Render_impl(
             );
 
     float aspect = viewer.width() / static_cast<float>(viewer.height());
-    viewer.cam.perspective(
-            45.f * constants::degrees_to_radians<float>(),
-            aspect,
-            .001f,
-            1000.f
-            );
-    viewer.cam.set_lens_radius(0.05f);
-    viewer.cam.set_focal_distance(10.0f);
-    viewer.cam.view_all(viewer.bbox);
+
+    if (renderState.initialCamera.isSet)
+    {
+        vec3 eye(renderState.initialCamera.eye.x, renderState.initialCamera.eye.y, renderState.initialCamera.eye.z);
+        vec3 center(renderState.initialCamera.center.x, renderState.initialCamera.center.y, renderState.initialCamera.center.z);
+        vec3 up(renderState.initialCamera.up.x, renderState.initialCamera.up.y, renderState.initialCamera.up.z);
+        viewer.cam.look_at(eye, center, up);
+        viewer.cam.perspective(renderState.initialCamera.fovy * constants::degrees_to_radians<float>(), aspect, .001f, 1000.f);
+        viewer.cam.set_lens_radius(renderState.initialCamera.lensRadius);
+        viewer.cam.set_focal_distance(renderState.initialCamera.focalDistance);
+    }
+    else
+    {
+        viewer.cam.perspective(
+                45.f * constants::degrees_to_radians<float>(),
+                aspect,
+                .001f,
+                1000.f
+                );
+        viewer.cam.set_lens_radius(0.05f);
+        viewer.cam.set_focal_distance(10.0f);
+        viewer.cam.view_all(viewer.bbox);
+    }
 
     viewer.add_manipulator(std::make_shared<arcball_manipulator>(viewer.cam, mouse::Left));
     viewer.add_manipulator(std::make_shared<pan_manipulator>(viewer.cam, mouse::Middle));
@@ -773,6 +787,20 @@ static void Render_impl(
     // when finished, write out the new render state
     if (newRenderState != nullptr)
     {
+        // TODO: transfer function!!
+
+        newRenderState->viewportWidth = viewer.width();
+        newRenderState->viewportHeight = viewer.height();
+        // Store the current camera in initialCamera..
+        vec3 eye = viewer.cam.eye();
+        vec3 center = viewer.cam.center();
+        vec3 up = viewer.cam.up();
+        newRenderState->initialCamera.eye = { eye.x, eye.y, eye.z };
+        newRenderState->initialCamera.center = { center.x, center.y, center.z };
+        newRenderState->initialCamera.up = { up.x, up.y, up.z };
+        newRenderState->initialCamera.fovy = viewer.cam.fovy();
+        newRenderState->initialCamera.lensRadius = viewer.cam.get_lens_radius();
+        newRenderState->initialCamera.focalDistance = viewer.cam.get_focal_distance();
     }
 }
 

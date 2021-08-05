@@ -9,6 +9,7 @@
 
 #include "common.hpp"
 #include "forward.hpp"
+#include "linalg.hpp"
 
 namespace vkt
 {
@@ -81,6 +82,31 @@ namespace vkt
 
         //! Convert final colors from linear to sRGB
         vkt::Bool sRGB = 1;
+
+        //! Initial camera, optionally set by the user
+        struct
+        {
+            //! By default, this isn't set but determined using viewAll()
+            vkt::Bool isSet = 0;
+
+            //! Position where the camera is at
+            vkt::Vec3f eye = { 0.f, 0.f, 0.f };
+
+            //! Position that we're looking at
+            vkt::Vec3f center = { 0.f, 0.f, -1.f };
+
+            //! Camera up vector
+            vkt::Vec3f up = { 0.f, 1.f, 0.f };
+
+            //! vertical field of view, specified in degree
+            float fovy = 45.f;
+
+            //! Lens radius, used for depth of field
+            float lensRadius = .001f;
+
+            //! Distance we're focusing at, used for depth of field
+            float focalDistance = 10.f;
+        } initialCamera;
 
         ///@}
 
