@@ -3,13 +3,21 @@
 
 #pragma once
 
-//#include <sys/param.h>
+#ifndef _WIN32
+#include <sys/param.h>
+#endif
 
 //-------------------------------------------------------------------------------------------------
 // Endianness
 //
 
-#if defined(__BYTE_ORDER)
+#ifdef _WIN32
+# ifdef _M_PPC
+#   define VKT_BIG_ENDIAN
+# else
+#   define VKT_LITTLE_ENDIAN
+# endif
+#elif defined(__BYTE_ORDER)
 # if (__BYTE_ORDER == __ORDER_LITTLE_ENDIAN__)
 #  define VKT_LITTLE_ENDIAN
 # elif (__BYTE_ORDER == __LITTLE_ENDIAN)
