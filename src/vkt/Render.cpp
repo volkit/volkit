@@ -9,8 +9,6 @@
 #include <future>
 #include <memory>
 
-//#include <boost/filesystem.hpp>
-
 #if VKT_HAVE_CUDA
 #include <cuda_runtime.h>
 #include <thrust/device_vector.h>
@@ -671,7 +669,6 @@ void Viewer::on_key_press(visionaray::key_event const& event)
         updateVolumeTexture();
         clearFrame();
     }
-
 
     ViewerBase::on_key_press(event);
 }

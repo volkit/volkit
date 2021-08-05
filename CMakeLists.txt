@@ -5,6 +5,7 @@ project(volkit)
 
 cmake_minimum_required(VERSION 2.8.12)
 
+# Only for the time being - we later want to control this via VKTAPI
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 
 set(CMAKE_CXX_STANDARD 14)

@@ -1,5 +1,4 @@
 #include <cstddef>
-#include<iostream>
 #include <vkt/Arithmetic.hpp>
 #include <vkt/ExecutionPolicy.hpp>
 #include <vkt/Render.hpp>
@@ -23,7 +22,6 @@ static void MakeCheckered(int32_t x, int32_t y, int32_t z, vkt::VoxelView voxel)
 
 int main()
 {
-   // std::cout << "hello" << std::endl;
     vkt::Vec3i dims = { 32, 32, 32 };
 
     vkt::DataFormat dataFormat = vkt::DataFormat::UInt8;
@@ -50,12 +48,11 @@ int main()
     ep.device = vkt::ExecutionPolicy::Device::CPU;
     //vkt::SetThreadExecutionPolicy(ep);
 
-    std::cout << __LINE__ << std::flush << std::endl;
-    //// CPU rendering
+    // CPU rendering
     vkt::RenderState renderState;
     renderState.renderAlgo = vkt::RenderAlgo::MultiScattering;
     vkt::Render(volume1, renderState);
-   /* vkt::Render(volume2, renderState);
+    vkt::Render(volume2, renderState);
     vkt::Render(volume3, renderState);
-    vkt::Render(volume4, renderState);*/
+    vkt::Render(volume4, renderState);
 }
