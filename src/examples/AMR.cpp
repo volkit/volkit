@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
 #include <random>
 #include <vector>
@@ -102,17 +103,61 @@ private:
     std::vector<vkt::Brick> bricks;
 };
 
+void write(vkt::HierarchicalVolume&  hv) {
+    std::ofstream dump("dump.vkt",std::ios::binary);
+
+    uint64_t numBricks = (uint64_t)hv.getNumBricks();
+    dump.write((char*)&numBricks,sizeof(numBricks));
+    for (uint64_t i=0; i<numBricks; ++i) {
+        vkt::Brick brick = hv.getBricks()[i];
+        dump.write((char*)&brick, sizeof(brick));
+    }
+    vkt::DataFormat df = hv.getDataFormat();
+    dump.write((char*)&df,sizeof(df));
+    vkt::Vec2f vm = hv.getVoxelMapping();
+    dump.write((char*)&vm,sizeof(vm));
+
+    vkt::Brick lastBrick = hv.getBricks()[hv.getNumBricks()-1];
+    uint64_t scalarsSize = lastBrick.offsetInBytes + lastBrick.dims.x*lastBrick.dims.y
+                                *lastBrick.dims.z*sizeof(float);
+    dump.write((char*)hv.getData(),scalarsSize);
+}
+
+void read(vkt::HierarchicalVolume&  hv, std::string fileName) {
+    std::ifstream dump(fileName,std::ios::binary);
+
+    uint64_t numBricks;
+    dump.read((char*)&numBricks,sizeof(numBricks));
+    std::vector<vkt::Brick> bricks(numBricks);
+    dump.read((char*)bricks.data(),numBricks*sizeof(vkt::Brick));
+
+    vkt::DataFormat df;
+    dump.read((char*)&df,sizeof(df));
+    vkt::Vec2f vm;
+    dump.read((char*)&vm,sizeof(vm));
+
+    hv = vkt::HierarchicalVolume(bricks.data(),numBricks,df,vm.x,vm.y);
+    vkt::Brick lastBrick = bricks[hv.getNumBricks()-1];
+    uint64_t scalarsSize = lastBrick.offsetInBytes + lastBrick.dims.x*lastBrick.dims.y
+                                *lastBrick.dims.z*sizeof(float);
+    dump.read((char*)hv.getData(),scalarsSize);
+}
+
 int main()
 {
     // Example dataSource;
-    vkt::FLASHFile dataSource("/Users/stefan/volkit/build/SILCC_hdf5_plt_cnt_0300", "dens");
+    // vkt::FLASHFile dataSource("/Users/stefan/volkit/build/SILCC_hdf5_plt_cnt_0300", "dens");
 
-    vkt::InputStream is(dataSource);
+    // vkt::InputStream is(dataSource);
 
-    vkt::HierarchicalVolume hv(dataSource.getBricks(),
-                               dataSource.getNumBricks(),
-                               vkt::DataFormat::Float32);
-    is.read(hv);
+    //vkt::HierarchicalVolume hv(dataSource.getBricks(),
+    //                           dataSource.getNumBricks(),
+    //                           vkt::DataFormat::Float32);
+    //is.read(hv);
+
+    vkt::HierarchicalVolume hv;
+    read(hv,"dump.vkt");
+    // write(hv);
 
     // vkt::HierarchicalVolume hv2(nullptr, 0, vkt::DataFormat::Float32);
 
