@@ -176,6 +176,8 @@ set(SOURCES
 )
 
 if(CUDA_FOUND AND VSNRAY_ENABLE_CUDA)
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS};--expt-relaxed-constexpr")
+
     vkt_cuda_compile(CUDA_SOURCES
         Arithmetic_cuda.cu
         Copy_cuda.cu

@@ -165,6 +165,9 @@ int main()
 
     vkt::HierarchicalVolume hv2(nullptr, 0, vkt::DataFormat::Float32);
 
+    ep.device = vkt::ExecutionPolicy::Device::GPU;
+    vkt::SetThreadExecutionPolicy(ep);
+
     vkt::CropResize(hv2, hv, {0,0,20480}, {4096,4096,61440});
     vkt::Crop(hv2, hv, {0,0,20480}, {4096,4096,61440});
 
@@ -172,8 +175,6 @@ int main()
     //vkt::StructuredVolume sv(32,32,640,vkt::DataFormat::UInt8);
     //vkt::StructuredVolume sv(1,1,20,vkt::DataFormat::UInt16,1.f,1.f,1.f,-28.1f,-21.f);
 
-    ep.device = vkt::ExecutionPolicy::Device::GPU;
-    vkt::SetThreadExecutionPolicy(ep);
     vkt::Resample(sv, hv2, vkt::Filter::Linear);
 
     vkt::StructuredVolume sv2(256,256,2560,vkt::DataFormat::UInt16);

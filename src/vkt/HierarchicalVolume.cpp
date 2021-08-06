@@ -31,12 +31,18 @@ namespace vkt
         , dataFormat_(dataFormat)
         , voxelMapping_{mappingLo, mappingHi}
     {
-        std::memcpy(bricks_.data(), bricks, numBricks * sizeof(Brick));
+        ExecutionPolicy ep = GetThreadExecutionPolicy();
+        CopyKind ck = CopyKind::HostToHost;
+
+        if (ep.device == ExecutionPolicy::Device::GPU)
+            ck = CopyKind::HostToDevice;
+
+        Memcpy(bricks_.data(), bricks, numBricks * sizeof(Brick), ck);
 
         std::size_t newSize = 0;
-        for (std::size_t i = 0; i < bricks_.numElements(); ++i)
+        for (std::size_t i = 0; i < numBricks; ++i)
         {
-            Vec3i dims = bricks_[i].dims;
+            Vec3i dims = bricks[i].dims;
             newSize += dims.x * dims.y * dims.z *  vkt::getSizeInBytes(dataFormat_);
         }
         resize(newSize);
@@ -58,8 +64,8 @@ namespace vkt
 
         Brick* bricks = nullptr;
 
-        vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
-        if (ep.device == vkt::ExecutionPolicy::Device::GPU)
+        ExecutionPolicy ep = GetThreadExecutionPolicy();
+        if (ep.device == ExecutionPolicy::Device::GPU)
         {
             bricks = new Brick[bricks_.numElements()];
             Memcpy(bricks, bricks_.data(), bricks_.numElements() * sizeof(Brick),
@@ -85,7 +91,7 @@ namespace vkt
         dimY = upper.y - lower.y;
         dimZ = upper.z - lower.z;
 
-        if (ep.device == vkt::ExecutionPolicy::Device::GPU)
+        if (ep.device == ExecutionPolicy::Device::GPU)
         {
             delete[] bricks;
         }
@@ -100,12 +106,18 @@ namespace vkt
     {
         bricks_.resize(numBricks);
 
-        std::memcpy(bricks_.data(), bricks, sizeof(Brick) * numBricks);
+        ExecutionPolicy ep = GetThreadExecutionPolicy();
+        CopyKind ck = CopyKind::HostToHost;
+
+        if (ep.device == ExecutionPolicy::Device::GPU)
+            ck = CopyKind::HostToDevice;
+
+        Memcpy(bricks_.data(), bricks, numBricks * sizeof(Brick), ck);
 
         std::size_t newSize = 0;
-        for (std::size_t i = 0; i < bricks_.numElements(); ++i)
+        for (std::size_t i = 0; i < numBricks; ++i)
         {
-            Vec3i dims = bricks_[i].dims;
+            Vec3i dims = bricks[i].dims;
             newSize += dims.x * dims.y * dims.z *  vkt::getSizeInBytes(dataFormat_);
         }
         resize(newSize);

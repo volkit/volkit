@@ -393,6 +393,21 @@ namespace vkt
             return dims_;
         }
 
+        VKT_FUNC uint8_t const* getData() const
+        {
+            return data_;
+        }
+
+        VKT_FUNC std::size_t getNumBricks() const
+        {
+            return bricks_.numElements();
+        }
+
+        VKT_FUNC Brick* getBricks()
+        {
+            return bricks_.data();
+        }
+
         VKT_FUNC DataFormat getDataFormat() const
         {
             return dataFormat_;

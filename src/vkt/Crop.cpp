@@ -32,18 +32,29 @@ namespace vkt
             Vec3i last
             )
     {
-        // TODO: that only works when on the CPU!
-        // copy that first (cf. HierarchicalVolumeView)
+        Brick* srcBricks = nullptr;
+
+        ExecutionPolicy ep = GetThreadExecutionPolicy();
+        if (ep.device == vkt::ExecutionPolicy::Device::GPU)
+        {
+            srcBricks = new Brick[src.getNumBricks()];
+            Memcpy(srcBricks, src.getBricks(), src.getNumBricks() * sizeof(Brick),
+                   CopyKind::DeviceToHost);
+        }
+        else
+            srcBricks = src.getBricks();
+
+
         std::vector<Brick> newBricks;
         std::vector<int> newBrickIDs;
         for (std::size_t i = 0; i < src.getNumBricks(); ++i)
         {
             Vec3i lo{0,0,0};
-            Vec3i hi = src.getBricks()[i].dims;
-            lo *= (int)(1<<src.getBricks()[i].level);
-            hi *= (int)(1<<src.getBricks()[i].level);
-            lo += src.getBricks()[i].lower;
-            hi += src.getBricks()[i].lower;
+            Vec3i hi = srcBricks[i].dims;
+            lo *= (int)(1<<srcBricks[i].level);
+            hi *= (int)(1<<srcBricks[i].level);
+            lo += srcBricks[i].lower;
+            hi += srcBricks[i].lower;
 
             lo = max(lo, first);
             hi = min(hi, last);
@@ -51,7 +62,7 @@ namespace vkt
             Vec3i newDims = hi - lo;
             if (newDims.x > 0 && newDims.y > 0 && newDims.z > 0)
             {
-                unsigned level = src.getBricks()[i].level;
+                unsigned level = srcBricks[i].level;
 
                 unsigned levelX = level;
                 unsigned cellW = 1<<levelX;
@@ -108,10 +119,13 @@ namespace vkt
         // That array is filled with invalid values anyway, might
         // as well just put that memory to good use..
 
-        ExecutionPolicy ep = GetThreadExecutionPolicy();
+        ep = GetThreadExecutionPolicy();
         CopyKind ck = CopyKind::HostToHost;
         if (ep.device == vkt::ExecutionPolicy::Device::GPU)
+        {
+            delete[] srcBricks;
             ck = CopyKind::HostToDevice;
+        }
 
         Memcpy(dst.getData(), newBrickIDs.data(), sizeof(int) * newBricks.size(), ck);
 
