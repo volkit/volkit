@@ -174,16 +174,17 @@ Implementation Status
 | ComputeHistogram               |                     | :heavy_check_mark: | :x:                | :x:                | :x:                | :heavy_check_mark: | :heavy_check_mark: |
 | Copy                           |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :heavy_check_mark: |
 | Crop                           | SV                  | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
-|                                | HV                  | :heavy_check_mark: | :x:                | :x:                | :x:                | :x:                | :x:                |
+|                                | HV                  | :heavy_check_mark: | :x:                | :x:                | :x:                | :x:                | :heavy_check_mark: |
 | Delete                         |                     | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
 | Fill                           | SV                  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 |                                | HV                  | :heavy_check_mark: | :heavy_check_mark: | :x:                | :x:                | :x:                | :x:                |
+| FLASH/HDF5 File I/O            |                     | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                | n/a                | n/a                |
 | Flip                           |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Nifti I/O<sup>[1](#1)</sup>    |                     | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                | n/a                | n/a                |
 | Raw File I/O<sup>[1](#1)</sup> |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | n/a                | n/a                |
 | Render                         |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Resample                       | SV                  | :heavy_check_mark: | :x:                | :x:                | :heavy_check_mark: | :heavy_check_mark: | :x:                |
-|                                | HV -> SV            | :heavy_check_mark: | :x:                | :x:                | :x:                | :x:                | :x:                |
+|                                | HV -> SV            | :heavy_check_mark: | :x:                | :x:                | :x:                | :x:                | :heavy_check_mark: |
 | Rotate                         |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                |
 | Scan                           |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                |
 | Transform                      |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                |
