@@ -6,9 +6,95 @@
 #include <thrust/copy.h>
 #include <thrust/device_vector.h>
 
+#include "HierarchicalVolumeView.hpp"
 #include "linalg.hpp"
 #include "Resample_cuda.hpp"
 #include "StructuredVolumeView.hpp"
+
+
+namespace vkt
+{
+    template <typename VolumeViewDst, typename VolumeViewSrc>
+    __global__ void Resample_kernel(
+            VolumeViewDst dst,
+            VolumeViewSrc src,
+            Filter filter
+            )
+    {
+        Vec3i dstDims = dst.getDims();
+        Vec3i srcDims = src.getDims();
+
+        int x = blockIdx.x * blockDim.x + threadIdx.x;
+        int y = blockIdx.y * blockDim.y + threadIdx.y;
+        int z = blockIdx.z * blockDim.z + threadIdx.z;
+
+        if (x < dstDims.x && y < dstDims.y && z < dstDims.z)
+        {
+            float srcX = x / float(dstDims.x) * srcDims.x;
+            float srcY = y / float(dstDims.y) * srcDims.y;
+            float srcZ = z / float(dstDims.z) * srcDims.z;
+            float value = 0.f;
+            if (filter == Filter::Linear)
+                value = src.sampleLinear(srcX, srcY, srcZ);
+            // else // TODO!
+            //     value = src.getValue((int32_t)srcX, (int32_t)srcY, (int32_t)srcZ);
+            dst.setValue({x,y,z}, value);
+        }
+    }
+
+    void Resample_cuda(
+            StructuredVolume& dst,
+            StructuredVolume& src,
+            Filter filter
+            )
+    {
+        unsigned nx(dst.getDims().x);
+        unsigned ny(dst.getDims().y);
+        unsigned nz(dst.getDims().z);
+
+        dim3 blockSize(8, 8, 8);
+        dim3 gridSize(
+                div_up(nx, blockSize.x),
+                div_up(ny, blockSize.y),
+                div_up(nz, blockSize.z)
+                );
+
+        Resample_kernel<<<gridSize, blockSize>>>(
+                StructuredVolumeView(dst),
+                StructuredVolumeView(src),
+                filter
+                );
+    }
+
+    void Resample_cuda(
+            StructuredVolume& dst,
+            HierarchicalVolume& src,
+            Filter filter
+            )
+    {
+        unsigned nx(dst.getDims().x);
+        unsigned ny(dst.getDims().y);
+        unsigned nz(dst.getDims().z);
+
+        dim3 blockSize(8, 8, 8);
+        dim3 gridSize(
+                div_up(nx, blockSize.x),
+                div_up(ny, blockSize.y),
+                div_up(nz, blockSize.z)
+                );
+
+        HierarchicalVolumeAccel accel(src);
+        Resample_kernel<<<gridSize, blockSize>>>(
+                StructuredVolumeView(dst),
+                HierarchicalVolumeView(src, accel),
+                filter
+                );
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+// CLAHE CUDA implementation
+//
 
 template <typename Func>
 __global__ void for_each_kernel(int32_t xmin, int32_t xmax,
@@ -68,15 +154,6 @@ void for_each(int32_t xmin, int32_t xmax,
 
 namespace vkt
 {
-
-    void Resample_cuda(
-            StructuredVolume& dst,
-            StructuredVolume& src,
-            Filter filter
-            )
-    {
-    }
-
     void ResampleCLAHE_cuda(
             StructuredVolume& dstVolume,
             StructuredVolume& srcVolume
@@ -521,13 +598,5 @@ namespace vkt
                     
                     
                 });
-    }
-
-    void Resample_cuda(
-            StructuredVolume& dst,
-            HierarchicalVolume& src,
-            Filter filter
-            )
-    {
     }
 } // vkt

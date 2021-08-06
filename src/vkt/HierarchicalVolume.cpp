@@ -4,7 +4,9 @@
 #include <cassert>
 #include <cstdlib>
 
+#include <vkt/ExecutionPolicy.hpp>
 #include <vkt/HierarchicalVolume.hpp>
+#include <vkt/Memory.hpp>
 
 #include <vkt/HierarchicalVolume.h>
 
@@ -54,14 +56,26 @@ namespace vkt
         Vec3i lower{INT_MAX,INT_MAX,INT_MAX};
         Vec3i upper{INT_MIN,INT_MIN,INT_MIN};
 
+        Brick* bricks = nullptr;
+
+        vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
+        if (ep.device == vkt::ExecutionPolicy::Device::GPU)
+        {
+            bricks = new Brick[bricks_.numElements()];
+            Memcpy(bricks, bricks_.data(), bricks_.numElements() * sizeof(Brick),
+                   CopyKind::DeviceToHost);
+        }
+        else
+            bricks = (Brick*)bricks_.data();
+
         for (std::size_t i = 0; i < bricks_.numElements(); ++i)
         {
             Vec3i lo{0,0,0};
-            Vec3i hi = bricks_[i].dims;
-            lo *= (int)(1<<bricks_[i].level);
-            hi *= (int)(1<<bricks_[i].level);
-            lo += bricks_[i].lower;
-            hi += bricks_[i].lower;
+            Vec3i hi = bricks[i].dims;
+            lo *= (int)(1<<bricks[i].level);
+            hi *= (int)(1<<bricks[i].level);
+            lo += bricks[i].lower;
+            hi += bricks[i].lower;
 
             lower = min(lower, lo);
             upper = max(upper, hi);
@@ -70,6 +84,11 @@ namespace vkt
         dimX = upper.x - lower.x;
         dimY = upper.y - lower.y;
         dimZ = upper.z - lower.z;
+
+        if (ep.device == vkt::ExecutionPolicy::Device::GPU)
+        {
+            delete[] bricks;
+        }
     }
 
     std::size_t HierarchicalVolume::getNumBricks()

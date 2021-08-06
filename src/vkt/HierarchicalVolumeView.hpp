@@ -13,7 +13,9 @@
 #include <visionaray/aligned_vector.h>
 #include <visionaray/bvh.h>
 
+#include <vkt/ExecutionPolicy.hpp>
 #include <vkt/HierarchicalVolume.hpp>
+#include <vkt/Memory.hpp>
 
 #include "ArrayView1D.hpp"
 #include "StructuredVolumeView.hpp"
@@ -274,12 +276,24 @@ namespace vkt
 
             aligned_vector<ActiveBrickRegion> abrs(volume.getNumBricks());
 
+            Brick* bricks = nullptr;
+
+            vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
+            if (ep.device == vkt::ExecutionPolicy::Device::GPU)
+            {
+                bricks = new Brick[volume.getNumBricks()];
+                Memcpy(bricks, volume.getBricks(), volume.getNumBricks() * sizeof(Brick),
+                       CopyKind::DeviceToHost);
+            }
+            else
+                bricks = volume.getBricks();
+
             for (std::size_t i = 0; i < volume.getNumBricks(); ++i)
             {
                 int primID(i);
-                int level(volume.getBricks()[i].level);
-                Vec3i lower = volume.getBricks()[i].lower;
-                Vec3i dims = volume.getBricks()[i].dims;
+                int level(bricks[i].level);
+                Vec3i lower = bricks[i].lower;
+                Vec3i dims = bricks[i].dims;
 
                 Box3f bounds = { {0.f,0.f,0.f}, {(float)dims.x,(float)dims.y,(float)dims.z} };
                 bounds.min = bounds.min * (float)(1<<level);
@@ -301,6 +315,11 @@ namespace vkt
                             { {domain.min.x,domain.min.y,domain.min.z},
                               {domain.max.x,domain.max.y,domain.max.z} },
                             volume.getBricks(), volume.getData() };
+            }
+
+            if (ep.device == vkt::ExecutionPolicy::Device::GPU)
+            {
+                delete[] bricks;
             }
 
             binned_sah_builder builder;

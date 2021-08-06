@@ -145,15 +145,19 @@ void read(vkt::HierarchicalVolume&  hv, std::string fileName) {
 
 int main()
 {
+    vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
+    ep.printPerformance = vkt::True;
+    vkt::SetThreadExecutionPolicy(ep);
+
     // Example dataSource;
     // vkt::FLASHFile dataSource("/Users/stefan/volkit/build/SILCC_hdf5_plt_cnt_0300", "dens");
 
     // vkt::InputStream is(dataSource);
 
-    //vkt::HierarchicalVolume hv(dataSource.getBricks(),
-    //                           dataSource.getNumBricks(),
-    //                           vkt::DataFormat::Float32);
-    //is.read(hv);
+    // vkt::HierarchicalVolume hv(dataSource.getBricks(),
+    //                            dataSource.getNumBricks(),
+    //                            vkt::DataFormat::Float32);
+    // is.read(hv);
 
     vkt::HierarchicalVolume hv;
     read(hv,"dump.vkt");
@@ -164,14 +168,19 @@ int main()
     // vkt::CropResize(hv2, hv, {0,0,2}, {8,8,8});
     // vkt::Crop(hv2, hv, {0,0,2}, {8,8,8});
 
-    // vkt::StructuredVolume sv(128,128,2560,vkt::DataFormat::UInt16);
-    vkt::StructuredVolume sv(32,32,640,vkt::DataFormat::UInt16);
-    // vkt::StructuredVolume sv(32,32,24,vkt::DataFormat::UInt8);
+    vkt::StructuredVolume sv(128,128,2560,vkt::DataFormat::UInt8);
+    //vkt::StructuredVolume sv(32,32,640,vkt::DataFormat::UInt8);
+    //vkt::StructuredVolume sv(1,1,20,vkt::DataFormat::UInt16,1.f,1.f,1.f,-28.1f,-21.f);
 
+    ep.device = vkt::ExecutionPolicy::Device::GPU;
+    vkt::SetThreadExecutionPolicy(ep);
     vkt::Resample(sv, hv, vkt::Filter::Linear);
 
     vkt::StructuredVolume sv2(128,128,2560,vkt::DataFormat::UInt16);
-    vkt::Resample(sv2, sv, vkt::Filter::Nearest);
+    vkt::Resample(sv2, sv, vkt::Filter::Linear);
+
+    ep.device = vkt::ExecutionPolicy::Device::CPU;
+    vkt::SetThreadExecutionPolicy(ep);
 
     float rgba[] = {
             1.f, 1.f, 1.f, .005f,
@@ -184,9 +193,9 @@ int main()
     lut.setData((uint8_t*)rgba);
 
     // Switch execution to GPU (remove those lines for CPU rendering)
-    vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
+    // vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
     // ep.device = vkt::ExecutionPolicy::Device::GPU;
-    vkt::SetThreadExecutionPolicy(ep);
+    // vkt::SetThreadExecutionPolicy(ep);
 
     vkt::RenderState renderState;
 
