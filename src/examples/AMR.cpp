@@ -163,20 +163,20 @@ int main()
     read(hv,"dump.vkt");
     // write(hv);
 
-    // vkt::HierarchicalVolume hv2(nullptr, 0, vkt::DataFormat::Float32);
+    vkt::HierarchicalVolume hv2(nullptr, 0, vkt::DataFormat::Float32);
 
-    // vkt::CropResize(hv2, hv, {0,0,2}, {8,8,8});
-    // vkt::Crop(hv2, hv, {0,0,2}, {8,8,8});
+    vkt::CropResize(hv2, hv, {0,0,20480}, {4096,4096,61440});
+    vkt::Crop(hv2, hv, {0,0,20480}, {4096,4096,61440});
 
-    vkt::StructuredVolume sv(128,128,2560,vkt::DataFormat::UInt8);
+    vkt::StructuredVolume sv(256,256,2560,vkt::DataFormat::UInt8);
     //vkt::StructuredVolume sv(32,32,640,vkt::DataFormat::UInt8);
     //vkt::StructuredVolume sv(1,1,20,vkt::DataFormat::UInt16,1.f,1.f,1.f,-28.1f,-21.f);
 
     ep.device = vkt::ExecutionPolicy::Device::GPU;
     vkt::SetThreadExecutionPolicy(ep);
-    vkt::Resample(sv, hv, vkt::Filter::Linear);
+    vkt::Resample(sv, hv2, vkt::Filter::Linear);
 
-    vkt::StructuredVolume sv2(128,128,2560,vkt::DataFormat::UInt16);
+    vkt::StructuredVolume sv2(256,256,2560,vkt::DataFormat::UInt16);
     vkt::Resample(sv2, sv, vkt::Filter::Linear);
 
     ep.device = vkt::ExecutionPolicy::Device::CPU;
@@ -200,9 +200,9 @@ int main()
     vkt::RenderState renderState;
 
     // for SILCC volume
-    renderState.viewportWidth = 1555;
-    renderState.viewportHeight = 520;
-    renderState.initialCamera = { 1, {-167.111,138.028,1276.09},{54.7994,58.2017,1242.42},{0.33416,0.942009,-0.0310351},45.f,.001f,10.f };
+    // renderState.viewportWidth = 1555;
+    // renderState.viewportHeight = 520;
+    // renderState.initialCamera = { 1, {-167.111,138.028,1276.09},{54.7994,58.2017,1242.42},{0.33416,0.942009,-0.0310351},45.f,.001f,10.f };
 
     //renderState.renderAlgo = vkt::RenderAlgo::RayMarching;
     //renderState.renderAlgo = vkt::RenderAlgo::ImplicitIso;

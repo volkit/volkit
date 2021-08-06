@@ -18,27 +18,14 @@ namespace vkt
             )
     {
         // Assumes that dst was resized with CropResize()
+        std::vector<int> brickIDs(dst.getNumBricks());
+        std::memcpy(brickIDs.data(), dst.getData(), sizeof(int) * brickIDs.size());
 
-        // ID of the *new* brick
-        int brickID = 0;
-
-        for (std::size_t i = 0; i < src.getNumBricks(); ++i)
+        for (std::size_t i = 0; i < dst.getNumBricks(); ++i)
         {
-            Vec3i lo{0,0,0};
-            Vec3i hi = src.getBricks()[i].dims;
-            lo *= (int)(1<<src.getBricks()[i].level);
-            hi *= (int)(1<<src.getBricks()[i].level);
-            lo += src.getBricks()[i].lower;
-            hi += src.getBricks()[i].lower;
-
-            lo = max(lo, first);
-            hi = min(hi, last);
-
-            Vec3i newDims = hi - lo;
-            if (newDims.x > 0 && newDims.y > 0 && newDims.z > 0)
             {
-                Brick oldBrick = src.getBricks()[i];
-                Brick newBrick = dst.getBricks()[brickID++];
+                Brick oldBrick = src.getBricks()[brickIDs[i]];
+                Brick newBrick = dst.getBricks()[i];
 
                 unsigned levelDiff = oldBrick.level-newBrick.level;
                 // That's by how much we have to multiply the

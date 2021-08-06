@@ -7,6 +7,8 @@
 #include <vector>
 
 #include <vkt/Crop.hpp>
+#include <vkt/ExecutionPolicy.hpp>
+#include <vkt/Memory.hpp>
 
 #include "Crop_serial.hpp"
 #include "DataFormatInfo.hpp"
@@ -31,7 +33,9 @@ namespace vkt
             )
     {
         // TODO: that only works when on the CPU!
+        // copy that first (cf. HierarchicalVolumeView)
         std::vector<Brick> newBricks;
+        std::vector<int> newBrickIDs;
         for (std::size_t i = 0; i < src.getNumBricks(); ++i)
         {
             Vec3i lo{0,0,0};
@@ -92,10 +96,26 @@ namespace vkt
                 newBricks.push_back({
                     lo-first, newDims, offsetInBytes, newLevel
                     });
+
+                newBrickIDs.push_back((int)i);
             }
         }
 
         dst.setBricks(newBricks.data(), newBricks.size());
+
+        // Trick: store the old to new brick correspondences in the
+        // scalar field array that we just allocated via setBricks.
+        // That array is filled with invalid values anyway, might
+        // as well just put that memory to good use..
+
+        ExecutionPolicy ep = GetThreadExecutionPolicy();
+        CopyKind ck = CopyKind::HostToHost;
+        if (ep.device == vkt::ExecutionPolicy::Device::GPU)
+            ck = CopyKind::HostToDevice;
+
+        Memcpy(dst.getData(), newBrickIDs.data(), sizeof(int) * newBricks.size(), ck);
+
+        return NoError;
     }
 
     Error Crop(
