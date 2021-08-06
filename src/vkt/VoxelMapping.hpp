@@ -3,6 +3,8 @@
 
 #include <cstdint>
 
+#include <vkt/System.h>
+
 #include <vkt/common.hpp>
 
 #include "macros.hpp"
@@ -38,20 +40,21 @@ namespace vkt
 
             case DataFormat::UInt8:
             {
-                uint8_t ival = value * 255.999f;
+                int8_t ival = value * 255.999f;
                 dst[0] = ival;
                 break;
             }
 
             case DataFormat::UInt16:
             {
-                uint16_t ival = value * 65535.999f;
+                int16_t ival = value * 65535.999f;
+                uint16_t uival = ival;
 #ifdef VKT_LITTLE_ENDIAN
-                dst[0] = static_cast<uint8_t>(ival);
-                dst[1] = static_cast<uint8_t>(ival >> 8);
+                dst[0] = static_cast<uint8_t>(uival);
+                dst[1] = static_cast<uint8_t>(uival >> 8);
 #else
-                dst[0] = static_cast<uint8_t>(ival >> 8);
-                dst[1] = static_cast<uint8_t>(ival);
+                dst[0] = static_cast<uint8_t>(uival >> 8);
+                dst[1] = static_cast<uint8_t>(uival);
 #endif
                 break;
             }
