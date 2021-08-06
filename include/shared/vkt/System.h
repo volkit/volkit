@@ -17,6 +17,8 @@
 # else
 #   define VKT_LITTLE_ENDIAN
 # endif
+#elif defined(__CUDA_ARCH__)
+# define VKT_LITTLE_ENDIAN
 #elif defined(__BYTE_ORDER)
 # if (__BYTE_ORDER == __ORDER_LITTLE_ENDIAN__)
 #  define VKT_LITTLE_ENDIAN
