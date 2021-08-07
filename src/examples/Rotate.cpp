@@ -93,5 +93,9 @@ int main()
     renderState.rgbaLookupTable = lut.getResourceHandle();
     renderState.viewportWidth = 800;
     renderState.viewportHeight = 800;
+    renderState.initialCamera.isSet = 1;
+    renderState.initialCamera.eye = {-148.362,147.885,215.525};
+    renderState.initialCamera.center = {107.208,52.5183,33.4578};
+    renderState.initialCamera.up = {0.244828,0.956698,-0.157449};
     vkt::Render(rotatedVolume, renderState);
 }
