@@ -244,6 +244,11 @@ Viewer::Viewer(
     , host_sched(numThreads)
     , frontBufferIndex(0)
 {
+    vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
+
+    useCuda = ep.device == vkt::ExecutionPolicy::Device::GPU
+           && ep.deviceApi == vkt::ExecutionPolicy::DeviceAPI::CUDA;
+
     if (renderState.rgbaLookupTable != vkt::ResourceHandle(-1))
         transfuncEditor.setLookupTableResource(renderState.rgbaLookupTable);
 
@@ -286,11 +291,6 @@ void Viewer::updateVolumeTexture()
         return;
 
     vkt::StructuredVolumeView volume = structuredVolumeViews[renderState.animationFrame];
-
-    vkt::ExecutionPolicy ep = vkt::GetThreadExecutionPolicy();
-
-    useCuda = ep.device == vkt::ExecutionPolicy::Device::GPU
-           && ep.deviceApi == vkt::ExecutionPolicy::DeviceAPI::CUDA;
 
     // Initialize device textures
     if (useCuda)
@@ -340,7 +340,7 @@ void Viewer::updateVolumeTexture()
             break;
         }
 #else
-        VKT_LOG(vkt::logging::Level::Error) << " CopyKind not supported by backend";
+        VKT_LOG(vkt::logging::Level::Error) << " GPU backend not available";
 #endif
     }
 }
@@ -521,16 +521,28 @@ void Viewer::on_display()
                         }
                         else if (renderState.renderAlgo == vkt::RenderAlgo::MultiScattering)
                         {
-                            auto kernel = prepareMultiScatteringKernel(
-                                    prepareDeviceVolume(TexelType{}),
-                                    prepareDeviceTransfunc(),
-                                    thrust::raw_pointer_cast(device_accumBuffer.data())
-                                    );
-                            device_sched.frame(kernel, sparams);
+                            if (structured)
+                            {
+                                auto kernel = prepareMultiScatteringKernel(
+                                        prepareDeviceVolume(TexelType{}),
+                                        prepareDeviceTransfunc(),
+                                        thrust::raw_pointer_cast(device_accumBuffer.data())
+                                        );
+                                device_sched.frame(kernel, sparams);
+                            }
+                            else
+                            {
+                                auto kernel = prepareMultiScatteringKernel(
+                                        hierarchicalVolume,
+                                        prepareDeviceTransfunc(),
+                                        thrust::raw_pointer_cast(device_accumBuffer.data())
+                                        );
+                                device_sched.frame(kernel, sparams);
+                            }
                         }
 #else
                         VKT_LOG(vkt::logging::Level::Error)
-                                << " CopyKind not supported by backend";
+                                << " GPU backend not available";
 #endif
                     }
                     else
@@ -649,7 +661,7 @@ void Viewer::on_display()
 #if VKT_HAVE_CUDA
             device_rt[frontBufferIndex].display_color_buffer();
 #else
-            VKT_LOG(vkt::logging::Level::Error) << " CopyKind not supported by backend";
+            VKT_LOG(vkt::logging::Level::Error) << " GPU backend not available";
 #endif
         }
         else

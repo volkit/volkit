@@ -182,7 +182,8 @@ Implementation Status
 | Flip                           |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Nifti I/O<sup>[1](#1)</sup>    |                     | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                | n/a                | n/a                |
 | Raw File I/O<sup>[1](#1)</sup> |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | n/a                | n/a                |
-| Render                         |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Render                         | SV                  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+|                                | HV                  | :heavy_check_mark: | :x:                | :x:                | :x:                | :heavy_check_mark: | :heavy_check_mark: |
 | Resample                       | SV                  | :heavy_check_mark: | :x:                | :x:                | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 |                                | HV -> SV            | :heavy_check_mark: | :x:                | :x:                | :x:                | :x:                | :heavy_check_mark: |
 | Rotate                         |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                |
