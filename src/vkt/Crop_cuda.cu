@@ -55,7 +55,7 @@ namespace vkt
 
                         for (unsigned d = 0; d < sizeDiff; ++d)
                         {
-                            std::memcpy((void*)dst.getData() + offNew, bytes,
+                            std::memcpy((uint8_t*)dst.getData() + offNew, bytes,
                                         vkt::getSizeInBytes(src.getDataFormat()));
                             offNew += vkt::getSizeInBytes(src.getDataFormat());
                         }
