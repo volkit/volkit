@@ -142,6 +142,7 @@ struct Viewer : ViewerBase
     cuda_texture<uint8_t, 3>                  device_volumeUint8;
     cuda_texture<uint16_t, 3>                 device_volumeUint16;
     cuda_texture<uint32_t, 3>                 device_volumeUint32;
+    cuda_texture<float, 3>                    device_volumeFloat32;
     cuda_texture<vec4, 1>                     device_transfunc;
 
     inline cuda_texture_ref<int16_t, 3> prepareDeviceVolume(int16_t /* */)
@@ -162,6 +163,11 @@ struct Viewer : ViewerBase
     inline cuda_texture_ref<uint32_t, 3> prepareDeviceVolume(uint32_t /* */)
     {
         return cuda_texture_ref<uint32_t, 3>(device_volumeUint32);
+    }
+
+    inline cuda_texture_ref<float, 3> prepareDeviceVolume(float /* */)
+    {
+        return cuda_texture_ref<float, 3>(device_volumeFloat32);
     }
 
     inline cuda_texture_ref<vec4, 1> prepareDeviceTransfunc()
@@ -338,6 +344,16 @@ void Viewer::updateVolumeTexture()
         case vkt::DataFormat::UInt32:
             device_volumeUint32 = cuda_texture<uint32_t, 3>(
                 (uint32_t*)volume.getData(),
+                volume.getDims().x,
+                volume.getDims().y,
+                volume.getDims().z,
+                Clamp,
+                Nearest
+                );
+            break;
+        case vkt::DataFormat::Float32:
+            device_volumeFloat32 = cuda_texture<float, 3>(
+                (float*)volume.getData(),
                 volume.getDims().x,
                 volume.getDims().y,
                 volume.getDims().z,
@@ -690,6 +706,10 @@ void Viewer::on_display()
 
         case vkt::DataFormat::UInt32:
             callKernel(uint32_t{});
+            break;
+
+        case vkt::DataFormat::Float32:
+            callKernel(float{});
             break;
         }
     }
