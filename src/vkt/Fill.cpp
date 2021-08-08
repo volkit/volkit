@@ -3,6 +3,8 @@
 
 #include <vkt/config.h>
 
+#include <cstring>
+
 #include <vkt/Fill.hpp>
 #include <vkt/HierarchicalVolume.hpp>
 #include <vkt/StructuredVolume.hpp>

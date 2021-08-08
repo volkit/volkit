@@ -3,6 +3,8 @@
 
 #include <vkt/config.h>
 
+#include <cstring>
+
 #include <vkt/Filter.hpp>
 #include <vkt/Memory.hpp>
 #include <vkt/StructuredVolume.hpp>

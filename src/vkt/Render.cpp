@@ -547,6 +547,7 @@ void Viewer::on_display()
                     }
                     else
                     {
+#ifndef __CUDA_ARCH__
                         pixel_sampler::jittered_type blend_params;
                         auto sparams = make_sched_params(
                                 blend_params,
@@ -617,6 +618,7 @@ void Viewer::on_display()
                                 host_sched.frame(kernel, sparams);
                             }
                         }
+#endif
                     }
                 });
         }
