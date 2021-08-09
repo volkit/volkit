@@ -109,6 +109,24 @@ typedef struct
         float focalDistance;
     } initialCamera;
 
+    //! Take snapshots using a key or when the viewer was closed
+    struct
+    {
+        //! Not enabled by default
+        vktBool_t enabled;
+
+        //! File to store the snap shot to. Ending determines file type
+        char const* fileName;
+
+        //! Overrides key press
+        vktBool_t takeOnClose;
+
+        //! If @see takeOnClose not set, this key is used
+        char key;
+
+        //! Optional message that is printed to the console
+        char const* message;
+    } snapshotTool;
     ///@}
 
 } vktRenderState_t;
@@ -129,7 +147,8 @@ static void vktRenderStateDefaultInit(vktRenderState_t* renderState)
         512,
         512,
         1,
-        { 0, { 0.f, 0.f, 0.f }, { 0.f, 0.f, -1.f }, { 0.f, 1.f, 0.f }, 45.f, .001f, 10.f }
+        { 0, { 0.f, 0.f, 0.f }, { 0.f, 0.f, -1.f }, { 0.f, 1.f, 0.f }, 45.f, .001f, 10.f },
+        { 0, "", 0, 'p', "" }
         };
 #else
     *renderState = (vktRenderState_t) {
@@ -145,7 +164,8 @@ static void vktRenderStateDefaultInit(vktRenderState_t* renderState)
         .viewportWidth = 512,
         .viewportHeight = 512,
         .sRGB = 1,
-        .initialCamera = { 0, { 0.f, 0.f, 0.f }, { 0.f, 0.f, -1.f }, { 0.f, 1.f, 0.f }, 45.f, .001f, 10.f }
+        .initialCamera = { 0, { 0.f, 0.f, 0.f }, { 0.f, 0.f, -1.f }, { 0.f, 1.f, 0.f }, 45.f, .001f, 10.f },
+        .snapshotTool = { 0, "", 0, 'p', "" }
         };
 #endif
 }

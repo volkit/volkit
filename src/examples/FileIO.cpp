@@ -61,6 +61,9 @@ int main(int argc, char** argv)
     vkt::SetThreadExecutionPolicy(ep);
 
     vkt::RenderState renderState;
+    renderState.snapshotTool.enabled = true;
+    renderState.snapshotTool.fileName = "screenshot.png";
+    renderState.snapshotTool.message = "Saved to screenshot.png";
     //renderState.renderAlgo = vkt::RenderAlgo::RayMarching;
     //renderState.renderAlgo = vkt::RenderAlgo::ImplicitIso;
     renderState.renderAlgo = vkt::RenderAlgo::MultiScattering;

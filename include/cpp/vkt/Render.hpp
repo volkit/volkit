@@ -108,6 +108,25 @@ namespace vkt
             float focalDistance = 10.f;
         } initialCamera;
 
+        //! Take snapshots using a key or when the viewer was closed
+        struct
+        {
+            //! Not enabled by default
+            vkt::Bool enabled = 0;
+
+            //! File to store the snap shot to. Ending determines file type
+            char const* fileName = "";
+
+            //! Overrides key press
+            vkt::Bool takeOnClose = 0;
+
+            //! If @see takeOnClose not set, this key is used
+            char key = 'p';
+
+            //! Optional message that is printed to the console
+            char const* message = "";
+        } snapshotTool;
+
         ///@}
 
     };

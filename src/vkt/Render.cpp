@@ -8,6 +8,7 @@
 #include <fstream>
 #include <future>
 #include <memory>
+#include <vector>
 
 #if VKT_HAVE_CUDA
 #include <cuda_runtime.h>
@@ -20,9 +21,12 @@
 #include <visionaray/math/aabb.h>
 #include <visionaray/math/io.h>
 #include <visionaray/math/ray.h>
+#include <visionaray/math/unorm.h>
+#include <visionaray/math/vector.h>
 #include <visionaray/texture/texture.h>
 #include <visionaray/cpu_buffer_rt.h>
 #include <visionaray/scheduler.h>
+#include <visionaray/swizzle.h>
 #include <visionaray/thin_lens_camera.h>
 
 #if VKT_HAVE_CUDA
@@ -35,6 +39,7 @@
 #include <common/manip/arcball_manipulator.h>
 #include <common/manip/pan_manipulator.h>
 #include <common/manip/zoom_manipulator.h>
+#include <common/image.h>
 
 #if VSNRAY_COMMON_HAVE_SDL2
 #include <common/viewer_sdl2.h>
@@ -210,6 +215,8 @@ struct Viewer : ViewerBase
 
     void clearFrame();
 
+    void screenShot();
+
     void on_display();
     void on_key_press(visionaray::key_event const& event);
     void on_mouse_move(visionaray::mouse_event const& event);
@@ -349,6 +356,47 @@ void Viewer::clearFrame()
 {
     std::unique_lock<std::mutex> l(displayMutex);
     frame_num = 0;
+}
+
+void Viewer::screenShot()
+{
+    auto const& rt = host_rt[frontBufferIndex];
+
+    // Swizzle to RGB8 for compatibility with pnm image
+    std::vector<vector<3, unorm<8>>> rgb(rt.width() * rt.height());
+
+    glReadPixels(0, 0, rt.width(), rt.height(), GL_RGB, GL_UNSIGNED_BYTE, rgb.data());
+
+    // Flip so that origin is (top|left)
+    std::vector<vector<3, unorm<8>>> flipped(rgb.size());
+
+    for (int y = 0; y < rt.height(); ++y)
+    {
+        for (int x = 0; x < rt.width(); ++x)
+        {
+            int yy = rt.height() - y - 1;
+            flipped[yy * rt.width() + x] = rgb[y * rt.width() + x];
+        }
+    }
+
+    image img(
+        rt.width(),
+        rt.height(),
+        PF_RGB8,
+        reinterpret_cast<uint8_t const*>(flipped.data())
+        );
+
+    image::save_option opt1;
+    if (img.save(renderState.snapshotTool.fileName, {opt1}))
+    {
+        std::string message(renderState.snapshotTool.message);
+        if (!message.empty())
+            std::cout << message << '\n';
+    }
+    else
+    {
+        VKT_LOG(vkt::logging::Level::Error) << " Error taking screen shot";
+    }
 }
 
 void Viewer::on_display()
@@ -682,6 +730,11 @@ void Viewer::on_key_press(visionaray::key_event const& event)
         renderState.animationFrame %= numAnimationFrames;
         updateVolumeTexture();
         clearFrame();
+    }
+
+    if (renderState.snapshotTool.enabled && event.key() == renderState.snapshotTool.key)
+    {
+        screenShot();
     }
 
     ViewerBase::on_key_press(event);
