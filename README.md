@@ -178,7 +178,7 @@ Implementation Status
 | Delete                         |                     | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
 | Fill                           | SV                  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 |                                | HV                  | :heavy_check_mark: | :heavy_check_mark: | :x:                | :x:                | :x:                | :x:                |
-| FLASH/HDF5 File I/O            |                     | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                | n/a                | n/a                |
+| FLASH/HDF5 I/O                 |                     | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                | n/a                | n/a                |
 | Flip                           |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Nifti I/O<sup>[1](#1)</sup>    |                     | :heavy_check_mark: | :x:                | :heavy_check_mark: | :x:                | n/a                | n/a                |
 | Raw File I/O<sup>[1](#1)</sup> |                     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                | n/a                | n/a                |
