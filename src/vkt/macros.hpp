@@ -19,9 +19,10 @@
 
 #define VKT_CALL_TIMER_(FUNC, ...)                                              \
     vkt::Timer timer;                                                           \
+    char const* api[] = { "serial", "threads" };                                \
     FUNC(__VA_ARGS__);                                                          \
     VKT_LOG(vkt::logging::Level::Info)                                          \
-            << "Device: CPU (serial), algorithm: "                              \
+            << "Device: CPU (" << api[(int)ep.hostApi] << "), algorithm: "      \
             << #FUNC                                                            \
             << ", time elapsed: "                                               \
             << timer.getElapsedSeconds()                                        \

@@ -56,6 +56,7 @@ namespace vkt
         enum class HostAPI
         {
             Serial,
+            Threads,
             //OpenMP,
             //TBB,
         };
