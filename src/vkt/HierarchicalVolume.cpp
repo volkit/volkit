@@ -87,14 +87,12 @@ namespace vkt
             upper = max(upper, hi);
         }
 
-        dimX = upper.x - lower.x;
-        dimY = upper.y - lower.y;
-        dimZ = upper.z - lower.z;
+        dimX = std::min(maxDims_.x, upper.x - lower.x);
+        dimY = std::min(maxDims_.y, upper.y - lower.y);
+        dimZ = std::min(maxDims_.z, upper.z - lower.z);
 
         if (ep.device == ExecutionPolicy::Device::GPU)
-        {
             delete[] bricks;
-        }
     }
 
     std::size_t HierarchicalVolume::getNumBricks()
@@ -121,6 +119,16 @@ namespace vkt
             newSize += dims.x * dims.y * dims.z *  vkt::getSizeInBytes(dataFormat_);
         }
         resize(newSize);
+    }
+
+    void HierarchicalVolume::setMaxDims(int dimX, int dimY, int dimZ)
+    {
+        maxDims_ = { dimX, dimY, dimZ };
+    }
+
+    void HierarchicalVolume::setMaxDims(Vec3i maxDims)
+    {
+        maxDims_ = maxDims;
     }
 
     Brick* HierarchicalVolume::getBricks()

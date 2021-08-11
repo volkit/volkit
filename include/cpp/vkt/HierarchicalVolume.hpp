@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <climits>
 #include <cstddef>
 #include <cstdint>
 
@@ -50,6 +51,12 @@ namespace vkt
         //! Set bricks. This will create a deep copy of the array
         void setBricks(Brick const* bricks, std::size_t numBricks);
 
+        //! Set max dims to overwrite logical grid dims
+        void setMaxDims(int dimX, int dimY, int dimZ);
+
+        //! Set max dims to overwrite logical grid dims
+        void setMaxDims(Vec3i maxDims);
+
         Brick* getBricks();
 
         DataFormat getDataFormat() const;
@@ -73,5 +80,6 @@ namespace vkt
         Array1D<Brick> bricks_;
         DataFormat dataFormat_;
         Vec2f voxelMapping_;
+        Vec3i maxDims_ = { INT_MAX, INT_MAX, INT_MAX };
     };
 } // vkt

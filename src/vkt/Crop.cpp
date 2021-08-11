@@ -47,6 +47,7 @@ namespace vkt
 
         std::vector<Brick> newBricks;
         std::vector<int> newBrickIDs;
+        std::size_t offsetInBytes = 0;
         for (std::size_t i = 0; i < src.getNumBricks(); ++i)
         {
             Vec3i lo{0,0,0};
@@ -56,63 +57,24 @@ namespace vkt
             lo += srcBricks[i].lower;
             hi += srcBricks[i].lower;
 
-            lo = max(lo, first);
-            hi = min(hi, last);
+            Box3i isect = { max(lo, first), min(hi, last) };
 
-            Vec3i newDims = hi - lo;
-            if (newDims.x > 0 && newDims.y > 0 && newDims.z > 0)
+            if (isect.max.x - isect.min.x > 0 && isect.max.y - isect.min.y > 0 && isect.max.z - isect.min.z > 0)
             {
-                unsigned level = srcBricks[i].level;
-
-                unsigned levelX = level;
-                unsigned cellW = 1<<levelX;
-                while (newDims.x % cellW != 0)
-                {
-                    levelX >>= 1;
-                    cellW = 1<<levelX;
-                }
-
-                unsigned levelY = level;
-                unsigned cellH = 1<<levelY;
-                while (newDims.y % cellH != 0)
-                {
-                    levelY >>= 1;
-                    cellH = 1<<levelY;
-                }
-
-                unsigned levelZ = level;
-                unsigned cellD = 1<<levelZ;
-                while (newDims.z % cellD != 0)
-                {
-                    levelZ >>= 1;
-                    cellD = 1<<levelZ;
-                }
-
-                unsigned newLevel = min(min(levelX, levelY), levelZ);
-
-                std::size_t offsetInBytes = 0;
-                if (!newBricks.empty())
-                {
-                    Brick prev = newBricks.back();
-                    offsetInBytes = prev.offsetInBytes
-                        + prev.dims.x * prev.dims.y * prev.dims.z
-                        * getSizeInBytes(src.getDataFormat());
-                }
-
-                newDims.x >>= newLevel;
-                newDims.y >>= newLevel;
-                newDims.z >>= newLevel;
-                assert(newLevel <= level);
-
                 newBricks.push_back({
-                    lo-first, newDims, offsetInBytes, newLevel
+                    lo-first, srcBricks[i].dims, offsetInBytes, srcBricks[i].level
                     });
+
+                offsetInBytes += srcBricks[i].dims.x * srcBricks[i].dims.y * srcBricks[i].dims.z
+                                    * vkt::getSizeInBytes(src.getDataFormat());
 
                 newBrickIDs.push_back((int)i);
             }
         }
 
         dst.setBricks(newBricks.data(), newBricks.size());
+
+        dst.setMaxDims(last-first);
 
         // Trick: store the old to new brick correspondences in the
         // scalar field array that we just allocated via setBricks.
