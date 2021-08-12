@@ -41,17 +41,25 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    vkt::RawFile file(argv[1], "r");
+    vkt::VolumeFile file(argv[1], vkt::OpenMode::Read);
 
-    vkt::Vec3i dims = file.getDims();
+    vkt::VolumeFileHeader hdr = file.getHeader();
+
+    if (!hdr.isStructured)
+    {
+        std::cerr << "No valid volume file\n";
+        return EXIT_FAILURE;
+    }
+
+    vkt::Vec3i dims = hdr.dims;
     if (dims.x * dims.y * dims.z < 1)
     {
         std::cerr << "Cannot parse dimensions from file name\n";
         return EXIT_FAILURE;
     }
 
-    vkt::DataFormat dataFormat = file.getDataFormat();
-    if (dataFormat == vkt::DataFormat::UInt8)
+    vkt::DataFormat dataFormat = hdr.dataFormat;
+    if (dataFormat == vkt::DataFormat::Unspecified)
     {
         std::cerr << "Cannot parse data format from file name, guessing uint8...\n";
         dataFormat = vkt::DataFormat::UInt8;
