@@ -9,8 +9,8 @@
 #include <vkt/Aggregates.hpp>
 #include <vkt/Decompose.hpp>
 #include <vkt/InputStream.hpp>
-#include <vkt/RawFile.hpp>
 #include <vkt/StructuredVolume.hpp>
+#include <vkt/VolumeFile.hpp>
 
 
 void printStatistics(vkt::Aggregates aggr,int firstX,int firstY,int firstZ,
