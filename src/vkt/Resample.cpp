@@ -21,10 +21,10 @@ namespace vkt
     VKTAPI Error Resample(
             StructuredVolume& dst,
             StructuredVolume& src,
-            Filter filter
+            FilterMode fm
             )
     {
-        VKT_CALL__(Resample, dst, src, filter);
+        VKT_CALL__(Resample, dst, src, fm);
 
         return NoError;
     }
@@ -32,10 +32,10 @@ namespace vkt
     VKTAPI Error Resample(
             StructuredVolume& dst,
             HierarchicalVolume& src,
-            Filter filter
+            FilterMode fm
             )
     {
-        VKT_CALL__(Resample, dst, src, filter);
+        VKT_CALL__(Resample, dst, src, fm);
 
         return NoError;
     }

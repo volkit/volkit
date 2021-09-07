@@ -23,7 +23,7 @@ namespace vkt
     void Resample_serial(
             StructuredVolume& dst,
             StructuredVolume& src,
-            Filter filter
+            FilterMode fm
             )
     {
         if (dst.getDims() == src.getDims())
@@ -62,7 +62,7 @@ namespace vkt
                         float srcY = y / float(dstDims.y) * srcDims.y;
                         float srcZ = z / float(dstDims.z) * srcDims.z;
                         float value = 0.f;
-                        if (filter == Filter::Linear)
+                        if (fm == FilterMode::Linear)
                             value = sourceView.sampleLinear(srcX, srcY, srcZ);
                         else
                             value = sourceView.getValue((int32_t)srcX, (int32_t)srcY, (int32_t)srcZ);
@@ -76,7 +76,7 @@ namespace vkt
     void Resample_serial(
             StructuredVolume& dst,
             HierarchicalVolume& src,
-            Filter filter
+            FilterMode fm
             )
     {
         // So we can use sampleLinear()

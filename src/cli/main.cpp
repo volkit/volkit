@@ -731,7 +731,7 @@ int main(int argc, char** argv)
                              dist.x, dist.y, dist.z,
                              mapping.x, mapping.y);
 
-        Resample(dst, src, Filter::Nearest);
+        Resample(dst, src, FilterMode::Nearest);
 
         std::ostringstream stream;
         write(stream, dst);

@@ -11,7 +11,7 @@
  */
 namespace vkt
 {
-    enum class Filter
+    enum class FilterMode
     {
         Nearest,
         Linear,
@@ -20,11 +20,11 @@ namespace vkt
     //! Resample in space and/or regarding data format
     VKTAPI Error Resample(StructuredVolume& dst,
                           StructuredVolume& src,
-                          Filter filter);
+                          FilterMode fm);
 
     VKTAPI Error Resample(StructuredVolume& dst,
                           HierarchicalVolume& src,
-                          Filter filter);
+                          FilterMode fm);
 
     //! Resample using contrast limited adaptive histogram equalization
     VKTAPI Error ResampleCLAHE(StructuredVolume& dst,

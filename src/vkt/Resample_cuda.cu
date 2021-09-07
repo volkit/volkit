@@ -18,7 +18,7 @@ namespace vkt
     __global__ void Resample_kernel(
             VolumeViewDst dst,
             VolumeViewSrc src,
-            Filter filter
+            FilterMode fm
             )
     {
         Vec3i dstDims = dst.getDims();
@@ -34,7 +34,7 @@ namespace vkt
             float srcY = y / float(dstDims.y) * srcDims.y;
             float srcZ = z / float(dstDims.z) * srcDims.z;
             float value = 0.f;
-            if (filter == Filter::Linear)
+            if (fm == FilterMode::Linear)
                 value = src.sampleLinear(srcX, srcY, srcZ);
             // else // TODO!
             //     value = src.getValue((int32_t)srcX, (int32_t)srcY, (int32_t)srcZ);
@@ -45,7 +45,7 @@ namespace vkt
     void Resample_cuda(
             StructuredVolume& dst,
             StructuredVolume& src,
-            Filter filter
+            FilterMode fm
             )
     {
         unsigned nx(dst.getDims().x);
@@ -62,14 +62,14 @@ namespace vkt
         Resample_kernel<<<gridSize, blockSize>>>(
                 StructuredVolumeView(dst),
                 StructuredVolumeView(src),
-                filter
+                fm
                 );
     }
 
     void Resample_cuda(
             StructuredVolume& dst,
             HierarchicalVolume& src,
-            Filter filter
+            FilterMode fm
             )
     {
         unsigned nx(dst.getDims().x);
@@ -87,7 +87,7 @@ namespace vkt
         Resample_kernel<<<gridSize, blockSize>>>(
                 StructuredVolumeView(dst),
                 HierarchicalVolumeView(src, accel),
-                filter
+                fm
                 );
     }
 }

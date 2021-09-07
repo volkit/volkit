@@ -12,13 +12,13 @@ namespace vkt
     void Resample_cuda(
             StructuredVolume& dst,
             StructuredVolume& src,
-            Filter filter
+            FilterMode fm
             );
 
     void Resample_cuda(
             StructuredVolume& dst,
             HierarchicalVolume& src,
-            Filter filter
+            FilterMode fm
             );
 
     void ResampleCLAHE_cuda(
