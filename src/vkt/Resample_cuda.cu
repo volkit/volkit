@@ -7,40 +7,14 @@
 #include <thrust/device_vector.h>
 
 #include "HierarchicalVolumeView.hpp"
+#include "for_each.hpp"
 #include "linalg.hpp"
 #include "Resample_cuda.hpp"
 #include "StructuredVolumeView.hpp"
 
-
 namespace vkt
 {
-    template <typename VolumeViewDst, typename VolumeViewSrc>
-    __global__ void Resample_kernel(
-            VolumeViewDst dst,
-            VolumeViewSrc src,
-            FilterMode fm
-            )
-    {
-        Vec3i dstDims = dst.getDims();
-        Vec3i srcDims = src.getDims();
-
-        int x = blockIdx.x * blockDim.x + threadIdx.x;
-        int y = blockIdx.y * blockDim.y + threadIdx.y;
-        int z = blockIdx.z * blockDim.z + threadIdx.z;
-
-        if (x < dstDims.x && y < dstDims.y && z < dstDims.z)
-        {
-            float srcX = x / float(dstDims.x) * srcDims.x;
-            float srcY = y / float(dstDims.y) * srcDims.y;
-            float srcZ = z / float(dstDims.z) * srcDims.z;
-            float value = 0.f;
-            if (fm == FilterMode::Linear)
-                value = src.sampleLinear(srcX, srcY, srcZ);
-            // else // TODO!
-            //     value = src.getValue((int32_t)srcX, (int32_t)srcY, (int32_t)srcZ);
-            dst.setValue({x,y,z}, value);
-        }
-    }
+    using cuda::for_each;
 
     void Resample_cuda(
             StructuredVolume& dst,
@@ -48,22 +22,24 @@ namespace vkt
             FilterMode fm
             )
     {
-        unsigned nx(dst.getDims().x);
-        unsigned ny(dst.getDims().y);
-        unsigned nz(dst.getDims().z);
+        StructuredVolumeView dstView(dst);
+        StructuredVolumeView srcView(src);
 
-        dim3 blockSize(8, 8, 8);
-        dim3 gridSize(
-                div_up(nx, blockSize.x),
-                div_up(ny, blockSize.y),
-                div_up(nz, blockSize.z)
-                );
+        for_each(0,dst.getDims().x,0,dst.getDims().y,0,dst.getDims().z,
+                 [=] __device__ (int x, int y, int z) mutable {
+                     Vec3i dstDims = dstView.getDims();
+                     Vec3i srcDims = srcView.getDims();
 
-        Resample_kernel<<<gridSize, blockSize>>>(
-                StructuredVolumeView(dst),
-                StructuredVolumeView(src),
-                fm
-                );
+                     float srcX = x / float(dstDims.x) * srcDims.x;
+                     float srcY = y / float(dstDims.y) * srcDims.y;
+                     float srcZ = z / float(dstDims.z) * srcDims.z;
+                     float value = 0.f;
+                     if (fm == FilterMode::Linear)
+                         value = srcView.sampleLinear(srcX, srcY, srcZ);
+                     else
+                         value = srcView.getValue((int32_t)srcX, (int32_t)srcY, (int32_t)srcZ);
+                     dstView.setValue({x,y,z}, value);
+                });
     }
 
     void Resample_cuda(
@@ -72,85 +48,31 @@ namespace vkt
             FilterMode fm
             )
     {
-        unsigned nx(dst.getDims().x);
-        unsigned ny(dst.getDims().y);
-        unsigned nz(dst.getDims().z);
-
-        dim3 blockSize(8, 8, 8);
-        dim3 gridSize(
-                div_up(nx, blockSize.x),
-                div_up(ny, blockSize.y),
-                div_up(nz, blockSize.z)
-                );
-
+        StructuredVolumeView dstView(dst);
         HierarchicalVolumeAccel accel(src);
-        Resample_kernel<<<gridSize, blockSize>>>(
-                StructuredVolumeView(dst),
-                HierarchicalVolumeView(src, accel),
-                fm
-                );
+        HierarchicalVolumeView srcView(src, accel);
+
+        for_each(0,dst.getDims().x,0,dst.getDims().y,0,dst.getDims().z,
+                 [=] __device__ (int x, int y, int z) mutable {
+                     Vec3i dstDims = dstView.getDims();
+                     Vec3i srcDims = srcView.getDims();
+
+                     float srcX = x / float(dstDims.x) * srcDims.x;
+                     float srcY = y / float(dstDims.y) * srcDims.y;
+                     float srcZ = z / float(dstDims.z) * srcDims.z;
+                     float value = 0.f;
+                     if (fm == FilterMode::Linear)
+                         value = srcView.sampleLinear(srcX, srcY, srcZ);
+                     // else // TODO!
+                     //     value = srcView.getValue((int32_t)srcX, (int32_t)srcY, (int32_t)srcZ);
+                     dstView.setValue({x,y,z}, value);
+                });
     }
 }
 
 //-------------------------------------------------------------------------------------------------
 // CLAHE CUDA implementation
 //
-
-template <typename Func>
-__global__ void for_each_kernel(int32_t xmin, int32_t xmax,
-                                Func func)
-{
-    int32_t x = blockIdx.x * blockDim.x + threadIdx.x;
-
-    if (x < xmin || x >= xmax)
-        return;
-
-    func(x);
-}
-
-template <typename Func>
-__global__ void for_each_kernel(int32_t xmin, int32_t xmax,
-                                int32_t ymin, int32_t ymax,
-                                int32_t zmin, int32_t zmax,
-                                Func func)
-{
-    int32_t x = blockIdx.x * blockDim.x + threadIdx.x;
-    int32_t y = blockIdx.y * blockDim.y + threadIdx.y;
-    int32_t z = blockIdx.z * blockDim.z + threadIdx.z;
-
-    if (x < xmin || x >= xmax || y < ymin || y >= ymax || z < zmin || z >= zmax)
-        return;
-
-    func(x, y, z);
-}
-
-template <typename Func>
-void for_each(int32_t xmin, int32_t xmax, Func func)
-{
-    dim3 blockSize = 256;
-    dim3 gridSize = vkt::div_up(xmax-xmin, (int)blockSize.x);
-
-    for_each_kernel<<<gridSize, blockSize>>>(xmin, xmax, func);
-}
-
-template <typename Func>
-void for_each(int32_t xmin, int32_t xmax,
-              int32_t ymin, int32_t ymax,
-              int32_t zmin, int32_t zmax,
-              Func func)
-{
-    dim3 blockSize(8, 8, 8);
-    dim3 gridSize(
-            vkt::div_up(xmax-xmin, (int)blockSize.x),
-            vkt::div_up(ymax-ymin, (int)blockSize.y),
-            vkt::div_up(zmax-zmin, (int)blockSize.z)
-            );
-
-    for_each_kernel<<<gridSize, blockSize>>>(xmin, xmax,
-                                             ymin, ymax,
-                                             zmin, zmax,
-                                             func);
-}
 
 namespace vkt
 {

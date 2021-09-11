@@ -12,11 +12,14 @@
 #include <vkt/StructuredVolume.hpp>
 
 #include "HierarchicalVolumeView.hpp"
+#include "for_each.hpp"
 #include "linalg.hpp"
  
 #include <iostream>
 
 #include "StructuredVolumeView.hpp"
+
+using namespace vkt::serial;
 
 namespace vkt
 {
@@ -46,30 +49,24 @@ namespace vkt
         }
         else
         {
-            // So we can use sampleLinear()
-            StructuredVolumeView sourceView(src);
+            StructuredVolumeView dstView(dst);
+            StructuredVolumeView srcView(src);
 
-            Vec3i dstDims = dst.getDims();
-            Vec3i srcDims = src.getDims();
+            for_each(0,dst.getDims().x,0,dst.getDims().y,0,dst.getDims().z,
+                     [=] __device__ (int x, int y, int z) mutable {
+                         Vec3i dstDims = dstView.getDims();
+                         Vec3i srcDims = srcView.getDims();
 
-            for (int32_t z = 0; z != dstDims.z; ++z)
-            {
-                for (int32_t y = 0; y != dstDims.y; ++y)
-                {
-                    for (int32_t x = 0; x != dstDims.x; ++x)
-                    {
-                        float srcX = x / float(dstDims.x) * srcDims.x;
-                        float srcY = y / float(dstDims.y) * srcDims.y;
-                        float srcZ = z / float(dstDims.z) * srcDims.z;
-                        float value = 0.f;
-                        if (fm == FilterMode::Linear)
-                            value = sourceView.sampleLinear(srcX, srcY, srcZ);
-                        else
-                            value = sourceView.getValue((int32_t)srcX, (int32_t)srcY, (int32_t)srcZ);
-                        dst.setValue({x,y,z}, value);
-                    }
-                }
-            }
+                         float srcX = x / float(dstDims.x) * srcDims.x;
+                         float srcY = y / float(dstDims.y) * srcDims.y;
+                         float srcZ = z / float(dstDims.z) * srcDims.z;
+                         float value = 0.f;
+                         if (fm == FilterMode::Linear)
+                             value = srcView.sampleLinear(srcX, srcY, srcZ);
+                         else
+                             value = srcView.getValue((int32_t)srcX, (int32_t)srcY, (int32_t)srcZ);
+                         dstView.setValue({x,y,z}, value);
+                    });
         }
     }
 
@@ -79,27 +76,25 @@ namespace vkt
             FilterMode fm
             )
     {
-        // So we can use sampleLinear()
+        StructuredVolumeView dstView(dst);
         HierarchicalVolumeAccel accel(src);
-        HierarchicalVolumeView sourceView(src, accel);
+        HierarchicalVolumeView srcView(src, accel);
 
-        Vec3i dstDims = dst.getDims();
-        Vec3i srcDims = src.getDims();
+        for_each(0,dst.getDims().x,0,dst.getDims().y,0,dst.getDims().z,
+                 [=] __device__ (int x, int y, int z) mutable {
+                     Vec3i dstDims = dstView.getDims();
+                     Vec3i srcDims = srcView.getDims();
 
-        for (int32_t z = 0; z != dstDims.z; ++z)
-        {
-            for (int32_t y = 0; y != dstDims.y; ++y)
-            {
-                for (int32_t x = 0; x != dstDims.x; ++x)
-                {
-                    float srcX = x / float(dstDims.x) * srcDims.x;
-                    float srcY = y / float(dstDims.y) * srcDims.y;
-                    float srcZ = z / float(dstDims.z) * srcDims.z;
-                    float value = sourceView.sampleLinear(srcX, srcY, srcZ);
-                    dst.setValue({x,y,z}, value);
-                }
-            }
-        }
+                     float srcX = x / float(dstDims.x) * srcDims.x;
+                     float srcY = y / float(dstDims.y) * srcDims.y;
+                     float srcZ = z / float(dstDims.z) * srcDims.z;
+                     float value = 0.f;
+                     if (fm == FilterMode::Linear)
+                         value = srcView.sampleLinear(srcX, srcY, srcZ);
+                     // else // TODO!
+                     //     value = srcView.getValue((int32_t)srcX, (int32_t)srcY, (int32_t)srcZ);
+                     dstView.setValue({x,y,z}, value);
+                });
     }
 
     void ResampleCLAHE_serial(
