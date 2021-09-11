@@ -6,11 +6,14 @@
 #include <vkt/Rotate.hpp>
 #include <vkt/StructuredVolume.hpp>
 
+#include "for_each.hpp"
 #include "linalg.hpp"
 #include "StructuredVolumeView.hpp"
 
 namespace vkt
 {
+    using serial::for_each;
+
     inline Mat3f quaternionToRotationMatrix(float re, Vec3f im)
     {
         float xx = im.x * im.x;
@@ -49,6 +52,7 @@ namespace vkt
             Vec3f centerOfRotation
             )
     {
+        StructuredVolumeView destView(dest);
         // So we can use sampleLinear()
         StructuredVolumeView sourceView(source);
 
@@ -72,26 +76,20 @@ namespace vkt
         // Iterate over the _whole_ dest volume,
         // apply the _inverse_ rotation, and reconstruct
         // if the rotated position is inside [first..last)
-        for (int z = 0; z < dest.getDims().z; ++z)
-        {
-            for (int y = 0; y < dest.getDims().y; ++y)
-            {
-                for (int x = 0; x < dest.getDims().x; ++x)
-                {
-                    Vec3f p{ (float)x, (float)y, (float)z };
-                    p = p - centerOfRotation;
-                    p = rot * p;
-                    p = p + centerOfRotation;
+        for_each(0,dest.getDims().x,0,dest.getDims().y,0,dest.getDims().z,
+                 [=] __device__ (int x, int y, int z) mutable {
+                     Vec3f p{ (float)x, (float)y, (float)z };
+                     p = p - centerOfRotation;
+                     p = rot * p;
+                     p = p + centerOfRotation;
 
-                    if (p.x >= first.x && p.x < last.x
-                     && p.y >= first.y && p.y < last.y
-                     && p.z >= first.z && p.z < last.z)
-                    {
-                        float val = sourceView.sampleLinear(p.x, p.y, p.z);
-                        dest.setValue(x, y, z, val);
-                    }
-                }
-            }
-        }
+                     if (p.x >= first.x && p.x < last.x
+                      && p.y >= first.y && p.y < last.y
+                      && p.z >= first.z && p.z < last.z)
+                     {
+                         float val = sourceView.sampleLinear(p.x, p.y, p.z);
+                         destView.setValue(x, y, z, val);
+                     }
+                });
     }
 } // vkt

@@ -1,3 +1,5 @@
+// This file is distributed under the MIT license.
+// See the LICENSE file for details.
 
 #pragma once
 
@@ -22,11 +24,11 @@ namespace vkt
                       int32_t zmin, int32_t zmax,
                       Func func)
         {
-            for (int32_t z = zmin; z != zmin; ++z)
+            for (int32_t z = zmin; z != zmax; ++z)
             {
-                for (int32_t y = ymin; y != ymin; ++y)
+                for (int32_t y = ymin; y != ymax; ++y)
                 {
-                    for (int32_t x = xmin; x != xmin; ++x)
+                    for (int32_t x = xmin; x != xmax; ++x)
                     {
                         func(x, y, z);
                     }
