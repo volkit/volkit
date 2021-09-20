@@ -5,6 +5,8 @@
 
 #include <cstdint>
 
+#include "linalg.hpp"
+
 namespace vkt
 {
     namespace serial

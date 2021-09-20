@@ -10,22 +10,21 @@
 #include <vkt/Voxel.hpp>
 
 #include "DataFormatInfo.hpp"
+#include "for_each.hpp"
 #include "linalg.hpp"
+#include "StructuredVolumeView.hpp"
 
 namespace vkt
 {
+    using serial::for_each;
+
     inline void FillRange_serial(StructuredVolume& volume, Vec3i first, Vec3i last, float value)
     {
-        for (int32_t z = first.z; z != last.z; ++z)
-        {
-            for (int32_t y = first.y; y != last.y; ++y)
-            {
-                for (int32_t x = first.x; x != last.x; ++x)
-                {
-                    volume.setValue(x, y, z, value);
-                }
-            }
-        }
+        StructuredVolumeView view(volume);
+        for_each(first.x,last.x,first.y,last.y,first.z,last.z,
+                 [=] __device__ (int x, int y, int z) mutable {
+                     view.setValue(x, y, z, value);
+                });
     }
 
     inline void FillRange_serial(HierarchicalVolume& volume, Vec3i first, Vec3i last, float value)

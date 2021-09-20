@@ -8,42 +8,16 @@
 
 #include "DataFormatInfo.hpp"
 #include "Fill_cuda.hpp"
+#include "for_each.hpp"
 #include "linalg.hpp"
 #include "macros.hpp"
+#include "StructuredVolumeView.hpp"
 
 namespace vkt
 {
+    using serial::for_each;
+
     __constant__ uint8_t deviceMappedVoxel[StructuredVolume::GetMaxBytesPerVoxel()];
-
-    __global__ void Fill_kernel(
-            uint8_t* data,
-            Vec3i dims,
-            DataFormat dataFormat,
-            Vec3i first,
-            Vec3i last
-            )
-    {
-        int nx = last.x - first.x;
-        int ny = last.y - first.y;
-        int nz = last.z - first.z;
-
-        int x = (blockIdx.x * blockDim.x + threadIdx.x) - first.x;
-        int y = (blockIdx.y * blockDim.y + threadIdx.y) - first.y;
-        int z = (blockIdx.z * blockDim.z + threadIdx.z) - first.z;
-
-        std::size_t bytesPerVoxel = getSizeInBytes(dataFormat);
-
-        if (x < nx && y < ny && z < nz)
-        {
-            std::size_t linearIndex = z * static_cast<std::size_t>(dims.x) * dims.y
-                                    + y * dims.x
-                                    + x;
-            linearIndex *= bytesPerVoxel;
-
-            for (std::size_t i = 0; i < bytesPerVoxel; ++i)
-                data[linearIndex + i] = deviceMappedVoxel[i];
-        }
-    }
 
     void FillRange_cuda(StructuredVolume& volume, Vec3i first, Vec3i last, float value)
     {
@@ -64,24 +38,21 @@ namespace vkt
                 cudaMemcpyHostToDevice
                 ));
 
-        unsigned nx = last.x - first.x;
-        unsigned ny = last.y - first.y;
-        unsigned nz = last.z - first.z;
+        StructuredVolumeView view(volume);
+        for_each(first.x,last.x,first.y,last.y,first.z,last.z,
+                 [=] __device__ (int x, int y, int z) mutable {
+                     std::size_t bytesPerVoxel = getSizeInBytes(view.getDataFormat());
+                     Vec3i dims = view.getDims();
+                     uint8_t* data = (uint8_t*)view.getData();
 
-        dim3 blockSize(8, 8, 8);
-        dim3 gridSize(
-                div_up(nx, blockSize.x),
-                div_up(ny, blockSize.y),
-                div_up(nz, blockSize.z)
-                );
+                     std::size_t linearIndex = z * static_cast<std::size_t>(dims.x) * dims.y
+                                             + y * dims.x
+                                             + x;
+                     linearIndex *= bytesPerVoxel;
 
-        Fill_kernel<<<gridSize, blockSize>>>(
-                volume.getData(),
-                volume.getDims(),
-                volume.getDataFormat(),
-                first,
-                last
-                );
+                     for (std::size_t i = 0; i < bytesPerVoxel; ++i)
+                         data[linearIndex + i] = deviceMappedVoxel[i];
+                });
     }
 
     void FillRange_cuda(HierarchicalVolume& volume, Vec3i first, Vec3i last, float value)
