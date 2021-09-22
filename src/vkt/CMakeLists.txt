@@ -2,7 +2,9 @@
 # See the LICENSE file for details.
 
 find_package(Boost COMPONENTS filesystem system serialization REQUIRED)
-find_package(CUDA)
+if (VKT_ENABLE_CUDA)
+    find_package(CUDA)
+endif()
 find_package(HDF5 COMPONENTS CXX)
 find_package(Nifti)
 find_package(SDL2)
@@ -11,7 +13,9 @@ find_package(Threads REQUIRED)
 find_package(Virvo)
 
 vkt_use_package(Boost)
-vkt_use_package(CUDA)
+if (VKT_ENABLE_CUDA)
+    vkt_use_package(CUDA)
+endif()
 vkt_use_package(HDF5)
 if(HDF5_FOUND)
     include_directories(${HDF5_CXX_INCLUDE_DIRS})
@@ -175,7 +179,7 @@ set(SOURCES
     Voxel.cpp
 )
 
-if(CUDA_FOUND AND VSNRAY_ENABLE_CUDA)
+if(CUDA_FOUND AND VKT_ENABLE_CUDA)
     set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS};--expt-relaxed-constexpr")
 
     vkt_cuda_compile(CUDA_SOURCES

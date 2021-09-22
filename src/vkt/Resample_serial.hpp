@@ -53,7 +53,7 @@ namespace vkt
             StructuredVolumeView srcView(src);
 
             for_each(0,dst.getDims().x,0,dst.getDims().y,0,dst.getDims().z,
-                     [=] __device__ (int x, int y, int z) mutable {
+                     [=] (int x, int y, int z) mutable {
                          Vec3i dstDims = dstView.getDims();
                          Vec3i srcDims = srcView.getDims();
 
@@ -81,7 +81,7 @@ namespace vkt
         HierarchicalVolumeView srcView(src, accel);
 
         for_each(0,dst.getDims().x,0,dst.getDims().y,0,dst.getDims().z,
-                 [=] __device__ (int x, int y, int z) mutable {
+                 [=] (int x, int y, int z) mutable {
                      Vec3i dstDims = dstView.getDims();
                      Vec3i srcDims = srcView.getDims();
 

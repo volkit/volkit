@@ -77,7 +77,7 @@ namespace vkt
         // apply the _inverse_ rotation, and reconstruct
         // if the rotated position is inside [first..last)
         for_each(0,dest.getDims().x,0,dest.getDims().y,0,dest.getDims().z,
-                 [=] __device__ (int x, int y, int z) mutable {
+                 [=] (int x, int y, int z) mutable {
                      Vec3f p{ (float)x, (float)y, (float)z };
                      p = p - centerOfRotation;
                      p = rot * p;

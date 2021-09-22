@@ -22,7 +22,7 @@ namespace vkt
     {
         StructuredVolumeView view(volume);
         for_each(first.x,last.x,first.y,last.y,first.z,last.z,
-                 [=] __device__ (int x, int y, int z) mutable {
+                 [=] (int x, int y, int z) mutable {
                      view.setValue(x, y, z, value);
                 });
     }
