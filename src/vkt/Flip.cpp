@@ -9,8 +9,8 @@
 #include <vkt/Flip.h>
 #include <vkt/StructuredVolume.h>
 
+#include "Callable.hpp"
 #include "Flip_serial.hpp"
-#include "macros.hpp"
 #include "StructuredVolume_impl.hpp"
 
 #if VKT_HAVE_CUDA
@@ -25,7 +25,7 @@ namespace vkt
 {
     Error Flip(StructuredVolume& dest, StructuredVolume& source, Axis axis)
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             FlipRange,
             dest,
             source,
@@ -50,7 +50,7 @@ namespace vkt
             Axis axis
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             FlipRange,
             dest,
             source,
@@ -78,7 +78,7 @@ namespace vkt
             Axis axis
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             FlipRange,
             dest,
             source,
@@ -100,7 +100,7 @@ namespace vkt
             Axis axis
             )
     {
-        VKT_CALL__(FlipRange, dest, source, first, last, dstOffset, axis);
+        VKT_LEGACY_CALL__(FlipRange, dest, source, first, last, dstOffset, axis);
 
         return NoError;
     }
@@ -113,7 +113,7 @@ namespace vkt
             Axis axis
             )
     {
-        VKT_CALL__(FlipRange, dest, source, first, last, { 0, 0, 0 }, axis);
+        VKT_LEGACY_CALL__(FlipRange, dest, source, first, last, { 0, 0, 0 }, axis);
 
         return NoError;
     }
@@ -126,7 +126,7 @@ namespace vkt
 
 vktError vktFlipSV(vktStructuredVolume dest, vktStructuredVolume source, vktAxis axis)
 {
-    VKT_CALL__(
+    VKT_LEGACY_CALL__(
         FlipRange,
         dest->volume,
         source->volume,
@@ -154,7 +154,7 @@ vktError vktFlipRangeSV(
         vktAxis axis
         )
 {
-    VKT_CALL__(
+    VKT_LEGACY_CALL__(
         FlipRange,
         dest->volume,
         source->volume,

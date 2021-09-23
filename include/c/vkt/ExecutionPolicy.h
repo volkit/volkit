@@ -19,14 +19,17 @@ typedef enum
 typedef enum
 {
     vktExecutionPolicyHostAPISerial,
-    //vktExecutionPolicyAPIOpenMP,
+    //vktExecutionPolicyAPIThreads,
+    vktExecutionPolicyAPIOpenMP,
     //vktExecutionPolicyAPITBB,
+    vktExecutionPolicyAPIAuto,
 } vktExecutionPolicyHostAPI;
 
 typedef enum
 {
     vktExecutionPolicyDeviceAPICUDA,
     //vktExecutionPolicyDeviceAPIOpenCL,
+    vktExecutionPolicyDeviceAPIAuto,
 } vktExecutionPolicyDeviceAPI;
 
 typedef struct

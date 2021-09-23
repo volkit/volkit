@@ -11,7 +11,7 @@
 
 #include "Aggregates_cuda.hpp"
 #include "Aggregates_serial.hpp"
-#include "macros.hpp"
+#include "Callable.hpp"
 #include "StructuredVolume_impl.hpp"
 
 //-------------------------------------------------------------------------------------------------
@@ -20,14 +20,14 @@
 
 namespace vkt
 {
-    VKTAPI Error ComputeAggregates(StructuredVolume& volume, Aggregates& aggregates)
+    Error ComputeAggregates(StructuredVolume& volume, Aggregates& aggregates)
     {
-        VKT_CALL__(ComputeAggregatesRange, volume, aggregates, { 0, 0, 0 }, volume.getDims());
+        VKT_LEGACY_CALL__(ComputeAggregatesRange, volume, aggregates, { 0, 0, 0 }, volume.getDims());
 
         return NoError;
     }
 
-    VKTAPI Error ComputeAggregatesRange(
+    Error ComputeAggregatesRange(
             StructuredVolume& volume,
             Aggregates& aggregates,
             int32_t firstX,
@@ -38,7 +38,7 @@ namespace vkt
             int32_t lastZ
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             ComputeAggregatesRange,
             volume,
             aggregates,
@@ -49,14 +49,14 @@ namespace vkt
         return NoError;
     }
 
-    VKTAPI Error ComputeAggregatesRange(
+    Error ComputeAggregatesRange(
             StructuredVolume& volume,
             Aggregates& aggregates,
             Vec3i first,
             Vec3i last
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             ComputeAggregatesRange,
             volume,
             aggregates,
@@ -72,7 +72,7 @@ namespace vkt
 // C API
 //
 
-VKTAPI vktError vktComputeAggregatesSV(vktStructuredVolume volume, vktAggregates_t* aggregates)
+vktError vktComputeAggregatesSV(vktStructuredVolume volume, vktAggregates_t* aggregates)
 {
     vkt::Aggregates aggrCPP;
 
@@ -83,7 +83,7 @@ VKTAPI vktError vktComputeAggregatesSV(vktStructuredVolume volume, vktAggregates
     return vktNoError;
 }
 
-VKTAPI vktError vktComputeAggregatesRangeSV(
+vktError vktComputeAggregatesRangeSV(
         vktStructuredVolume volume,
         vktAggregates_t* aggregates,
         int32_t firstX,

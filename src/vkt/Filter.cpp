@@ -9,8 +9,8 @@
 #include <vkt/Memory.hpp>
 #include <vkt/StructuredVolume.hpp>
 
+#include "Callable.hpp"
 #include "Filter_serial.hpp"
-#include "macros.hpp"
 #include "StructuredVolume_impl.hpp"
 
 #if VKT_HAVE_CUDA
@@ -50,7 +50,7 @@ namespace vkt
         AddressMode am
         )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             ApplyFilterRange,
             dest,
             source,

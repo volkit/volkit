@@ -341,7 +341,8 @@ namespace vkt
     {
     public:
         HierarchicalVolumeView() = default;
-        HierarchicalVolumeView(HierarchicalVolume& volume, HierarchicalVolumeAccel const& accel)
+
+        HierarchicalVolumeView(HierarchicalVolume& volume)
             : data_(volume.getData())
             , dataFormat_(volume.getDataFormat())
             , voxelMapping_(volume.getVoxelMapping())
@@ -350,7 +351,11 @@ namespace vkt
 
             // Logical grid dims, compute only once!
             dims_ = volume.getDims();
+        }
 
+        HierarchicalVolumeView(HierarchicalVolume& volume, HierarchicalVolumeAccel const& accel)
+            : HierarchicalVolumeView(volume)
+        {
             cpuBVHRef = accel.cpuBVH.ref();
 
 #ifdef __CUDACC__
@@ -379,9 +384,9 @@ namespace vkt
 
             default_intersector isect;
 #ifdef __CUDA_ARCH__
-            intersect<detail::ClosestHit>(r, gpuBVHRef, isect);
+            intersect<visionaray::detail::ClosestHit>(r, gpuBVHRef, isect);
 #else
-            intersect<detail::ClosestHit>(r, cpuBVHRef, isect);
+            intersect<visionaray::detail::ClosestHit>(r, cpuBVHRef, isect);
 #endif
 
             return sumWeights >= 1e-20f ? sumWeightedValues/sumWeights : 0.f;

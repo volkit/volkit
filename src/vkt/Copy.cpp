@@ -9,8 +9,8 @@
 #include <vkt/Copy.h>
 #include <vkt/StructuredVolume.h>
 
+#include "Callable.hpp"
 #include "Copy_serial.hpp"
-#include "macros.hpp"
 #include "StructuredVolume_impl.hpp"
 
 #if VKT_HAVE_CUDA
@@ -25,7 +25,7 @@ namespace vkt
 {
     Error Copy(StructuredVolume& dst, StructuredVolume& src)
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             CopyRange,
             dst,
             src,
@@ -51,7 +51,7 @@ namespace vkt
             int32_t dstOffsetZ
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             CopyRange,
             dst,
             src,
@@ -71,7 +71,7 @@ namespace vkt
             Vec3i dstOffset
             )
     {
-        VKT_CALL__(CopyRange, dst, src, first, last, dstOffset);
+        VKT_LEGACY_CALL__(CopyRange, dst, src, first, last, dstOffset);
 
         return NoError;
     }
@@ -84,7 +84,7 @@ namespace vkt
 
 vktError vktCopySV(vktStructuredVolume dst, vktStructuredVolume src)
 {
-    VKT_CALL__(
+    VKT_LEGACY_CALL__(
         CopyRange,
         dst->volume,
         src->volume,
@@ -110,7 +110,7 @@ vktError vktCopyRangeSV(
         int32_t dstOffsetZ
         )
 {
-    VKT_CALL__(
+    VKT_LEGACY_CALL__(
         CopyRange,
         dst->volume,
         src->volume,

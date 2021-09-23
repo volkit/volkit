@@ -5,6 +5,7 @@
 
 #include <vkt/Resample.hpp>
 
+#include "Callable.hpp"
 #include "macros.hpp"
 #include "Resample_serial.hpp"
 
@@ -18,33 +19,33 @@
 
 namespace vkt
 {
-    VKTAPI Error Resample(
+    Error Resample(
             StructuredVolume& dst,
             StructuredVolume& src,
             FilterMode fm
             )
     {
-        VKT_CALL__(Resample, dst, src, fm);
+        VKT_LEGACY_CALL__(Resample, dst, src, fm);
 
         return NoError;
     }
 
-    VKTAPI Error Resample(
+    Error Resample(
             StructuredVolume& dst,
             HierarchicalVolume& src,
             FilterMode fm
             )
     {
-        VKT_CALL__(Resample, dst, src, fm);
+        VKT_LEGACY_CALL__(Resample, dst, src, fm);
 
         return NoError;
     }
 
-    VKTAPI Error ResampleCLAHE(
+    Error ResampleCLAHE(
             StructuredVolume& dst,
             StructuredVolume& src
             )
     {
-        VKT_CALL__(ResampleCLAHE, dst, src);
+        VKT_LEGACY_CALL__(ResampleCLAHE, dst, src);
     }
 }

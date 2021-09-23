@@ -13,9 +13,10 @@
 #include <vkt/HierarchicalVolume.h>
 #include <vkt/StructuredVolume.h>
 
+#include "Callable.hpp"
 #include "Fill_serial.hpp"
 #include "HierarchicalVolume_impl.hpp"
-#include "macros.hpp"
+#include "StructuredVolumeView.hpp"
 #include "StructuredVolume_impl.hpp"
 
 #if VKT_HAVE_CUDA
@@ -30,14 +31,7 @@ namespace vkt
 {
     Error Fill(StructuredVolume& volume, float value)
     {
-        VKT_CALL__(
-            FillRange,
-            volume,
-            { 0, 0, 0 },
-            volume.getDims(),
-            value);
-
-        return NoError;
+        return FillRange(volume, Vec3i{ 0, 0, 0 }, volume.getDims(), value);
     }
 
     Error FillRange(
@@ -51,27 +45,41 @@ namespace vkt
             float value
             )
     {
-        VKT_CALL__(
-            FillRange,
-            volume,
-            { firstX, firstY, firstZ },
-            { lastX, lastY, lastZ },
-            value
-            );
-
-        return NoError;
+        return FillRange(
+                volume,
+                Vec3i{ firstX, firstY, firstZ },
+                Vec3i{ lastX, lastY, lastZ },
+                value
+                );
     }
 
     Error FillRange(StructuredVolume& volume, Vec3i first, Vec3i last, float value)
     {
-        VKT_CALL__(FillRange, volume, first, last, value);
+        auto serialCallable = MakeCallable(
+                "FillRange (serial)",
+                &FillRange_serial,
+                StructuredVolumeView(volume),
+                first,
+                last,
+                value);
+
+        auto cudaCallable = MakeCallable(
+                "FillRange (CUDA)",
+                &FillRange_cuda,
+                StructuredVolumeView(volume),
+                first,
+                last,
+                value);
+
+        Call({{ CallableBase::API::Serial, &serialCallable },
+              { CallableBase::API::CUDA,   &cudaCallable   }});
 
         return NoError;
     }
 
     Error Fill(HierarchicalVolume& volume, float value)
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             FillRange,
             volume,
             { 0, 0, 0 },
@@ -92,7 +100,7 @@ namespace vkt
             float value
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             FillRange,
             volume,
             { firstX, firstY, firstZ },
@@ -105,7 +113,7 @@ namespace vkt
 
     Error FillRange(HierarchicalVolume& volume, Vec3i first, Vec3i last, float value)
     {
-        VKT_CALL__(FillRange, volume, first, last, value);
+        VKT_LEGACY_CALL__(FillRange, volume, first, last, value);
 
         return NoError;
     }
@@ -118,15 +126,7 @@ namespace vkt
 
 vktError vktFillSV(vktStructuredVolume volume, float value)
 {
-    VKT_CALL__(
-        FillRange,
-        volume->volume,
-        { 0, 0, 0 },
-        volume->volume.getDims(),
-        value
-        );
-
-    return vktNoError;
+    return (vktError)vkt::Fill(volume->volume, value);
 }
 
 vktError vktFillRangeSV(
@@ -139,19 +139,17 @@ vktError vktFillRangeSV(
         int32_t lastZ,
         float value)
 {
-    VKT_CALL__(
-        FillRange,
+    return (vktError)vkt::FillRange(
         volume->volume,
         { firstX, firstY, firstZ },
         { lastX, lastY, lastZ },
-        value);
-
-    return vktNoError;
+        value
+        );
 }
 
 vktError vktFillHV(vktHierarchicalVolume volume, float value)
 {
-    VKT_CALL__(
+    VKT_LEGACY_CALL__(
         FillRange,
         volume->volume,
         { 0, 0, 0 },
@@ -172,7 +170,7 @@ vktError vktFillRangeHV(
         int32_t lastZ,
         float value)
 {
-    VKT_CALL__(
+    VKT_LEGACY_CALL__(
         FillRange,
         volume->volume,
         { firstX, firstY, firstZ },

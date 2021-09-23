@@ -17,11 +17,11 @@ namespace vkt
 {
     using serial::for_each;
 
-    __constant__ uint8_t deviceMappedVoxel[StructuredVolume::GetMaxBytesPerVoxel()];
+    __constant__ uint8_t deviceMappedVoxel[StructuredVolumeView::GetMaxBytesPerVoxel()];
 
-    void FillRange_cuda(StructuredVolume& volume, Vec3i first, Vec3i last, float value)
+    void FillRange_cuda(StructuredVolumeView volume, Vec3i first, Vec3i last, float value)
     {
-        uint8_t mappedVoxel[StructuredVolume::GetMaxBytesPerVoxel()];
+        uint8_t mappedVoxel[StructuredVolumeView::GetMaxBytesPerVoxel()];
         MapVoxel(
             mappedVoxel,
             value,
@@ -38,12 +38,11 @@ namespace vkt
                 cudaMemcpyHostToDevice
                 ));
 
-        StructuredVolumeView view(volume);
         for_each(first.x,last.x,first.y,last.y,first.z,last.z,
                  [=] __device__ (int x, int y, int z) mutable {
-                     std::size_t bytesPerVoxel = getSizeInBytes(view.getDataFormat());
-                     Vec3i dims = view.getDims();
-                     uint8_t* data = (uint8_t*)view.getData();
+                     std::size_t bytesPerVoxel = getSizeInBytes(volume.getDataFormat());
+                     Vec3i dims = volume.getDims();
+                     uint8_t* data = (uint8_t*)volume.getData();
 
                      std::size_t linearIndex = z * static_cast<std::size_t>(dims.x) * dims.y
                                              + y * dims.x
@@ -55,7 +54,7 @@ namespace vkt
                 });
     }
 
-    void FillRange_cuda(HierarchicalVolume& volume, Vec3i first, Vec3i last, float value)
+    void FillRange_cuda(HierarchicalVolumeView volume, Vec3i first, Vec3i last, float value)
     {
     }
 } // vkt

@@ -9,7 +9,7 @@
 #include <vkt/Transform.h>
 #include <vkt/StructuredVolume.h>
 
-#include "macros.hpp"
+#include "Callable.hpp"
 #include "StructuredVolume_impl.hpp"
 #include "Transform_serial.hpp"
 
@@ -25,7 +25,7 @@ namespace vkt
 {
     Error Transform(StructuredVolume& volume, TransformUnaryOp unaryOp)
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             TransformRange,
             volume,
             { 0, 0, 0 },
@@ -47,7 +47,7 @@ namespace vkt
             TransformUnaryOp unaryOp
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             TransformRange,
             volume,
             { firstX, firstY, firstZ },
@@ -65,7 +65,7 @@ namespace vkt
             TransformUnaryOp unaryOp
             )
     {
-        VKT_CALL__(TransformRange, volume, first, last, unaryOp);
+        VKT_LEGACY_CALL__(TransformRange, volume, first, last, unaryOp);
 
         return NoError;
     }
@@ -78,7 +78,7 @@ namespace vkt
 
 vktError vktTransformSV1(vktStructuredVolume volume, vktTransformUnaryOp unaryOp)
 {
-    VKT_CALL__(
+    VKT_LEGACY_CALL__(
         TransformRange,
         volume->volume,
         { 0, 0, 0 },
@@ -94,7 +94,7 @@ vktError vktTransformSV2(
         vktStructuredVolume volume2,
         vktTransformBinaryOp binaryOp)
 {
-    VKT_CALL__(
+    VKT_LEGACY_CALL__(
         TransformRange,
         volume1->volume,
         volume2->volume,
@@ -117,7 +117,7 @@ vktError vktTransformRangeSV1(
         vktTransformUnaryOp unaryOp
         )
 {
-    VKT_CALL__(
+    VKT_LEGACY_CALL__(
         TransformRange,
         volume->volume,
         { firstX, firstY, firstZ },
@@ -140,7 +140,7 @@ vktError vktTransformRangeSV2(
         vktTransformBinaryOp binaryOp
         )
 {
-    VKT_CALL__(
+    VKT_LEGACY_CALL__(
         TransformRange,
         volume1->volume,
         volume2->volume,

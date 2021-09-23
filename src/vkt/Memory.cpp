@@ -14,7 +14,7 @@
 
 #include <vkt/Memory.h>
 
-#include "macros.hpp"
+#include "Callable.hpp"
 #include "Memory_serial.hpp"
 
 #if VKT_HAVE_CUDA
@@ -29,12 +29,12 @@ namespace vkt
 {
     void Allocate(void** ptr, std::size_t size)
     {
-        VKT_CALL__(Allocate, ptr, size);
+        VKT_LEGACY_CALL__(Allocate, ptr, size);
     }
 
     void Free(void* ptr)
     {
-        VKT_CALL__(Free, ptr);
+        VKT_LEGACY_CALL__(Free, ptr);
     }
 
     void Memcpy(void* dst, void const* src, std::size_t size, CopyKind ck)
@@ -76,7 +76,7 @@ namespace vkt
 
     void MemsetRange(void* dst, void const* src, std::size_t dstSize, std::size_t srcSize)
     {
-        VKT_CALL__(MemsetRange, dst, src, dstSize, srcSize);
+        VKT_LEGACY_CALL__(MemsetRange, dst, src, dstSize, srcSize);
     }
 } // vkt
 
@@ -86,12 +86,12 @@ namespace vkt
 
 void vktAllocate(void** ptr, size_t size)
 {
-    VKT_CALL__(vkt::Allocate, ptr, size);
+    VKT_LEGACY_CALL__(vkt::Allocate, ptr, size);
 }
 
 void vktFree(void* ptr)
 {
-    VKT_CALL__(vkt::Free, ptr);
+    VKT_LEGACY_CALL__(vkt::Free, ptr);
 }
 
 void vktMemcpy(void* dst, void const* src, size_t size, vktCopyKind ck)

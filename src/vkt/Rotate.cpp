@@ -7,7 +7,7 @@
 #include <vkt/Rotate.h>
 #include <vkt/StructuredVolume.h>
 
-#include "macros.hpp"
+#include "Callable.hpp"
 #include "Rotate_cuda.hpp"
 #include "Rotate_serial.hpp"
 #include "StructuredVolume_impl.hpp"
@@ -26,7 +26,7 @@ namespace vkt
         Vec3f centerOfRotation
         )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             RotateRange,
             dest,
             source,
@@ -54,7 +54,7 @@ vktError vktRotateSV(
         vktVec3f_t centerOfRotation
         )
 {
-    VKT_CALL__(
+    VKT_LEGACY_CALL__(
         RotateRange,
         dest->volume,
         source->volume,

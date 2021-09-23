@@ -10,10 +10,10 @@
 #include <vkt/ExecutionPolicy.hpp>
 #include <vkt/Memory.hpp>
 
+#include "Callable.hpp"
 #include "Crop_serial.hpp"
 #include "DataFormatInfo.hpp"
 #include "linalg.hpp"
-#include "macros.hpp"
 
 #if VKT_HAVE_CUDA
 #include "Crop_cuda.hpp"
@@ -105,7 +105,7 @@ namespace vkt
             int32_t lastZ
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             Crop,
             dst,
             src,
@@ -123,7 +123,7 @@ namespace vkt
             Vec3i last
             )
     {
-        VKT_CALL__(Crop, dst, src, first, last);
+        VKT_LEGACY_CALL__(Crop, dst, src, first, last);
 
         return NoError;
     }

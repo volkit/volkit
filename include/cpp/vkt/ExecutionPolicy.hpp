@@ -56,15 +56,17 @@ namespace vkt
         enum class HostAPI
         {
             Serial,
-            Threads,
-            //OpenMP,
+            //Threads,
+            OpenMP,
             //TBB,
+            Auto,
         };
 
         enum class DeviceAPI
         {
             CUDA,
             //OpenCL,
+            Auto,
         };
 
         //! Device to run ensuing operations on

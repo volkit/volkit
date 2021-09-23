@@ -10,7 +10,7 @@
 #include <vkt/StructuredVolume.h>
 
 #include "Arithmetic_serial.hpp"
-#include "macros.hpp"
+#include "Callable.hpp"
 #include "StructuredVolume_impl.hpp"
 
 #if VKT_HAVE_CUDA
@@ -29,7 +29,7 @@ namespace vkt
             StructuredVolume& source2
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SumRange,
             dest,
             source1,
@@ -57,7 +57,7 @@ namespace vkt
             int32_t dstOffsetZ
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SumRange,
             dest,
             source1,
@@ -79,7 +79,7 @@ namespace vkt
             Vec3i dstOffset
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SumRange,
             dest,
             source1,
@@ -98,7 +98,7 @@ namespace vkt
             StructuredVolume& source2
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             DiffRange,
             dest,
             source1,
@@ -126,7 +126,7 @@ namespace vkt
             int32_t dstOffsetZ
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             DiffRange,
             dest,
             source1,
@@ -148,7 +148,7 @@ namespace vkt
             Vec3i dstOffset
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             DiffRange,
             dest,
             source1,
@@ -167,7 +167,7 @@ namespace vkt
             StructuredVolume& source2
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             ProdRange,
             dest,
             source1,
@@ -195,7 +195,7 @@ namespace vkt
             int32_t dstOffsetZ
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             ProdRange,
             dest,
             source1,
@@ -217,7 +217,7 @@ namespace vkt
             Vec3i dstOffset
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             ProdRange,
             dest,
             source1,
@@ -236,7 +236,7 @@ namespace vkt
             StructuredVolume& source2
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             QuotRange,
             dest,
             source1,
@@ -264,7 +264,7 @@ namespace vkt
             int32_t dstOffsetZ
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             QuotRange,
             dest,
             source1,
@@ -286,7 +286,7 @@ namespace vkt
             Vec3i dstOffset
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             QuotRange,
             dest,
             source1,
@@ -305,7 +305,7 @@ namespace vkt
             StructuredVolume& source2
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             AbsDiffRange,
             dest,
             source1,
@@ -333,7 +333,7 @@ namespace vkt
             int32_t dstOffsetZ
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             AbsDiffRange,
             dest,
             source1,
@@ -355,7 +355,7 @@ namespace vkt
             Vec3i dstOffset
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             AbsDiffRange,
             dest,
             source1,
@@ -374,7 +374,7 @@ namespace vkt
             StructuredVolume& source2
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SafeSumRange,
             dest,
             source1,
@@ -402,7 +402,7 @@ namespace vkt
             int32_t dstOffsetZ
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SafeSumRange,
             dest,
             source1,
@@ -424,7 +424,7 @@ namespace vkt
             Vec3i dstOffset
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SafeSumRange,
             dest,
             source1,
@@ -443,7 +443,7 @@ namespace vkt
             StructuredVolume& source2
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SafeDiffRange,
             dest,
             source1,
@@ -471,7 +471,7 @@ namespace vkt
             int32_t dstOffsetZ
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SafeDiffRange,
             dest,
             source1,
@@ -493,7 +493,7 @@ namespace vkt
             Vec3i dstOffset
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SafeDiffRange,
             dest,
             source1,
@@ -512,7 +512,7 @@ namespace vkt
             StructuredVolume& source2
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SafeProdRange,
             dest,
             source1,
@@ -540,7 +540,7 @@ namespace vkt
             int32_t dstOffsetZ
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SafeProdRange,
             dest,
             source1,
@@ -562,7 +562,7 @@ namespace vkt
             Vec3i dstOffset
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SafeProdRange,
             dest,
             source1,
@@ -581,7 +581,7 @@ namespace vkt
             StructuredVolume& source2
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SafeQuotRange,
             dest,
             source1,
@@ -609,7 +609,7 @@ namespace vkt
             int32_t dstOffsetZ
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SafeQuotRange,
             dest,
             source1,
@@ -631,7 +631,7 @@ namespace vkt
             Vec3i dstOffset
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SafeQuotRange,
             dest,
             source1,
@@ -650,7 +650,7 @@ namespace vkt
             StructuredVolume& source2
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SafeAbsDiffRange,
             dest,
             source1,
@@ -678,7 +678,7 @@ namespace vkt
             int32_t dstOffsetZ
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SafeAbsDiffRange,
             dest,
             source1,
@@ -700,7 +700,7 @@ namespace vkt
             Vec3i dstOffset
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             SafeAbsDiffRange,
             dest,
             source1,

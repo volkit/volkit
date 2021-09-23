@@ -9,9 +9,9 @@
 #include <vkt/Decompose.h>
 #include <vkt/StructuredVolume.h>
 
+#include "Callable.hpp"
 #include "Decompose_serial.hpp"
 #include "linalg.hpp"
-#include "macros.hpp"
 #include "StructuredVolume_impl.hpp"
 
 #if VKT_HAVE_CUDA
@@ -38,7 +38,7 @@ namespace vkt
             int32_t haloSizePosZ
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
                 BrickDecompose,
                 dest,
                 source,
@@ -58,7 +58,7 @@ namespace vkt
             Vec3i haloSizePos
             )
     {
-        VKT_CALL__(BrickDecompose, dest, source, brickSize, haloSizeNeg, haloSizePos);
+        VKT_LEGACY_CALL__(BrickDecompose, dest, source, brickSize, haloSizeNeg, haloSizePos);
 
         return NoError;
     }
@@ -169,7 +169,7 @@ vktError vktBrickDecomposeSV(
         int32_t haloSizePosZ
         )
 {
-    VKT_CALL__(
+    VKT_LEGACY_CALL__(
             vkt::BrickDecomposeC,
             dest,
             source,

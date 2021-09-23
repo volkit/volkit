@@ -7,7 +7,7 @@
 #include <vkt/Scale.h>
 #include <vkt/StructuredVolume.h>
 
-#include "macros.hpp"
+#include "Callable.hpp"
 #include "Scale_cuda.hpp"
 #include "Scale_serial.hpp"
 #include "StructuredVolume_impl.hpp"
@@ -25,7 +25,7 @@ namespace vkt
         Vec3f centerOfScaling
         )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             ScaleRange,
             dest,
             source,
@@ -51,7 +51,7 @@ vktError vktScaleSV(
         vktVec3f_t centerOfScaling
         )
 {
-    VKT_CALL__(
+    VKT_LEGACY_CALL__(
         ScaleRange,
         dest->volume,
         source->volume,

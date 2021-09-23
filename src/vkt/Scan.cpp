@@ -9,7 +9,7 @@
 #include <vkt/Scan.h>
 #include <vkt/StructuredVolume.h>
 
-#include "macros.hpp"
+#include "Callable.hpp"
 #include "Scan_serial.hpp"
 #include "StructuredVolume_impl.hpp"
 
@@ -25,7 +25,7 @@ namespace vkt
 {
     Error Scan(StructuredVolume& dst, StructuredVolume& src)
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             ScanRange,
             dst,
             src,
@@ -51,7 +51,7 @@ namespace vkt
             int32_t dstOffsetZ
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             ScanRange,
             dst,
             src,
@@ -71,7 +71,7 @@ namespace vkt
             Vec3i dstOffset
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             ScanRange,
             dst,
             src,
@@ -91,7 +91,7 @@ namespace vkt
 
 vktError vktScanSV(vktStructuredVolume dst, vktStructuredVolume src)
 {
-    VKT_CALL__(
+    VKT_LEGACY_CALL__(
         ScanRange,
         dst->volume,
         src->volume,
@@ -117,7 +117,7 @@ vktError vktScanRangeSV(
         int32_t dstOffsetZ
         )
 {
-    VKT_CALL__(
+    VKT_LEGACY_CALL__(
         ScanRange,
         dst->volume,
         src->volume,

@@ -165,6 +165,7 @@ set(HEADERS
 set(SOURCES
     Aggregates.cpp
     Arithmetic.cpp
+    Callable.cpp
     Copy.cpp
     Crop.cpp
     Decompose.cpp

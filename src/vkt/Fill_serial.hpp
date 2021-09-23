@@ -5,12 +5,11 @@
 
 #include <cstdlib>
 
-#include <vkt/HierarchicalVolume.hpp>
-#include <vkt/StructuredVolume.hpp>
 #include <vkt/Voxel.hpp>
 
 #include "DataFormatInfo.hpp"
 #include "for_each.hpp"
+#include "HierarchicalVolumeView.hpp"
 #include "linalg.hpp"
 #include "StructuredVolumeView.hpp"
 
@@ -18,16 +17,15 @@ namespace vkt
 {
     using serial::for_each;
 
-    inline void FillRange_serial(StructuredVolume& volume, Vec3i first, Vec3i last, float value)
+    inline void FillRange_serial(StructuredVolumeView volume, Vec3i first, Vec3i last, float value)
     {
-        StructuredVolumeView view(volume);
         for_each(first.x,last.x,first.y,last.y,first.z,last.z,
                  [=] (int x, int y, int z) mutable {
-                     view.setValue(x, y, z, value);
+                     volume.setValue(x, y, z, value);
                 });
     }
 
-    inline void FillRange_serial(HierarchicalVolume& volume, Vec3i first, Vec3i last, float value)
+    inline void FillRange_serial(HierarchicalVolumeView volume, Vec3i first, Vec3i last, float value)
     {
         uint8_t mappedVoxel[HierarchicalVolume::GetMaxBytesPerVoxel()];
         MapVoxel(
@@ -68,7 +66,7 @@ namespace vkt
                           + iy * brick.dims.x
                           + iz * brick.dims.x * brick.dims.y) * bytesPerVoxel;
 
-                        std::memcpy(volume.getData() + idx, mappedVoxel, bytesPerVoxel);
+                        std::memcpy((void*)(volume.getData() + idx), mappedVoxel, bytesPerVoxel);
                     }
                 }
             }

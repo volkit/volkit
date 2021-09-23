@@ -6,8 +6,8 @@
 #include <vkt/Histogram.hpp>
 #include <vkt/StructuredVolume.hpp>
 
+#include "Callable.hpp"
 #include "Histogram_serial.hpp"
-#include "macros.hpp"
 #include "StructuredVolume_impl.hpp"
 
 #if VKT_HAVE_CUDA
@@ -37,14 +37,14 @@ namespace vkt
         return data_;
     }
 
-    VKTAPI Error ComputeHistogram(StructuredVolume& volume, Histogram& histogram)
+    Error ComputeHistogram(StructuredVolume& volume, Histogram& histogram)
     {
-        VKT_CALL__(ComputeHistogramRange, volume, histogram, { 0, 0, 0 }, volume.getDims());
+        VKT_LEGACY_CALL__(ComputeHistogramRange, volume, histogram, { 0, 0, 0 }, volume.getDims());
 
         return NoError;
     }
 
-    VKTAPI Error ComputeHistogramRange(
+    Error ComputeHistogramRange(
             StructuredVolume& volume,
             Histogram& histogram,
             int32_t firstX,
@@ -55,7 +55,7 @@ namespace vkt
             int32_t lastZ
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             ComputeHistogramRange,
             volume,
             histogram,
@@ -66,14 +66,14 @@ namespace vkt
         return NoError;
     }
 
-    VKTAPI Error ComputeHistogramRange(
+    Error ComputeHistogramRange(
             StructuredVolume& volume,
             Histogram& histogram,
             Vec3i first,
             Vec3i last
             )
     {
-        VKT_CALL__(
+        VKT_LEGACY_CALL__(
             ComputeHistogramRange,
             volume,
             histogram,
