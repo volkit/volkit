@@ -39,6 +39,40 @@ namespace vkt
         }
     }
 
+#ifdef _OPENMP
+    namespace omp
+    {
+        template <typename Func>
+        void for_each(int32_t xmin, int32_t xmax, Func func)
+        {
+            #pragma omp parallel for
+            for (int32_t x = xmin; x != xmax; ++x)
+            {
+                func(x);
+            }
+        }
+
+        template <typename Func>
+        void for_each(int32_t xmin, int32_t xmax,
+                      int32_t ymin, int32_t ymax,
+                      int32_t zmin, int32_t zmax,
+                      Func func)
+        {
+            #pragma omp parallel for collapse(3)
+            for (int32_t z = zmin; z != zmax; ++z)
+            {
+                for (int32_t y = ymin; y != ymax; ++y)
+                {
+                    for (int32_t x = xmin; x != xmax; ++x)
+                    {
+                        func(x, y, z);
+                    }
+                }
+            }
+        }
+    }
+#endif
+
 #ifdef __CUDACC__
     namespace cuda
     {
