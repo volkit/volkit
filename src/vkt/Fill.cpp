@@ -63,6 +63,7 @@ namespace vkt
                 last,
                 value);
 
+#if VKT_HAVE_CUDA
         auto cudaCallable = MakeCallable(
                 "FillRange (CUDA)",
                 &FillRange_cuda,
@@ -70,9 +71,13 @@ namespace vkt
                 first,
                 last,
                 value);
+#endif
 
-        Call({{ CallableBase::API::Serial, &serialCallable },
-              { CallableBase::API::CUDA,   &cudaCallable   }});
+        Call({{ CallableBase::API::Serial, &serialCallable }
+#if VKT_HAVE_CUDA
+             ,{ CallableBase::API::CUDA,   &cudaCallable   }
+#endif
+              });
 
         return NoError;
     }
