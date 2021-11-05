@@ -72,6 +72,16 @@ namespace vkt
 
         ImGui::Begin("TransfuncEditor");
 
+        drawImmediate();
+
+        ImGui::End();
+    }
+
+    void TransfuncEditor::drawImmediate()
+    {
+        if (userLookupTable_ == nullptr)
+            return;
+
         rasterTexture();
 
         ImGui::GetWindowDrawList()->AddCallback(disableBlendCB, nullptr);
@@ -87,8 +97,6 @@ namespace vkt
         handleMouseEvent(event);
 
         ImGui::GetWindowDrawList()->AddCallback(enableBlendCB, nullptr);
-
-        ImGui::End();
     }
 
     void TransfuncEditor::rasterTexture()

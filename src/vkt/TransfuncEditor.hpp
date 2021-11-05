@@ -32,8 +32,11 @@ namespace vkt
         //! Indicates that the internal copy of the LUT has changed
         bool updated() const;
 
-        //! Render with ImGui
+        //! Render with ImGui, open in new ImgGui window
         void show();
+
+        //! Render with ImGui but w/o window
+        void drawImmediate();
 
     private:
         // Local LUT copy
