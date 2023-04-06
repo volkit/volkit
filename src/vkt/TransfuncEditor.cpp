@@ -113,10 +113,11 @@ namespace vkt
 
         // TODO: maybe move to a function called by user?
         if (texture_ == GLuint(-1))
-        {
             glGenTextures(1, &texture_);
-            glBindTexture(GL_TEXTURE_2D, texture_);
-        }
+
+        GLint prevTexture;
+        glGetIntegerv(GL_TEXTURE_BINDING_2D, &prevTexture);
+        glBindTexture(GL_TEXTURE_2D, texture_);
 
         Vec3i userDims = userLookupTable_->getDims();
         ColorFormat format = userLookupTable_->getColorFormat();
@@ -232,6 +233,8 @@ namespace vkt
             assert(0);
 
         lutChanged_ = false;
+
+        glBindTexture(GL_TEXTURE_2D, prevTexture);
 
         resetExecutionPolicy();
     }
