@@ -7,6 +7,8 @@
 #include <cstdint>
 #include <vector>
 
+#include <GL/glew.h>
+
 #include <imgui.h>
 
 #include "ColorFormatInfo.hpp"

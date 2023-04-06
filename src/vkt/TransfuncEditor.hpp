@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <GL/glew.h>
+#include <GL/gl.h>
 
 #include <vkt/ExecutionPolicy.hpp>
 #include <vkt/Histogram.hpp>
