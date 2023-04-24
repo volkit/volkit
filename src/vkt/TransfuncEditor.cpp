@@ -44,8 +44,11 @@ namespace vkt
         userLookupTable_ = (LookupTable*)GetManagedResource(handle);
     }
 
-    LookupTable* TransfuncEditor::getUpdatedLookupTable() const
+    LookupTable* TransfuncEditor::getUpdatedLookupTable()
     {
+        if (userLookupTable_ && !rgbaLookupTable_)
+            resampleOriginalLUT();
+
         return rgbaLookupTable_;
     }
 
@@ -124,51 +127,15 @@ namespace vkt
 
         if (userDims.x >= 1 && userDims.y == 1 && userDims.z == 1 && format == ColorFormat::RGBA32F)
         {
-            float* colors = nullptr;
-            float* updated = nullptr;
-
             if (rgbaLookupTable_ == nullptr)
-            {
-                rgbaLookupTable_ = new LookupTable(8192, 1, 1, userLookupTable_->getColorFormat());
+                resampleOriginalLUT();
 
-                Vec3i actualDims = rgbaLookupTable_->getDims();
+            // The user-provided colors
+            float* colors = (float*)userLookupTable_->getData();
 
-                // The user-provided colors
-                colors = (float*)userLookupTable_->getData();
+            // Updated colors
+            float* updated = (float*)rgbaLookupTable_->getData();
 
-                // Updated colors
-                updated = (float*)rgbaLookupTable_->getData();
-
-                // Lerp colors and alpha
-                for (int i = 0; i < actualDims.x; ++i)
-                {
-                    float indexf = i / (float)(actualDims.x - 1) * (userDims.x - 1);
-                    int indexa = (int)indexf;
-                    int indexb = min(indexa + 1, userDims.x - 1);
-                    Vec3f rgb1{ colors[4 * indexa], colors[4 * indexa + 1], colors[4 * indexa + 2] };
-                    float alpha1 = colors[4 * indexa + 3];
-                    Vec3f rgb2{ colors[4 * indexb], colors[4 * indexb + 1], colors[4 * indexb + 2] };
-                    float alpha2 = colors[4 * indexb + 3];
-                    float frac = indexf - indexa;
-
-                    Vec3f rgb = lerp(rgb1, rgb2, frac);
-                    float alpha = lerp(alpha1, alpha2, frac);
-
-                    updated[4 * i]     = rgb.x;
-                    updated[4 * i + 1] = rgb.y;
-                    updated[4 * i + 2] = rgb.z;
-                    updated[4 * i + 3] = alpha;
-                }
-            }
-            else
-            {
-                // The user-provided colors
-                colors = (float*)userLookupTable_->getData();
-
-                // Updated colors
-                updated = (float*)rgbaLookupTable_->getData();
-
-            }
 
             // Blend on the CPU (TODO: figure out how textures can be
             // blended with ImGui..)
@@ -237,6 +204,42 @@ namespace vkt
         glBindTexture(GL_TEXTURE_2D, prevTexture);
 
         resetExecutionPolicy();
+    }
+
+    void TransfuncEditor::resampleOriginalLUT()
+    {
+        delete rgbaLookupTable_;
+        rgbaLookupTable_ = new LookupTable(8192, 1, 1, userLookupTable_->getColorFormat());
+
+        Vec3i userDims = userLookupTable_->getDims();
+        Vec3i actualDims = rgbaLookupTable_->getDims();
+
+        // The user-provided colors
+        float* colors = (float*)userLookupTable_->getData();
+
+        // Updated colors
+        float* updated = (float*)rgbaLookupTable_->getData();
+
+        // Lerp colors and alpha
+        for (int i = 0; i < actualDims.x; ++i)
+        {
+            float indexf = i / (float)(actualDims.x - 1) * (userDims.x - 1);
+            int indexa = (int)indexf;
+            int indexb = min(indexa + 1, userDims.x - 1);
+            Vec3f rgb1{ colors[4 * indexa], colors[4 * indexa + 1], colors[4 * indexa + 2] };
+            float alpha1 = colors[4 * indexa + 3];
+            Vec3f rgb2{ colors[4 * indexb], colors[4 * indexb + 1], colors[4 * indexb + 2] };
+            float alpha2 = colors[4 * indexb + 3];
+            float frac = indexf - indexa;
+
+            Vec3f rgb = lerp(rgb1, rgb2, frac);
+            float alpha = lerp(alpha1, alpha2, frac);
+
+            updated[4 * i]     = rgb.x;
+            updated[4 * i + 1] = rgb.y;
+            updated[4 * i + 2] = rgb.z;
+            updated[4 * i + 3] = alpha;
+        }
     }
 
     void TransfuncEditor::normalizeHistogram()

@@ -21,7 +21,7 @@ namespace vkt
         void setLookupTableResource(ResourceHandle handle);
 
         //! Get an updated LUT that is a copied of the user-provided one
-        LookupTable* getUpdatedLookupTable() const;
+        LookupTable* getUpdatedLookupTable();
 
         //! Optionally set a histogram that can be displayed instead of the LUT
         void setHistogramResource(ResourceHandle handle);
@@ -88,6 +88,9 @@ namespace vkt
 
         // Drawing in progress
         bool drawing_ = false;
+
+        // Resample the original LUT, result in rgbaLookupTable_
+        void resampleOriginalLUT();
 
         // Raster LUT to image and upload with OpenGL
         void rasterTexture();
